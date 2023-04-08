@@ -1,10 +1,10 @@
-package com.ggukgguk.main.test.dao;
+package com.ggukgguk.api.test.dao;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.ggukgguk.main.test.vo.Member;
+import com.ggukgguk.api.test.vo.Member;
 
 @Repository
 public class MemberDaoImpl implements MemberDao {
@@ -14,7 +14,7 @@ public class MemberDaoImpl implements MemberDao {
 	
 	@Override
 	public Member selectMemberById(String memberId) {
-		return session.selectOne("com.ggukgguk.main.Member.selectById", memberId);
+		return session.selectOne("com.ggukgguk.api.Member.selectById", memberId);
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.ggukgguk.main.test.vo;
+package com.ggukgguk.api.test.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.ggukgguk.main;
+package com.ggukgguk.api;
 
 import java.text.DateFormat;
 import java.util.Date;

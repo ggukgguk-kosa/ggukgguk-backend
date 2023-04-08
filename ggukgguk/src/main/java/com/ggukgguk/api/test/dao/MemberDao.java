@@ -1,6 +1,6 @@
-package com.ggukgguk.main.test.dao;
+package com.ggukgguk.api.test.dao;
 
-import com.ggukgguk.main.test.vo.Member;
+import com.ggukgguk.api.test.vo.Member;
 
 public interface MemberDao {
 

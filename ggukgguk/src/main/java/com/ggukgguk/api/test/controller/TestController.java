@@ -1,4 +1,4 @@
-package com.ggukgguk.main.test.controller;
+package com.ggukgguk.api.test.controller;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ggukgguk.main.test.service.MemberService;
-import com.ggukgguk.main.test.vo.Member;
+import com.ggukgguk.api.test.service.MemberService;
+import com.ggukgguk.api.test.vo.Member;
 
 @RestController
 @RequestMapping("/test")
