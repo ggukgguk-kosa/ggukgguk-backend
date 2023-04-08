@@ -10,6 +10,6 @@
 	 </settings>
 	 
 	 <typeAliases>
-	 	<typeAlias type="com.ggukgguk.api.test.vo.Member" alias="Member"/>
+	 	<typeAlias type="com.ggukgguk.api.member.vo.Member" alias="Member"/>
 	 </typeAliases>
 </configuration>

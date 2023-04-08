@@ -1,6 +1,6 @@
-package com.ggukgguk.api.test.service;
+package com.ggukgguk.api.member.service;
 
-import com.ggukgguk.api.test.vo.Member;
+import com.ggukgguk.api.member.vo.Member;
 
 public interface MemberService {
 

@@ -1,4 +1,4 @@
-package com.ggukgguk.api.common.security;
+package com.ggukgguk.api.auth.security;
 
 import java.io.IOException;
 import java.io.PrintWriter;

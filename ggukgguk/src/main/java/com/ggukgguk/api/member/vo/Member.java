@@ -1,8 +1,8 @@
-package com.ggukgguk.api.test.vo;
+package com.ggukgguk.api.member.vo;
 
 import java.util.Date;
 
-import com.ggukgguk.api.common.enums.MemberRole;
+import com.ggukgguk.api.auth.enums.MemberRoleEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +23,6 @@ public class Member {
 	private Date memberCreatedAt;
 	
 	public String getRole() {
-		return MemberRole.valueOfCode(memberType).label();
+		return MemberRoleEnum.valueOfCode(memberType).label();
 	}
 }

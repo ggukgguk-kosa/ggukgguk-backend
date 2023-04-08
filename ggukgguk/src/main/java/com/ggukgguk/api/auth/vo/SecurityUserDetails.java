@@ -1,4 +1,4 @@
-package com.ggukgguk.api.common.vo;
+package com.ggukgguk.api.auth.vo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +11,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.ggukgguk.api.test.vo.Member;
+import com.ggukgguk.api.auth.enums.MemberRoleEnum;
+import com.ggukgguk.api.member.vo.Member;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -44,14 +45,7 @@ public class SecurityUserDetails extends User implements UserDetails {
 			role = authority.getAuthority(); // 이 서비스에서는 1계정당 1권한이므로 한 번만 루프를 돌게 됨. 덮어써도 무방.
 		}
 			
-		char roleCode = 0;
-		if (role.contentEquals("ROLE_NORMAL")) { // enum 도입 고려
-			roleCode = 'N';
-		} else if (role.equals("ROLE_COMPANY")) {
-			roleCode = 'C';
-		} else if (role.equals("ROLE_ADMIN")) {
-			roleCode = 'A';
-		}
+		char roleCode = MemberRoleEnum.valueOfLabel(role).code();
 		
 		member.setMemberType(roleCode);
 	}
@@ -60,10 +54,10 @@ public class SecurityUserDetails extends User implements UserDetails {
 	public Collection<GrantedAuthority> getAuthorities() {
 		List<String> roles = new ArrayList<String>();
 		roles.add(this.member.getRole());
-		
-        return roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+
+		return roles.stream()
+				.map(SimpleGrantedAuthority::new)
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -76,23 +70,23 @@ public class SecurityUserDetails extends User implements UserDetails {
 		return this.member.getMemberId();
 	}
 
-	@Override
-	public boolean isAccountNonExpired() {
-		return this.member.isMemberActive();
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return this.member.isMemberActive();
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return this.member.isMemberActive();
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return this.member.isMemberActive();
-	}
+//	@Override
+//	public boolean isAccountNonExpired() {
+//		return this.member.isMemberActive();
+//	}
+//
+//	@Override
+//	public boolean isAccountNonLocked() {
+//		return this.member.isMemberActive();
+//	}
+//
+//	@Override
+//	public boolean isCredentialsNonExpired() {
+//		return this.member.isMemberActive();
+//	}
+//
+//	@Override
+//	public boolean isEnabled() {
+//		return this.member.isMemberActive();
+//	}
 }

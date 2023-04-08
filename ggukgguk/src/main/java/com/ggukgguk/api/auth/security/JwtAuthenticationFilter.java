@@ -1,4 +1,4 @@
-package com.ggukgguk.api.common.security;
+package com.ggukgguk.api.auth.security;
 
 import java.io.IOException;
 
@@ -14,8 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.ggukgguk.api.common.util.JwtTokenUtil;
-import com.ggukgguk.api.test.service.MemberService;
+import com.ggukgguk.api.auth.util.JwtTokenUtil;
+import com.ggukgguk.api.member.service.MemberService;
 
 import lombok.NoArgsConstructor;
 

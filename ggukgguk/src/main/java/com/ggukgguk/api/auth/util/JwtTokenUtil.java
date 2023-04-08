@@ -1,4 +1,4 @@
-package com.ggukgguk.api.common.util;
+package com.ggukgguk.api.auth.util;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -14,7 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.ggukgguk.api.test.vo.Member;
+import com.ggukgguk.api.auth.vo.SecurityUserDetails;
+import com.ggukgguk.api.member.vo.Member;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
