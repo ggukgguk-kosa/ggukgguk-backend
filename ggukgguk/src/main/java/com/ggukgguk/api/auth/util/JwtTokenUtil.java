@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.ggukgguk.api.auth.vo.AuthTokenPayload;
 import com.ggukgguk.api.auth.vo.SecurityUserDetails;
 import com.ggukgguk.api.member.vo.Member;
 
@@ -46,7 +47,7 @@ public class JwtTokenUtil {
     }
     
     // JWT 생성
-    public HashMap<String, Object> generateToken(Authentication authentication) {
+    public AuthTokenPayload generateToken(Authentication authentication) {
         // 권한 가져오기
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -70,16 +71,16 @@ public class JwtTokenUtil {
                 .signWith(refreshkey, SignatureAlgorithm.HS256)
                 .compact();
         
-        HashMap<String, Object> payload = new HashMap<String, Object>();
-        payload.put("authType", "Bearer");
-        payload.put("accessToken", accessToken);
-        payload.put("refreshToken", refreshToken);
-        payload.put("accessTokenExpiresIn", accessTokenExpiresIn);
-        payload.put("refreshTokenExpiresIn", refreshTokenExpiresIn);
-        
         Member member = ((SecurityUserDetails)authentication.getPrincipal()).getMember();
-        member.setMemberPw("");
-        payload.put("memberInfo", member);
+        member.setMemberPw(null);
+
+        AuthTokenPayload payload = new AuthTokenPayload();
+        payload.setAuthType("Bearer");
+        payload.setAccessToken(accessToken);
+        payload.setRefreshToken(refreshToken);
+        payload.setAccessTokenExpiresIn(accessTokenExpiresIn);
+        payload.setRefreshTokenExpiresIn(refreshTokenExpiresIn);
+        payload.setMember(member);
         
         return payload;
     }
@@ -103,7 +104,7 @@ public class JwtTokenUtil {
     }
     
     // 토큰 리프레시
-    public HashMap<String, Object> reGenerateTokenFromRefreshToken(String refreshToken) {
+    public AuthTokenPayload reGenerateTokenFromRefreshToken(String refreshToken) {
     	// 리프레시 토큰 검증
     	if (!validateToken(refreshToken, true)) {
     		return null;
@@ -123,10 +124,9 @@ public class JwtTokenUtil {
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(accesskey, SignatureAlgorithm.HS256)
                 .compact();
-        
-        HashMap<String, Object> payload = new HashMap<String, Object>();
-        payload.put("accessToken", accessToken);
-        payload.put("accessTokenExpiresIn", accessTokenExpiresIn);
+        AuthTokenPayload payload = new AuthTokenPayload();
+        payload.setAccessToken(accessToken);
+        payload.setAccessTokenExpiresIn(accessTokenExpiresIn);
         
         return payload;
     }

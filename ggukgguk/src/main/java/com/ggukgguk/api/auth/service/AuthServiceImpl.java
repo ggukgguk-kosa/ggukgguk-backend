@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ggukgguk.api.auth.util.JwtTokenUtil;
+import com.ggukgguk.api.auth.vo.AuthTokenPayload;
 import com.ggukgguk.api.member.dao.MemberDao;
 import com.ggukgguk.api.member.vo.Member;
 
@@ -33,13 +34,13 @@ public class AuthServiceImpl implements AuthService {
 	private PasswordEncoder passwordEncoder;
 	
 	@Override
-	public HashMap<String, Object> login(Member member) {
+	public AuthTokenPayload login(Member member) {
 		try {
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 					member.getMemberId(), member.getMemberPw());
 			Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
-			HashMap<String, Object> result = jwtTokenUtil.generateToken(authentication);
+			AuthTokenPayload result = jwtTokenUtil.generateToken(authentication);
 			return result; 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -48,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public HashMap<String, Object> regenToken(String refreshToken) {
+	public AuthTokenPayload regenToken(String refreshToken) {
 		try {
 			return jwtTokenUtil.reGenerateTokenFromRefreshToken(refreshToken);
 		} catch (Exception e) {

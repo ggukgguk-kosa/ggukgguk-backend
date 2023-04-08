@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ggukgguk.api.auth.service.AuthService;
-import com.ggukgguk.api.common.entity.BasicResp;
+import com.ggukgguk.api.auth.vo.AuthTokenPayload;
+import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.member.vo.Member;
 
 @RestController
@@ -37,7 +38,7 @@ public class AuthController {
 		BasicResp<Object> respBody = null;
 		int respCode = 0;
 
-		final HashMap<String, Object> payload = service.login(reqLoginInfo);
+		final AuthTokenPayload payload = service.login(reqLoginInfo);
 		
 		if (payload == null) {
 			respBody = new BasicResp<Object>("error", "로그인에 실패하였습니다.", null);
@@ -58,7 +59,7 @@ public class AuthController {
 	public ResponseEntity<BasicResp<?>>
 		verifyHandler(@RequestBody HashMap<String, String> reqPayload) {
 		
-		Map<String, Object> respPayload = service.regenToken(reqPayload.get("refreshToken"));
+		AuthTokenPayload respPayload = service.regenToken(reqPayload.get("refreshToken"));
 		
 		BasicResp<?> respBody = null;
 		int respCode = 0;
