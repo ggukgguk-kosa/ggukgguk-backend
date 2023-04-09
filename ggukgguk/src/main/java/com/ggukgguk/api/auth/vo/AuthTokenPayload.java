@@ -19,9 +19,5 @@ public class AuthTokenPayload {
 	String authType;
 	String accessToken;
 	String refreshToken;
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	Date accessTokenExpiresIn;
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	Date refreshTokenExpiresIn;
 	Member memberInfo;
 }

@@ -31,15 +31,15 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
     	
-        // 헤더에서 토큰 추출
-        String token = resolveToken((HttpServletRequest) request);
+		// 헤더에서 토큰 추출
+		String token = resolveToken((HttpServletRequest) request);
  
-        // 토큰 Validation
-        if (token != null && jwtTokenUtil.validateToken(token)) {
-        	Authentication authentication = jwtTokenUtil.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
-        chain.doFilter(request, response);
+		// 토큰 Validation
+		if (token != null && jwtTokenUtil.validateToken(token)) {
+			Authentication authentication = jwtTokenUtil.getAuthentication(token);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+		}
+		chain.doFilter(request, response);
     }
  
     // 헤더 예시:

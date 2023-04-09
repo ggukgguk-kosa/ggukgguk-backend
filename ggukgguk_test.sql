@@ -13,4 +13,4 @@ CREATE TABLE `member_tb` (
     `member_comment`        varchar(512)            NULL,
     `member_created_at`  datetime   DEFAULT now()  NULL
 );
-INSERT INTO `member_tb` VALUES ('hong','1234','홍길동','2000-01-01', '길동짱짱맨','hong@tales.com', 'M', '테스트용 계정입니다.', default);
+INSERT INTO `member_tb` VALUES ('hong','$2y$04$G92ppy9s0BVNuuqbLjo.k.4M.EiVMOId0Dm2hYUJgJe13a.pa0lzS','홍길동','2000-01-01', '길동짱짱맨','hong@tales.com', 'M', '테스트용 계정입니다.', default);

@@ -22,7 +22,7 @@ public class Member {
 	private String memberEmail;
 	private char memberType;
 	private String memberComment;
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")
 	private Date memberCreatedAt;
 	
 	public String getRole() {

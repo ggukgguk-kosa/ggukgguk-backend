@@ -4,7 +4,6 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -78,8 +77,6 @@ public class JwtTokenUtil {
         payload.setAuthType("Bearer");
         payload.setAccessToken(accessToken);
         payload.setRefreshToken(refreshToken);
-        payload.setAccessTokenExpiresIn(accessTokenExpiresIn);
-        payload.setRefreshTokenExpiresIn(refreshTokenExpiresIn);
         payload.setMemberInfo(member);
         
         return payload;
@@ -126,7 +123,6 @@ public class JwtTokenUtil {
                 .compact();
         AuthTokenPayload payload = new AuthTokenPayload();
         payload.setAccessToken(accessToken);
-        payload.setAccessTokenExpiresIn(accessTokenExpiresIn);
         
         return payload;
     }
@@ -137,24 +133,24 @@ public class JwtTokenUtil {
     }
     
     public boolean validateToken(String token, boolean isRefresh) {
-        try {
-        	if (!isRefresh) {
-                Jwts.parserBuilder().setSigningKey(accesskey).build().parseClaimsJws(token);
-                return true;	
-        	} else {
-                Jwts.parserBuilder().setSigningKey(refreshkey).build().parseClaimsJws(token);
-                return true;
-        	}
-        } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
-        } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
-        } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
-        } catch (IllegalArgumentException e) {
-            log.info("JWT claims string is empty.", e);
-        }
-        return false;
+		try {
+			if (!isRefresh) {
+				Jwts.parserBuilder().setSigningKey(accesskey).build().parseClaimsJws(token);
+				return true;
+			} else {
+				Jwts.parserBuilder().setSigningKey(refreshkey).build().parseClaimsJws(token);
+				return true;
+			}
+		} catch (SecurityException | MalformedJwtException e) {
+			log.info("Invalid JWT Token", e);
+		} catch (ExpiredJwtException e) {
+			log.info("Expired JWT Token", e);
+		} catch (UnsupportedJwtException e) {
+			log.info("Unsupported JWT Token", e);
+		} catch (IllegalArgumentException e) {
+			log.info("JWT claims string is empty.", e);
+		}
+		return false;
     }
     
     // 클레임 정보 가져오기

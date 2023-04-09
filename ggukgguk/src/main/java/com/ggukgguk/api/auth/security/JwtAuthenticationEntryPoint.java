@@ -35,10 +35,10 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     	
 		response.setContentType("application/json; charset=UTF-8"); 
 		
-		response.setStatus(HttpServletResponse.SC_OK);
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		
 		PrintWriter out = response.getWriter();
-		out.print("{ \"status\": \"error\", \"message\": \"로그인이 필요한 서비스입니다.\" }");
+		out.print("{ \"status\": \"error\", \"message\": \"토큰이 만료되었거나 잘못되었습니다.\" }");
 		out.close();
     }
 }
