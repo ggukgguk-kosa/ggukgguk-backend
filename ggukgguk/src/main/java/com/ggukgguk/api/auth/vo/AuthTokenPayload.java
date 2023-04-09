@@ -23,5 +23,5 @@ public class AuthTokenPayload {
 	Date accessTokenExpiresIn;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	Date refreshTokenExpiresIn;
-	Member member;
+	Member memberInfo;
 }

@@ -2,7 +2,7 @@ package com.ggukgguk.api.auth.security;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,14 +15,21 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-	private List<String> allowOrigins;
+	private String[] allowOrigins;
+	
+//	public JwtAuthenticationEntryPoint(String allowOriginsRaw) {
+//		allowOrigins = new ArrayList<String>();
+//		
+//		StringTokenizer st = new StringTokenizer(allowOriginsRaw, ",");
+//		while(st.hasMoreTokens()) {
+//			allowOrigins.add(st.nextToken());
+//		}
+//	}
 	
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-    	System.out.println(allowOrigins);
-    	
     	String requestOrigin = request.getHeader("Origin");
-    	if (allowOrigins.contains(requestOrigin)) {
+    	if (Arrays.asList(allowOrigins).contains(requestOrigin)) {
     		response.setHeader("Access-Control-Allow-Origin", requestOrigin);
     	}
     	

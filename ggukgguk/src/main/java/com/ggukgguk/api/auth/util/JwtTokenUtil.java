@@ -80,7 +80,7 @@ public class JwtTokenUtil {
         payload.setRefreshToken(refreshToken);
         payload.setAccessTokenExpiresIn(accessTokenExpiresIn);
         payload.setRefreshTokenExpiresIn(refreshTokenExpiresIn);
-        payload.setMember(member);
+        payload.setMemberInfo(member);
         
         return payload;
     }
