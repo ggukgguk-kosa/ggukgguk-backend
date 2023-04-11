@@ -55,6 +55,7 @@ ggukgguk/target/
 ggukgguk/Servers/
 ggukgguk/Users/
 Servers/
+*.properties
 
 # Code Recommenders
 .recommenders/
