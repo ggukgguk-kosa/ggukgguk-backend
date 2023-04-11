@@ -32,8 +32,7 @@ public class AuthController {
 	private AuthService service;
 
 	@PostMapping(value = "/login")
-	public ResponseEntity<BasicResp<?>>
-		loginHandler(@RequestBody Member reqLoginInfo) {
+	public ResponseEntity<BasicResp<?>> loginHandler(@RequestBody Member reqLoginInfo) {
 		BasicResp<Object> respBody = null;
 		int respCode = 0;
 

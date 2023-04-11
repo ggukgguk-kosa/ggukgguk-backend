@@ -8,9 +8,10 @@
 
    <select id="selectById" parameterType="java.lang.String" resultType="Member">
        <![CDATA[   
-         SELECT member_id, member_pw, member_name, member_birth,
-         		member_nickname, member_email, member_type, member_comment, member_created_at
-         FROM member_tb
+         SELECT member_id, member_pw, member_name, member_nickname,
+         		member_email, member_phone, member_birth, member_created_at,
+         		member_activated, member_is_admin
+         FROM member
          WHERE member_id = #{memberId}         
      	 ]]>
    </select>

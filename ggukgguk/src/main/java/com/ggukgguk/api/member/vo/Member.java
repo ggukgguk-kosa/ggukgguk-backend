@@ -20,12 +20,13 @@ public class Member {
 	private Date memberBirth;
 	private String memberNickname;
 	private String memberEmail;
-	private char memberType;
-	private String memberComment;
+	private String memberPhone;
 	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")
 	private Date memberCreatedAt;
+	private boolean memberActivated;
+	private boolean memberIsAdmin;
 	
 	public String getRole() {
-		return MemberRoleEnum.valueOfCode(memberType).label();
+		return MemberRoleEnum.valueByBoolean(memberIsAdmin).label();
 	}
 }

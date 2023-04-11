@@ -19,14 +19,10 @@ public class SecurityUserDetailService implements UserDetailsService {
 		try {
 			Member member = dao.selectMemberById(userId);
 			
-//			if (!member.isMemberActive()) {
-//				throw new Exception();
-//			}
-//			
-//			if (!member.isMemberVerified()) {
-//				throw new Exception();
-//			}
-			
+			if (!member.isMemberActivated()) {
+				throw new Exception();
+			}
+
 			return new SecurityUserDetails(member);
 		} catch (Exception e) {
 			e.printStackTrace();

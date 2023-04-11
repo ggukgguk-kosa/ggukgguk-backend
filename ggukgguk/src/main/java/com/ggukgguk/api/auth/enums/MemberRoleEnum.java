@@ -4,22 +4,22 @@ import java.util.Arrays;
 
 public enum MemberRoleEnum {
 
-	ROLE_MEMBER("ROLE_MEMBER", 'M'), ROLE_ADMIN("ROLE_ADMIN", 'A');
+	ROLE_MEMBER("ROLE_MEMBER", false), ROLE_ADMIN("ROLE_ADMIN", true);
 
 	private final String label;
-	private final char code;
+	private final boolean isAdmin;
 	
-	MemberRoleEnum(String label, char code) {
+	MemberRoleEnum(String label, boolean isAdmin) {
 		this.label = label;
-		this.code = code;
+		this.isAdmin = isAdmin;
 	}
 	
 	public String label() {
 		return label;
 	}
 	
-	public char code() {
-		return code;
+	public boolean isAdmin() {
+		return isAdmin;
 	}
 	
 	public static MemberRoleEnum valueOfLabel(String label) {
@@ -29,9 +29,9 @@ public enum MemberRoleEnum {
                 .orElse(null);
 	}
 
-	public static MemberRoleEnum valueOfCode(char code) {
+	public static MemberRoleEnum valueByBoolean(boolean isAdmin) {
         return Arrays.stream(values())
-                .filter(value -> value.code == code)
+                .filter(value -> value.isAdmin == isAdmin)
                 .findAny()
                 .orElse(null);
 	}
