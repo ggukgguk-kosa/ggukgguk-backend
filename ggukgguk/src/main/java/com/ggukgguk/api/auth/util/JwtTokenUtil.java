@@ -51,7 +51,6 @@ public class JwtTokenUtil {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
- 
         long now = (new Date()).getTime();
         
         Date accessTokenExpiresIn = new Date(now + JWT_TOKEN_VALIDITY);

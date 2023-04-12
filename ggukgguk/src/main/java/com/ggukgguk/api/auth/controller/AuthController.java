@@ -34,7 +34,6 @@ public class AuthController {
 	@PostMapping(value = "/login")
 	public ResponseEntity<?> loginHandler(@RequestBody Member reqLoginInfo) {
 		BasicResp<Object> respBody = null;
-		int respCode = 0;
 
 		final AuthTokenPayload payload = service.login(reqLoginInfo);
 		

@@ -21,6 +21,7 @@
       <property name="mapperLocations">
          <list>
             <value>classpath:mappers/memberMapper.xml</value>
+            <value>classpath:mappers/noticeMapper.xml</value>
          </list>
       </property>
    </bean>

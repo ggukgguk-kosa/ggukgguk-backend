@@ -107,7 +107,7 @@ CREATE TABLE `notification` (
 
 CREATE TABLE `notice` (
     `notice_id`    INT    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
-    `notice_titile`    VARCHAR(32)    NOT NULL,
+    `notice_title`    VARCHAR(32)    NOT NULL,
     `notice_content`    VARCHAR(512)    NOT NULL,
     `notice_created_at`    DATETIME    NOT NULL    DEFAULT NOW()
 );

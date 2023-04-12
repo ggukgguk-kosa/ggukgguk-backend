@@ -41,6 +41,9 @@
         
         <Logger name="com.ggukgguk.main.Member" level="trace">
         </Logger>
+        
+        <Logger name="com.ggukgguk.main.Notice" level="trace">
+        </Logger>
   
         <Root level="INFO">
             <AppenderRef ref="stdout_2" />
