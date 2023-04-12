@@ -39,10 +39,10 @@
             <AppenderRef ref="File_1" />
         </Logger>
         
-        <Logger name="com.ggukgguk.main.Member" level="trace">
+        <Logger name="com.ggukgguk.api.Member" level="trace">
         </Logger>
         
-        <Logger name="com.ggukgguk.main.Notice" level="trace">
+        <Logger name="com.ggukgguk.api.Notice" level="trace">
         </Logger>
   
         <Root level="INFO">
