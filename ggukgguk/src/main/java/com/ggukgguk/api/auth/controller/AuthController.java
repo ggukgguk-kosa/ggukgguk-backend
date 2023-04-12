@@ -32,7 +32,7 @@ public class AuthController {
 	private AuthService service;
 
 	@PostMapping(value = "/login")
-	public ResponseEntity<BasicResp<?>> loginHandler(@RequestBody Member reqLoginInfo) {
+	public ResponseEntity<?> loginHandler(@RequestBody Member reqLoginInfo) {
 		BasicResp<Object> respBody = null;
 		int respCode = 0;
 
@@ -40,23 +40,17 @@ public class AuthController {
 		
 		if (payload == null) {
 			log.debug("로그인 실패");
-			respBody = new BasicResp<Object>("error", "로그인에 실패하였습니다.", null);
-			respCode = HttpServletResponse.SC_BAD_REQUEST;
+			respBody = new BasicResp<Object>("error", "로그인에 실패하였습니다.", null);		
+			return ResponseEntity.badRequest().body(respBody);
 		} else {
 			log.debug("로그인 성공");
 			respBody = new BasicResp<Object>("success", null, payload);
-			respCode = HttpServletResponse.SC_OK;
+			return ResponseEntity.ok(respBody);
 		}
-		
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(new MediaType("application", "json",
-				Charset.forName("UTF-8")));
-		
-		return new ResponseEntity<BasicResp<?>>(respBody, headers, respCode);
 	}
 	
 	@PostMapping(value = "/refresh")
-	public ResponseEntity<BasicResp<?>>
+	public ResponseEntity<?>
 		verifyHandler(@RequestBody HashMap<String, String> reqPayload) {
 		
 		AuthTokenPayload respPayload = service.regenToken(reqPayload.get("refreshToken"));
@@ -65,17 +59,11 @@ public class AuthController {
 		int respCode = 0;
 		if (respPayload == null) {
 			respBody = new BasicResp<Object>("error", "토큰을 재발급하는데 실패했습니다.", null);
-			respCode = HttpServletResponse.SC_BAD_REQUEST;
+			return ResponseEntity.badRequest().body(respBody);
 		} else {
-			respBody = new BasicResp<Object>("success", "토큰을 재발급하는데 성공했습니다.", respPayload);
-			respCode = HttpServletResponse.SC_OK;
+			respBody = new BasicResp<Object>("success", null, respPayload);
+			return ResponseEntity.ok(respBody);
 		}
-		
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(new MediaType("application", "json",
-				Charset.forName("UTF-8")));
-		
-		return new ResponseEntity<BasicResp<?>>(respBody, headers, respCode);
 	}
 		
 }
