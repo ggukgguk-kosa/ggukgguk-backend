@@ -2,11 +2,11 @@
 <Configuration>
   
     <Appenders>
-        <File name="File_1" fileName="/home/limo/dev/ggukgguk/main/debug.log"
+        <File name="File_1" fileName="C:\dev\ggukgguk\main\debug.log"
             append="true">
             <PatternLayout pattern="%t %-5p %c{2} - %m%n" />
         </File>
-        <File name="File_2" fileName="/home/limo/dev/ggukgguk/main/info.log"
+        <File name="File_2" fileName="C:\dev\ggukgguk\main\info.log"
             append="true">
             <PatternLayout pattern="%d - %m%n" />
         </File>
