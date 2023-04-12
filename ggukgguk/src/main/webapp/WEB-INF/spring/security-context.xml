@@ -34,6 +34,8 @@
 		<intercept-url pattern="/resources/images/**"
 			access="permitAll" />
 		<intercept-url pattern="/auth/**" access="permitAll" />
+		<intercept-url pattern="/admin/notice" method="GET" access="isAuthenticated()" />
+		<intercept-url pattern="/admin/notice/**" method="GET" access="isAuthenticated()" />
 		<intercept-url pattern="/admin/**" access="hasAnyRole('ROLE_ADMIN')" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 		<custom-filter position="FORM_LOGIN_FILTER"

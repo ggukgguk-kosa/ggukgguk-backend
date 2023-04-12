@@ -12,5 +12,6 @@
 	 <typeAliases>
 	 	<typeAlias type="com.ggukgguk.api.member.vo.Member" alias="Member"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.Notice" alias="Notice"/>
+	 	<typeAlias type="com.ggukgguk.api.admin.vo.NoticeOption" alias="NoticeOption"/>
 	 </typeAliases>
 </configuration>
