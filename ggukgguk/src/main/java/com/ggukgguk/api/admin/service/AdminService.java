@@ -4,9 +4,10 @@ import java.util.List;
 
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.admin.vo.NoticeOption;
+import com.ggukgguk.api.common.vo.TotalAndListPayload;
 
 public interface AdminService {
 
 	public boolean addNotice(Notice notice);
-	public List<Notice> getNoticeList(NoticeOption option);
+	public TotalAndListPayload getNoticeList(NoticeOption option);
 }

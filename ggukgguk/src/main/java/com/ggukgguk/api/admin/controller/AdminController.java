@@ -1,6 +1,8 @@
 package com.ggukgguk.api.admin.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +19,7 @@ import com.ggukgguk.api.admin.service.AdminService;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.admin.vo.NoticeOption;
 import com.ggukgguk.api.common.vo.BasicResp;
+import com.ggukgguk.api.common.vo.TotalAndListPayload;
 
 @RestController
 @RequestMapping(value = "/admin")
@@ -46,13 +49,15 @@ public class AdminController {
 	@GetMapping("/notice")
 	public ResponseEntity<?>
 		getNoticeListHandler(@ModelAttribute NoticeOption option) {
+		log.debug(option);
 		
 		BasicResp<Object> respBody;
-		List<Notice> result = service.getNoticeList(option);
+		TotalAndListPayload payload = service.getNoticeList(option);
 		
-		if (result != null) {
+		if (payload != null) {
 			log.debug("게시글 리스트 조회 성공");
-			respBody = new BasicResp<Object>("success", null, result);
+			
+			respBody = new BasicResp<Object>("success", null, payload);
 			return ResponseEntity.ok(respBody);
 		} else {
 			log.debug("게시글 리스트 조회 실패");

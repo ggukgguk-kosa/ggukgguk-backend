@@ -9,4 +9,5 @@ public interface AdminDao {
 
 	public void insertNotice(Notice notice) throws Exception;
 	public List<Notice> selectNoticeList(NoticeOption option);
+	public int selectNoticeListTotal(NoticeOption option);
 }

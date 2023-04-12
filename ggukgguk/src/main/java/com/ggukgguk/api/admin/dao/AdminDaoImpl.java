@@ -29,4 +29,9 @@ public class AdminDaoImpl implements AdminDao {
 		return session.selectList("com.ggukgguk.api.Notice.selectList", option);
 	}
 
+	@Override
+	public int selectNoticeListTotal(NoticeOption option) {
+		return session.selectOne("com.ggukgguk.api.Notice.selectListTotal", option);
+	}
+
 }

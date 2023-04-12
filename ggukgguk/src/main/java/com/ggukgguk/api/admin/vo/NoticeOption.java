@@ -1,7 +1,9 @@
 package com.ggukgguk.api.admin.vo;
 
 import lombok.Data;
+import lombok.Getter;
 
+@Data
 public class NoticeOption {
 
 	private int page;
