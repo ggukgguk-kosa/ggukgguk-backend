@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ggukgguk.api.auth.util.JwtTokenUtil;
@@ -20,18 +19,12 @@ import com.ggukgguk.api.member.vo.Member;
 public class AuthServiceImpl implements AuthService {
 	
 	private Logger log = LogManager.getLogger("base");
-	
-	@Autowired
-	private MemberDao dao;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	
 	@Override
 	public AuthTokenPayload login(Member member) {

@@ -51,15 +51,15 @@ public class HomeController {
 	
 	@GetMapping(value = "/mailTest", produces = "application/json; charset=UTF-8")
 	public ResponseEntity<?> testMail() throws Exception {
-		final String SMTP_USERNAME = "AKIAT23J5ONWWGI6UQC5";
-		final String SMTP_PW = "BHHMvWJ+G19/BYeTRgM98qjApEJzSyS6MR4JEo5P55cY";
+		final String SMTP_USERNAME = "";
+		final String SMTP_PW = "";
 		final String CONFIGSET = "BasicConfigSet";
 		final String HOST = "email-smtp.ap-southeast-2.amazonaws.com";
 		final int PORT = 587;
 		
 		String from = "ggukgguk@ggukgguk.online";
 		String fromName = "꾹꾹";
-		String to = "success@simulator.amazonses.com";
+		String to = "limorbear@gmail.com";
 		
 		String subject = "꾹꾹 메일 전송 테스트";
 		String body = String.join(
