@@ -24,9 +24,11 @@ public class Member {
 	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")
 	private Date memberCreatedAt;
 	private boolean memberActivated;
-	private boolean memberIsAdmin;
+	private String memberAuthority;
+	private String memberSocial;
+	
 	
 	public String getRole() {
-		return MemberRoleEnum.valueByBoolean(memberIsAdmin).label();
+		return MemberRoleEnum.valueOfLabel(memberAuthority).label();
 	}
 }
