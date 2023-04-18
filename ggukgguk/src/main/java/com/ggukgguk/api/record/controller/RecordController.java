@@ -1,6 +1,5 @@
 package com.ggukgguk.api.record.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,14 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.record.service.RecordService;
 import com.ggukgguk.api.record.vo.Record;
+import com.ggukgguk.api.record.vo.RecordSearch;
 
 @RestController
 @RequestMapping(value="/record")
@@ -28,18 +28,12 @@ public class RecordController {
 	RecordService service;
 	
 	@GetMapping
-	public ResponseEntity<?> getRecords(@RequestParam("memberId") String memberId,
-			@RequestParam("date") Date recordCreateAt,
-	        @RequestParam(value = "year", required = false) Integer year,
-	        @RequestParam(value = "month", required = false) Integer month,
-	        @RequestParam(value = "keyword", required = false) String keyword){
+	public ResponseEntity<?> getRecords(@ModelAttribute RecordSearch recordSearch){
 		
-		Record record = new Record();
-		record.setMemberId(memberId);
-		record.setRecordCreateAt(recordCreateAt);
+		log.debug(recordSearch);
 		
 		BasicResp<Object> respBody;		
-		List<Record> recordList = service.getRecordList(record);
+		List<Record> recordList = service.getRecordList(recordSearch);
 		
 		if (recordList != null) {
 			log.debug("게시글 리스트 조회 성공");

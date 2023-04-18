@@ -27,13 +27,13 @@
 	    </collection>
 	</resultMap>
 
-   <select id="selectList" parameterType="Record" resultMap="RecordResultSet">
+   <select id="selectList" parameterType="RecordSearch" resultMap="RecordResultSet">
        <![CDATA[   
 			SELECT record.*, reply.*, member.member_nickname
 			FROM record
 			LEFT JOIN reply ON record.record_id = reply.record_id
 			LEFT JOIN member ON record.member_id = member.member_id
-		    WHERE record.member_id=#{memberId} AND record.recordCreateAt BETWEEN DATE_SUB(#{recordCreateAt}, INTERVAL 5 DAY) AND #{recordCreateAt}
+		    WHERE record.member_id=#{memberId} AND record.recordCreateAt BETWEEN DATE_SUB(#{startDate}, INTERVAL 5 DAY) AND #{startDate}
  		]]>
    </select>
    

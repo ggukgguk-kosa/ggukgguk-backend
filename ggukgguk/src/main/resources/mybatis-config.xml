@@ -13,8 +13,9 @@
 	 	<typeAlias type="com.ggukgguk.api.member.vo.Member" alias="Member"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.Notice" alias="Notice"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.NoticeOption" alias="NoticeOption"/>
-	 	<typeAlias type="com.ggukgguk.api.member.vo.Record" alias="Record"/>
-	 	<typeAlias type="com.ggukgguk.api.member.vo.Reply" alias="Reply"/>
-	 	<typeAlias type="com.ggukgguk.api.member.vo.ReplyNickname" alias="ReplyNickname"/>
+	 	<typeAlias type="com.ggukgguk.api.record.vo.Record" alias="Record"/>
+	 	<typeAlias type="com.ggukgguk.api.record.vo.RecordSearch" alias="RecordSearch"/>
+	 	<typeAlias type="com.ggukgguk.api.reply.vo.Reply" alias="Reply"/>
+	 	<typeAlias type="com.ggukgguk.api.reply.vo.ReplyNickname" alias="ReplyNickname"/>
 	 </typeAliases>
 </configuration>

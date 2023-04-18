@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.record.dao.RecordDao;
 import com.ggukgguk.api.record.vo.Record;
+import com.ggukgguk.api.record.vo.RecordSearch;
 
 @Service
 public class RecordServiceImpl implements RecordService{
@@ -16,9 +17,9 @@ public class RecordServiceImpl implements RecordService{
 	private RecordDao dao;
 	
 	@Override
-	public List<Record> getRecordList(Record record) {
+	public List<Record> getRecordList(RecordSearch recordSearch) {
 		
-		return dao.selectRecordList(record);
+		return dao.selectRecordList(recordSearch);
 	}
 
 	@Override
