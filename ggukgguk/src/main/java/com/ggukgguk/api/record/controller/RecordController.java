@@ -6,10 +6,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
@@ -17,7 +21,7 @@ import com.ggukgguk.api.record.service.RecordService;
 import com.ggukgguk.api.record.vo.Record;
 
 @RestController
-@RequestMapping(value="/api/record")
+@RequestMapping(value="/record")
 public class RecordController {
 	
 	private Logger log = LogManager.getLogger("base");
@@ -47,6 +51,17 @@ public class RecordController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 		
+	}
+	
+	@PostMapping
+	public ResponseEntity<?> addRecord(@RequestParam("mediaFile") MultipartFile file,
+			@ModelAttribute Record record) {
+		
+		BasicResp<Object> respBody;
+		log.debug(file);
+		log.debug(record);
+		respBody = new BasicResp<Object>("success", null, null);
+		return ResponseEntity.ok(respBody);
 	}
 
 }

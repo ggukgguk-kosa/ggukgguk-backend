@@ -23,17 +23,12 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="10000000" />
+		<beans:property name="defaultEncoding" value="utf-8" />
+	</beans:bean>
+	
 	<context:component-scan base-package="com.ggukgguk.api" use-default-filters="false">
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
-	
-	<!-- Servlet Scope Properties -->
-	<context:property-placeholder
-		location="classpath:config/auth.properties" />
-	
-	<cors>
-	    <mapping path="/**"
-	        allowed-origins="http://localhost:9090,http://127.0.0.1:9090,https://localhost:9090,https://127.0.0.1:9090,https://192.168.0.159:9090/"
-	        allow-credentials="true"/>
-	</cors>
 </beans:beans>

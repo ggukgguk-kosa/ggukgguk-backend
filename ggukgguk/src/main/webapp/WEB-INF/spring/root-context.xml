@@ -12,7 +12,7 @@
 	<context:component-scan base-package="com.ggukgguk.api" use-default-filters="true">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
-
+	
 	<!-- Global Properties -->
 	<context:property-placeholder
 		location="classpath:config/database.properties, classpath:config/auth.properties" />

@@ -1,12 +1,14 @@
 package com.ggukgguk.api.record.service;
 
-import java.util.Map;
+import java.util.List;
 
-import com.ggukgguk.api.common.vo.TotalAndListPayload;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.ggukgguk.api.record.vo.MediaFile;
 import com.ggukgguk.api.record.vo.Record;
 
 public interface RecordService {
 
-	TotalAndListPayload getRecordList(Record record);
-
+	public List<Record> getRecordList(Record record);
+	public boolean saveFileAndMetadata(MultipartFile file, MediaFile metadata);
 }
