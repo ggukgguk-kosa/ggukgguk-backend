@@ -10,7 +10,7 @@
        <![CDATA[   
          SELECT member_id, member_pw, member_name, member_nickname, member_email,
          		member_phone, member_birth, member_created_at, member_activated,
-         		member_authority, member_social, member_email_verify
+         		member_authority, member_social
          FROM member
          WHERE member_id = #{memberId}         
      	 ]]>

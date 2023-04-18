@@ -7,6 +7,10 @@ CREATE TABLE `member_social_type` (
 	`member_social_comment`    VARCHAR(36)    NULL
 );
 
+INSERT INTO `member_social_type` VALUES('KAKAO', '카카오');
+INSERT INTO `member_social_type` VALUES('NAVER', '네이버');
+INSERT INTO `member_social_type` VALUES('GOOGLE', '구글');
+
 CREATE TABLE `member` (
     `member_id`    VARCHAR(16)    NOT NULL    PRIMARY KEY,
     `member_pw`    VARCHAR(128)    NOT NULL,
@@ -19,19 +23,18 @@ CREATE TABLE `member` (
     `member_activated`    BOOLEAN    NOT NULL    DEFAULT TRUE    COMMENT '탈퇴처리 시 아이디를 제외하고 공백 지정 후 본 컬럼 true 업데이트',
 	`member_authority`    ENUM('NORMAL', 'SERVICE_ADMIN', 'SYSTEM_ADMIN')    NOT NULL,
     `member_social`    VARCHAR(16)    NULL,
-	`member_email_verify`    BOOLEAN    NOT NULL    DEFAULT FALSE,
 	FOREIGN KEY (`member_social`) REFERENCES `member_social_type` (`member_social_id`)
 );
 
 INSERT INTO `member` VALUES('hong', '$2y$04$G92ppy9s0BVNuuqbLjo.k.4M.EiVMOId0Dm2hYUJgJe13a.pa0lzS',
 								'홍길동', '길동길동', 'hong@tales.org', '01012341111', '1443-01-01',
-								DEFAULT, TRUE, 'NORMAL', NULL, TRUE);
+								DEFAULT, TRUE, 'NORMAL', NULL);
 INSERT INTO `member` VALUES('admin', '$2y$04$G92ppy9s0BVNuuqbLjo.k.4M.EiVMOId0Dm2hYUJgJe13a.pa0lzS',
 								'관리자', '관리자', 'admin@ggukgguk.online', '01012341111', '1998-04-08',
-								DEFAULT, TRUE, 'SYSTEM_ADMIN', NULL, TRUE);
+								DEFAULT, TRUE, 'SYSTEM_ADMIN', NULL);
 INSERT INTO `member` VALUES('service', '$2y$04$G92ppy9s0BVNuuqbLjo.k.4M.EiVMOId0Dm2hYUJgJe13a.pa0lzS',
 								'서비스 관리자', '서비스 관리자', 'admin2@ggukgguk.online', '01012341111', '1998-04-08',
-								DEFAULT, TRUE, 'SERVICE_ADMIN', NULL, TRUE);
+								DEFAULT, TRUE, 'SERVICE_ADMIN', NULL);
 
 CREATE TABLE `member_verify` (
 	`verify_id`    INT    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
@@ -45,7 +48,6 @@ CREATE TABLE `friend` (
 	`member1_id`    VARCHAR(16)    NOT NULL,
 	`member2_id`    VARCHAR(16)    NOT NULL,
 	`friend_created_at`    DATETIME    NOT NULL    DEFAULT NOW(),
-	CHECK (member1_id < member2_id),
 	FOREIGN KEY (`member1_id`) REFERENCES `member` (`member_id`),
 	FOREIGN KEY (`member2_id`) REFERENCES `member` (`member_id`)
 );
@@ -64,9 +66,9 @@ CREATE TABLE `media_type` (
     `media_type_extention`    VARCHAR(4)   NOT NULL
 );
 
-INSERT INTO `media_type` VALUES ('video', 'mp4');
-INSERT INTO `media_type` VALUES ('image', 'jpg');
-INSERT INTO `media_type` VALUES ('audio', 'wav');
+INSERT INTO `media_type` VALUES ('VIDEO', 'mp4');
+INSERT INTO `media_type` VALUES ('IMAGE', 'jpg');
+INSERT INTO `media_type` VALUES ('AUDIO', 'wav');
 
 CREATE TABLE `media_file` (
     `media_file_id`    CHAR(36)    NOT NULL    PRIMARY KEY    COMMENT 'UUID',
@@ -139,6 +141,8 @@ CREATE TABLE `notification` (
     `notification_type_id`    VARCHAR(16)    NOT NULL,
     `notification_created_at`    DATETIME    NOT NULL    DEFAULT NOW(),
     `reference_id`    INT    NOT NULL,
+    `notification_is_read`    BOOLEAN    NOT NULL    DEFAULT FALSE,
+    `notification_message`    VARCHAR(128)    NULL,
     FOREIGN KEY (`receiver_id`) REFERENCES `member` (`member_id`),
     FOREIGN KEY (`notification_type_id`) REFERENCES `notification_type` (`notification_type_id`)
 );
@@ -147,5 +151,6 @@ CREATE TABLE `notice` (
     `notice_id`    INT    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
     `notice_title`    VARCHAR(32)    NOT NULL,
     `notice_content`    VARCHAR(512)    NOT NULL,
-    `notice_created_at`    DATETIME    NOT NULL    DEFAULT NOW()
+    `notice_created_at`    DATETIME    NOT NULL    DEFAULT NOW(),
+    `notice_is_emergency`    BOOLEAN    NOT NULL    DEFAULT FALSE
 );

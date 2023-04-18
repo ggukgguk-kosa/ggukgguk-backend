@@ -72,21 +72,21 @@ public class SecurityUserDetails extends User implements UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return this.member.isMemberActivated() && this.member.isMemberEmailVerify();
+		return this.member.isMemberActivated();
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return this.member.isMemberActivated() && this.member.isMemberEmailVerify();
+		return this.member.isMemberActivated();
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return this.member.isMemberActivated() && this.member.isMemberEmailVerify();
+		return this.member.isMemberActivated();
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return this.member.isMemberActivated() && this.member.isMemberEmailVerify();
+		return this.member.isMemberActivated();
 	}
 }

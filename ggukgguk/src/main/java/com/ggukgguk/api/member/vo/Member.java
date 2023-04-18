@@ -26,7 +26,6 @@ public class Member {
 	private boolean memberActivated;
 	private String memberAuthority;
 	private String memberSocial;
-	private boolean memberEmailVerify;
 	
 	
 	public String getRole() {
