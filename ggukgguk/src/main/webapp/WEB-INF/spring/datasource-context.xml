@@ -22,6 +22,8 @@
          <list>
             <value>classpath:mappers/memberMapper.xml</value>
             <value>classpath:mappers/noticeMapper.xml</value>
+            <value>classpath:mappers/recordMapper.xml</value>
+            <value>classpath:mappers/replyMapper.xml</value>
          </list>
       </property>
    </bean>

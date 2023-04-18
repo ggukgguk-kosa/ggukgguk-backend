@@ -6,6 +6,8 @@ import com.ggukgguk.api.record.vo.Record;
 
 public interface RecordDao {
 
-	List<?> selectRecordList(Record record);
+	List<Record> selectRecordList(Record record);
+
+	void deleteRecord(int recordId) throws Exception;
 
 }

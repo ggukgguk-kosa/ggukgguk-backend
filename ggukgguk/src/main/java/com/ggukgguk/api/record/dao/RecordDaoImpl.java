@@ -15,8 +15,19 @@ public class RecordDaoImpl implements RecordDao{
 	SqlSession session;
 	
 	@Override
-	public List<?> selectRecordList(Record record) {
+	public List<Record> selectRecordList(Record record) {
 		
 		return session.selectList("com.ggukgguk.api.Record.selectList", record);
+	}
+	
+	@Override
+	public void deleteRecord(int recordId) throws Exception {
+
+		int affectedRow = session.delete("com.ggukgguk.api.Record.delete", recordId);
+		
+		if (affectedRow != 1) {
+			throw new Exception();
+		}
+		
 	}
 }

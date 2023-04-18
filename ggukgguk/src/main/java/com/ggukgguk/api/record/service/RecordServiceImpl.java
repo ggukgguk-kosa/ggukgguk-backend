@@ -1,5 +1,7 @@
 package com.ggukgguk.api.record.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +16,20 @@ public class RecordServiceImpl implements RecordService{
 	private RecordDao dao;
 	
 	@Override
-	public TotalAndListPayload getRecordList(Record record) {
+	public List<Record> getRecordList(Record record) {
 		
-		TotalAndListPayload payload = new TotalAndListPayload();
-		payload.setList(dao.selectRecordList(record));
-		
-		return payload;
+		return dao.selectRecordList(record);
 	}
 
+	@Override
+	public boolean removeRecord(int recordId) {
+		
+		try {
+			dao.deleteRecord(recordId);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
