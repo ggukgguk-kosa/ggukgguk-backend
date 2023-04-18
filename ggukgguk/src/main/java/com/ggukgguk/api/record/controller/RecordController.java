@@ -1,11 +1,19 @@
 package com.ggukgguk.api.record.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +39,9 @@ public class RecordController {
 	
 	@Autowired
 	RecordService service;
+	
+	@Value("${file.baseDir}")
+	String baseDir;
 	
 	@GetMapping
 	public ResponseEntity<?> getRecords(@RequestParam("memberId") String memberId,
@@ -83,6 +94,42 @@ public class RecordController {
 			log.debug("조각 INSERT 실패 2");
 			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	@GetMapping(value="/media/{fileId}}", produces = MediaType.IMAGE_JPEG_VALUE)
+	public byte[] getImageMedia(@PathVariable String fileId, @RequestParam("mediaType") String mediaType) throws IOException {	
+		MediaType contentsType;
+		String subDir;
+		switch (mediaType) {
+		case "image":
+			contentsType = MediaType.IMAGE_JPEG;
+			subDir = "image";
+			break;
+		case "audio":
+			contentsType = new MediaType("audio/wav");
+			subDir = "audio";
+			break;
+		case "video":
+			contentsType = new MediaType("video/mp4");
+			subDir = "video";
+			break;
+		default:
+			subDir = "";
+			break;
+		}
+		
+		File mediaFile = new File(baseDir + "/" + subDir + "/" + fileId);
+		File defaultFile = new File(baseDir + "/" + subDir + "/default");
+		InputStream in;
+		try {
+			in = new FileInputStream(mediaFile);
+			return IOUtils.toByteArray(in);
+		} catch (FileNotFoundException e) {
+			log.debug("미디어 파일을 찾을 수 없습니다.");
+			e.printStackTrace();
+			in = new FileInputStream(defaultFile);
+			return IOUtils.toByteArray(in);
 		}
 	}
 
