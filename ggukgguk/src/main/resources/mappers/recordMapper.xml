@@ -43,5 +43,25 @@
          WHERE record_id=#{recordId}
       ]]>
    </delete>
+   
+   <insert id="insertMedia" parameterType="MediaFile">
+       <![CDATA[   
+         INSERT INTO media_file
+         (media_file_id, media_type_id, media_file_processed)
+         VALUES (#{mediaFileId}, #{mediaTypeId}, #{mediaFileProcessed})
+      ]]>
+   </insert>
+   
+    <insert id="insertRecord" parameterType="Record">
+       <![CDATA[   
+         INSERT INTO record
+         (record_id, member_id, record_comment, record_created_at,
+         	media_file_id, record_location_y, record_location_x,
+         	record_is_open, record_share_to, record_share_accepted)
+         VALUES (null, #{memberId}, #{recordComment}, default,
+         	#{mediaFileId}, #{recordLocationY}, #{recordLocationX},
+         	#{recordIsOpen}, #{recordShareTo}, #{recordShareAccepted})
+      ]]>
+   </insert>
   
 </mapper>

@@ -19,7 +19,7 @@ public class Record {
 	private String memberId;
 	private String recordComment;
 	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")
-	private Date recordCreateAt;
+	private Date recordCreatedAt;
 	private String mediaFileId;
 	private double recordLocationY;
 	private double recordLocationX;

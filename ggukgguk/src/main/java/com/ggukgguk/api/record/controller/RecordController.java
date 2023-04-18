@@ -7,20 +7,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ggukgguk.api.common.vo.BasicResp;
-import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.record.service.RecordService;
 import com.ggukgguk.api.record.vo.Record;
 
@@ -35,14 +34,14 @@ public class RecordController {
 	
 	@GetMapping
 	public ResponseEntity<?> getRecords(@RequestParam("memberId") String memberId,
-			@RequestParam("date") Date recordCreateAt,
+			@RequestParam("date") Date recordCreatedAt,
 	        @RequestParam(value = "year", required = false) Integer year,
 	        @RequestParam(value = "month", required = false) Integer month,
 	        @RequestParam(value = "keyword", required = false) String keyword){
 		
 		Record record = new Record();
 		record.setMemberId(memberId);
-		record.setRecordCreateAt(recordCreateAt);
+		record.setRecordCreatedAt(recordCreatedAt);
 		
 		BasicResp<Object> respBody;		
 		List<Record> recordList = service.getRecordList(record);
@@ -61,14 +60,30 @@ public class RecordController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> addRecord(@RequestParam("mediaFile") MultipartFile file,
-			@ModelAttribute Record record) {
+	public ResponseEntity<?> addRecord(@RequestParam("mediaFile") MultipartFile media,
+			@ModelAttribute Record record,
+			Authentication authentication) {
 		
 		BasicResp<Object> respBody;
-		log.debug(file);
-		log.debug(record);
-		respBody = new BasicResp<Object>("success", null, null);
-		return ResponseEntity.ok(respBody);
+		
+		String memberIdFromReq = record.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("조각 INSERT 실패 1");
+			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+		boolean result = service.saveMediaAndRecord(media, record);
+		if (result) {
+			log.debug("조각 INSERT 성공");
+			respBody = new BasicResp<Object>("success", null, null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("조각 INSERT 실패 2");
+			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다.", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
 	}
 
 	@DeleteMapping(value="/{recordId}")

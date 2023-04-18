@@ -11,9 +11,9 @@ import com.ggukgguk.api.record.vo.Record;
 public interface RecordService {
 
 	public List<Record> getRecordList(Record record);
-	public boolean saveFileAndMetadata(MultipartFile file, MediaFile metadata);
-	List<Record> getRecordList(Record record);
 
-	boolean removeRecord(int recordId);
+	public boolean removeRecord(int recordId);
+	
+	public boolean saveMediaAndRecord(MultipartFile media, Record record);
 
 }
