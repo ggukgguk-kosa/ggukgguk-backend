@@ -1,8 +1,10 @@
 package com.ggukgguk.api.record.vo;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ggukgguk.api.reply.vo.Reply;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,4 +26,5 @@ public class Record {
 	private boolean recordIsOpen;
 	private String recordShareTo;
 	private boolean recordShareAccepted;
+	private List<Reply> replyList;
 }
