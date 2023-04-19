@@ -1,9 +1,10 @@
-package com.ggukgguk.api.reply.dao;
+package com.ggukgguk.api.record.dao;
 
 import java.util.List;
 
-import com.ggukgguk.api.reply.vo.Reply;
-import com.ggukgguk.api.reply.vo.ReplyNickname;
+import com.ggukgguk.api.record.vo.Reply;
+import com.ggukgguk.api.record.vo.ReplyNickname;
+
 
 public interface ReplyDao {
 

@@ -27,14 +27,20 @@
 	    </collection>
 	</resultMap>
 
-   <select id="selectList" parameterType="RecordSearch" resultMap="RecordResultSet">
-       <![CDATA[   
+   <select id="selectList" parameterType="RecordSearch" resultMap="RecordResultSet">  
 			SELECT record.*, reply.*, member.member_nickname
 			FROM record
 			LEFT JOIN reply ON record.record_id = reply.record_id
 			LEFT JOIN member ON record.member_id = member.member_id
-		    WHERE record.member_id=#{memberId} AND record.recordCreateAt BETWEEN DATE_SUB(#{startDate}, INTERVAL 5 DAY) AND #{startDate}
- 		]]>
+ 			<where>
+ 				record.member_id=#{memberId}
+ 				<if test="startDate != null">
+ 					AND record.record_created_at BETWEEN DATE_SUB(#{startDate}, INTERVAL 5 DAY) AND #{startDate}
+ 				</if>
+ 				<if test="keyword != null">
+ 					AND record.record_comment LIKE CONCAT('%', #{keyword}, '%')
+ 				</if>
+ 			</where>
    </select>
    
    <delete id="delete" parameterType="Integer">

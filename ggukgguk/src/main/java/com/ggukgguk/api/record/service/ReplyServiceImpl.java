@@ -1,13 +1,13 @@
-package com.ggukgguk.api.reply.service;
+package com.ggukgguk.api.record.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ggukgguk.api.reply.dao.ReplyDao;
-import com.ggukgguk.api.reply.vo.Reply;
-import com.ggukgguk.api.reply.vo.ReplyNickname;
+import com.ggukgguk.api.record.dao.ReplyDao;
+import com.ggukgguk.api.record.vo.Reply;
+import com.ggukgguk.api.record.vo.ReplyNickname;
 
 @Service
 public class ReplyServiceImpl implements ReplyService {

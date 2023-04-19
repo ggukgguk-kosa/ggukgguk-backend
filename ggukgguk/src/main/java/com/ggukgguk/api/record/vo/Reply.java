@@ -1,4 +1,4 @@
-package com.ggukgguk.api.reply.vo;
+package com.ggukgguk.api.record.vo;
 
 import java.util.Date;
 

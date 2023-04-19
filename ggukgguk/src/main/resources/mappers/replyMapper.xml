@@ -9,8 +9,8 @@
 
    <insert id="insert" parameterType="Reply">
        <![CDATA[   
-		 INSERT INTO reply(reply_content, record_id, member_id)
-         VALUES(#{replyContent}, #{recordId}, #{memberId})
+		 INSERT INTO reply(reply_content, reply_date, record_id, member_id)
+         VALUES(#{replyContent}, NOW(), #{recordId}, #{memberId})
  		]]>
    </insert>
   
@@ -27,7 +27,7 @@
 	<update id="update" parameterType="Reply">
        <![CDATA[   
          UPDATE reply
-         SET reply_content=#{replyContent}, CREATE_DATE=NOW()
+         SET reply_content=#{replyContent}, reply_date=NOW()
          WHERE reply_id=#{replyId}
       ]]>
    </update>
