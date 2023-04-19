@@ -14,5 +14,4 @@ public class RecordSearch {
 	private String memberId;
 	private Date startDate;
 	private String keyword;
-	
 }

@@ -1,13 +1,24 @@
 package com.ggukgguk.api.record.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.record.service.RecordService;
@@ -37,6 +49,9 @@ public class RecordController {
 	RecordService service;
 	@Autowired
 	ReplyService rservice;
+	
+	@Value("${file.baseDir}")
+	String baseDir;
 	
 	@GetMapping
 	public ResponseEntity<?> getRecords(@ModelAttribute RecordSearch recordSearch,
@@ -85,6 +100,74 @@ public class RecordController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 		
+	}
+	
+	@PostMapping
+	public ResponseEntity<?> addRecord(@RequestParam("mediaFile") MultipartFile media,
+			@ModelAttribute Record record,
+			Authentication authentication) {
+		
+		BasicResp<Object> respBody;
+		
+		String memberIdFromReq = record.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("조각 INSERT 실패 1");
+			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+		boolean result = service.saveMediaAndRecord(media, record);
+		if (result) {
+			log.debug("조각 INSERT 성공");
+			respBody = new BasicResp<Object>("success", null, null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("조각 INSERT 실패 2");
+			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다.", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	@GetMapping(value="/media/{fileId}")
+	public ResponseEntity<InputStreamResource> getImageMedia(@PathVariable("fileId") String fileId, @RequestParam("mediaType") String mediaType) throws IOException {	
+		MediaType contentsType;
+		String subDir;
+		switch (mediaType) {
+		case "image":
+			contentsType = MediaType.IMAGE_JPEG;
+			subDir = "image";
+			break;
+		case "audio":
+			contentsType = new MediaType("audio", "wav");
+			subDir = "audio";
+			break;
+		case "video":
+			contentsType = new MediaType("video", "mp4");
+			subDir = "video";
+			break;
+		default:
+			contentsType = MediaType.APPLICATION_OCTET_STREAM;
+			subDir = "";
+			break;
+		}
+		
+		File mediaFile = new File(baseDir + "/" + subDir + "/" + fileId);
+		File defaultFile = new File(baseDir + "/" + subDir + "/default");
+		InputStream in;
+		try {
+			in = new FileInputStream(mediaFile);
+		    return ResponseEntity.ok()
+		    	      .contentType(contentsType)
+		    	      .body(new InputStreamResource(in));
+		} catch (FileNotFoundException e) {
+			log.debug("미디어 파일을 찾을 수 없습니다.");
+			e.printStackTrace();
+			in = new FileInputStream(defaultFile);
+		    return ResponseEntity.ok()
+		    	      .contentType(contentsType)
+		    	      .body(new InputStreamResource(in));
+		}
 	}
 
 	@DeleteMapping(value="/{recordId}")

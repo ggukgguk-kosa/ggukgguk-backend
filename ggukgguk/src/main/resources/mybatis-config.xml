@@ -14,6 +14,7 @@
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.Notice" alias="Notice"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.NoticeOption" alias="NoticeOption"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.Record" alias="Record"/>
+	 	<typeAlias type="com.ggukgguk.api.record.vo.MediaFile" alias="MediaFile"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.RecordSearch" alias="RecordSearch"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.Reply" alias="Reply"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.ReplyNickname" alias="ReplyNickname"/>

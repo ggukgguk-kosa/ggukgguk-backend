@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.ggukgguk.api.record.vo.MediaFile;
 import com.ggukgguk.api.record.vo.Record;
 import com.ggukgguk.api.record.vo.RecordSearch;
 
@@ -30,5 +31,25 @@ public class RecordDaoImpl implements RecordDao{
 			throw new Exception();
 		}
 		
+	}
+
+	@Override
+	public void insertMediaFile(MediaFile metadata) throws Exception {
+		
+		int affectedRow = session.delete("com.ggukgguk.api.Record.insertMedia", metadata);
+		
+		if (affectedRow != 1) {
+			throw new Exception();
+		}
+	}
+
+	@Override
+	public void insertRecord(Record record) throws Exception {
+		
+		int affectedRow = session.delete("com.ggukgguk.api.Record.insertRecord", record);
+		
+		if (affectedRow != 1) {
+			throw new Exception();
+		}
 	}
 }
