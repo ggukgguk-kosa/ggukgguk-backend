@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ggukgguk.api.record.dao.RecordDao;
 import com.ggukgguk.api.record.vo.MediaFile;
 import com.ggukgguk.api.record.vo.Record;
+import com.ggukgguk.api.record.vo.RecordSearch;
 
 @Service
 public class RecordServiceImpl implements RecordService{
@@ -29,9 +30,9 @@ public class RecordServiceImpl implements RecordService{
 	private MediaFileService mediaFileService;
 	
 	@Override
-	public List<Record> getRecordList(Record record) {
+	public List<Record> getRecordList(RecordSearch recordSearch) {
 		
-		return dao.selectRecordList(record);
+		return dao.selectRecordList(recordSearch);
 	}
 
 	public boolean removeRecord(int recordId) {

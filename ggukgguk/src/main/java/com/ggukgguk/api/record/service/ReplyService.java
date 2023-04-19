@@ -1,9 +1,9 @@
-package com.ggukgguk.api.reply.service;
+package com.ggukgguk.api.record.service;
 
 import java.util.List;
 
-import com.ggukgguk.api.reply.vo.Reply;
-import com.ggukgguk.api.reply.vo.ReplyNickname;
+import com.ggukgguk.api.record.vo.Reply;
+import com.ggukgguk.api.record.vo.ReplyNickname;
 
 public interface ReplyService {
 

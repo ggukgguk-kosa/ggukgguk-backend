@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ggukgguk.api.record.vo.MediaFile;
 import com.ggukgguk.api.record.vo.Record;
+import com.ggukgguk.api.record.vo.RecordSearch;
 
 @Repository
 public class RecordDaoImpl implements RecordDao{
@@ -16,9 +17,9 @@ public class RecordDaoImpl implements RecordDao{
 	SqlSession session;
 	
 	@Override
-	public List<Record> selectRecordList(Record record) {
+	public List<Record> selectRecordList(RecordSearch recordSearch) {
 		
-		return session.selectList("com.ggukgguk.api.Record.selectList", record);
+		return session.selectList("com.ggukgguk.api.Record.selectList", recordSearch);
 	}
 	
 	@Override
