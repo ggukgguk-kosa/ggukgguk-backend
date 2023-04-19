@@ -31,7 +31,7 @@
 			SELECT record.*, reply.*, member.member_nickname
 			FROM record
 			LEFT JOIN reply ON record.record_id = reply.record_id
-			LEFT JOIN member ON record.member_id = member.member_id
+			LEFT JOIN member ON reply.member_id = member.member_id
  			<where>
  				record.member_id=#{memberId}
  				<if test="startDate != null">
