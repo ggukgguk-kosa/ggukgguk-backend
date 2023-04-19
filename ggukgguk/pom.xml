@@ -191,11 +191,21 @@
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>5.7.6</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-client</artifactId>
+			<version>5.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.9</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
 		<dependency>
-		    <groupId>com.sun.mail</groupId>
-		    <artifactId>javax.mail</artifactId>
-		    <version>1.6.2</version>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
 		</dependency>
 	</dependencies>
 	<build>
