@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -97,8 +98,8 @@ public class RecordController {
 		}
 	}
 	
-	@GetMapping(value="/media/{fileId}}", produces = MediaType.IMAGE_JPEG_VALUE)
-	public byte[] getImageMedia(@PathVariable String fileId, @RequestParam("mediaType") String mediaType) throws IOException {	
+	@GetMapping(value="/media/{fileId}")
+	public ResponseEntity<InputStreamResource> getImageMedia(@PathVariable("fileId") String fileId, @RequestParam("mediaType") String mediaType) throws IOException {	
 		MediaType contentsType;
 		String subDir;
 		switch (mediaType) {
@@ -107,14 +108,15 @@ public class RecordController {
 			subDir = "image";
 			break;
 		case "audio":
-			contentsType = new MediaType("audio/wav");
+			contentsType = new MediaType("audio", "wav");
 			subDir = "audio";
 			break;
 		case "video":
-			contentsType = new MediaType("video/mp4");
+			contentsType = new MediaType("video", "mp4");
 			subDir = "video";
 			break;
 		default:
+			contentsType = MediaType.APPLICATION_OCTET_STREAM;
 			subDir = "";
 			break;
 		}
@@ -124,12 +126,16 @@ public class RecordController {
 		InputStream in;
 		try {
 			in = new FileInputStream(mediaFile);
-			return IOUtils.toByteArray(in);
+		    return ResponseEntity.ok()
+		    	      .contentType(contentsType)
+		    	      .body(new InputStreamResource(in));
 		} catch (FileNotFoundException e) {
 			log.debug("미디어 파일을 찾을 수 없습니다.");
 			e.printStackTrace();
 			in = new FileInputStream(defaultFile);
-			return IOUtils.toByteArray(in);
+		    return ResponseEntity.ok()
+		    	      .contentType(contentsType)
+		    	      .body(new InputStreamResource(in));
 		}
 	}
 
