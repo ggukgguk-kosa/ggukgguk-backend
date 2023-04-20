@@ -26,20 +26,21 @@ import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.service.MemberService;
 import com.ggukgguk.api.member.vo.Member;
+import com.nimbusds.jose.shaded.json.JSONArray;
 
 @RestController
 @RequestMapping(value = "/auth")
 public class AuthController {
 	private Logger log = LogManager.getLogger("base");
-	
+
 	@Autowired
 	private AuthService service;
 	@Autowired
 	private MemberService memberSerivce;
-	
+
 	@Autowired
 	private OAuthService oauth;
-	
+
 	// 일반 로그인 방식
 	@PostMapping(value = "/login")
 	public ResponseEntity<?> loginHandler(@RequestBody Member reqLoginInfo) {
@@ -58,6 +59,7 @@ public class AuthController {
 		}
 	}
 	
+	// 인증 핸들러? (JWT 접근시 토큰을 갱신 목적)
 	@PostMapping(value = "/refresh")
 	public ResponseEntity<?> verifyHandler(@RequestBody HashMap<String, String> reqPayload) {
 
@@ -73,71 +75,85 @@ public class AuthController {
 			return ResponseEntity.ok(respBody);
 		}
 	}
+
 	
-	// 만약 프런트에서  Rest_API_Key와 Redirect url 주소를 반환하여 접근 코드를 건네줌 => 해당 코드를 접근 토큰으로 반환하여 백엔드 전송.
-	// 1. kauth.kakao.com/oauth/authorize?client_id={Rest_API키}&redirect_uri={Redirect URI 주소}&response_type=code
-	//kauth.kakao.com/oauth/authorize?client_id=88ae00c6ba4b777f197c6d3b5c972acd&redirect_uri=http://localhost:8080/api/auth/kakao&response_type=code
-	// 
-	//http://localhost:8080/api/auth/kakao?code=NFA9gSuZgIwCUkHC1306Mlndn6ilaRhvSMRboppO3jbm1gjIsn2def9KzxfsZaNtoft66Qo9c-sAAAGHk3H7yg
+	// 소셜로그인 전반적인 흐름도
+	// [전반적인 흐름 예상] 만약 프런트에서 Rest_API_Key와 Redirect url 주소를 반환하여 접근 코드를 건네줌 => 해당 코드를 접근 토큰으로 반환하여 백엔드 전송.
 	
-	// 백엔드에서는 
+	// [사용형태]
+	// kauth.kakao.com/oauth/authorize?client_id={Rest_API키}&redirect_uri={Redirect URI 주소}&response_type=code
+	// kauth.kakao.com/oauth/authorize?client_id=88ae00c6ba4b777f197c6d3b5c972acd&redirect_uri=http://localhost:8080/api/auth/kakao&response_type=code
+	
+	// 위의 url을 실행하면 
+	// http://localhost:8080/api/auth/kakao?code= 카카오 서비스에서 준 인가 코드
+	// http://localhost:8080/api/auth/kakao?code=NFA9gSuZgIwCUkHC1306Mlndn6ilaRhvSMRboppO3jbm1gjIsn2def9KzxfsZaNtoft66Qo9c-sAAAGHk3H7yg
+
+	// 이제 백엔드에서는
 	// 서버에서 받은 access_token을 이용하여 카카오 서버에서 사용자 정보를 받음
 	// 2. 받은 사용자 정보를 이용하여 회원가입 또는 로그인을 진행함
+	
 	// 참고 주소 : https://suyeoniii.tistory.com/79
-
+	
 	// 카카오 로그인 방식
-	@PostMapping(value="/kakao")   //kakao의 접근 토큰을 반환하는지 메서드 
+	@PostMapping(value = "/kakao") 
 	public ResponseEntity<?> kakaoCallback(@RequestParam String code) throws Exception {
-		BasicResp<Object> respBody;	
-		String access_Token = oauth.getKakaoAccessToken(code); // 접근 토큰을 받아오기 위해 먼저 카카오에서 전송해준 리다이렉트한 코드를 통해 받아옴.
-		HashMap<String, Object> userInfo = oauth.getKakaogetUserInfo(access_Token); // 해당 토큰을 통해서 사용자의 이메일과 별칭을 받아옴.
+		BasicResp<Object> respBody;
+		Boolean result = oauth.kakaoLogin(code);
 		
-		if(userInfo != null) {
-			log.debug("카카오 정보 반환 성공");
-			respBody = new BasicResp<Object>("success", null, userInfo);
-			System.out.println(userInfo);
+		if (result) {
+			log.debug("카카오  성공");
+			respBody = new BasicResp<Object>("success", "카카오 로그인 성공하였습니다.", result);
 			return ResponseEntity.ok(respBody);
-		}else {
-			log.debug("카카오 정보 반환 실패");
-			respBody = new BasicResp<Object>("error", "실패하였습니다.", null);		
+		} else {
+			log.debug("카카오 실패");
+			respBody = new BasicResp<Object>("error", "실패하였습니다.", null);
 			return ResponseEntity.badRequest().body(respBody);
 		}
-		
+
 	}
+	// 구글의 소셜로그인위 위에서 서령한 방식가 동일한 형태.
+	// [사용형태]
+	// https://accounts.google.com/o/oauth2/auth?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile
+	// 1. 나의 ID와 리다이렉팅할 주소를 삽입  후 위 주소를 실행하면 리다이렉팅으로 인가 코드를 받음
+	// https://accounts.google.com/o/oauth2/auth?client_id=720876072203-9qs394kg6d2ekko35ln9h0pil109lvft.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/auth/google&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile
+	// 2. 인가 코드 받음
+	// http://localhost:8080/api/auth/google?code={구글 인가 코드 }&scope=동의하는 범위 및 목록...
+	// http://localhost:8080/api/auth/google?code=4%2F0AVHEtk5QQtcheSNO6hMPC1Sh1gH5ht_shwjWwbCcZMFtH4qj1k10O5BchwxLMloQ-F8zGQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&authuser=0&prompt=none
+	// 3. 코드를 통해 접근 통큰 발급하여 토큰을 통해 사용자 정보 반환.
+	// 참고, https://darrenlog.tistory.com/40
+
 	// 구글 로그인 방식
 	@PostMapping("/google")
-	public ResponseEntity<?> googleCallback(@RequestParam String code) throws Exception{
+	public ResponseEntity<?> googleCallback(@RequestParam String code) throws Exception {
 		BasicResp<Object> respBody;
-		String access_Token = oauth.getGoogleAccessToken(code);
-		JsonNode resouce = oauth.getGoogleUserInfo(access_Token);
-		
-		if(resouce !=null) {
+		String access_Token = oauth.getGoogleAccessToken(code); // 권한 토큰 반환.
+		JsonNode resouce = oauth.getGoogleUserInfo(access_Token);//사용자 정보 반환
+
+		if (resouce != null) {
 			log.debug("구글 정보 반환 성공");
-			respBody = new BasicResp<Object>("success", "구글 정보를 반환합니다.", resouce);
+			respBody = new BasicResp<Object>("success", "구글 사용자 정보를 반환합니다.", resouce);
 			return ResponseEntity.ok(respBody);
-		}else {
+		} else {
 			log.debug("구글 정보 반환 실패");
-			respBody = new BasicResp<Object>("error", "구글 정보 가져오기를 실패하였습니다.", null);		
+			respBody = new BasicResp<Object>("error", "구글  사용자 정보 가져오기를 실패하였습니다.", null);
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}
-	
-	// 회원가입  컨트롤러
+
+	// 꾹꾹 서비스단 에서 일반적인 회원가입
 	@PostMapping("/register")
-	public ResponseEntity<?> registerHandler(@RequestBody Member member){
+	public ResponseEntity<?> registerHandler(@RequestBody Member member) {
 		BasicResp<Object> respBody;
 		boolean result = memberSerivce.enrollMember(member);
-		if(result) {
+		if (result) {
 			log.debug("회원 가입 등록");
 			respBody = new BasicResp<Object>("success", "등록되었습니다.", result);
 			return ResponseEntity.ok(respBody);
 		} else {
 			log.debug("회원 가입 실패");
-			respBody = new BasicResp<Object>("error","등록되지 않았습니다.",null);
+			respBody = new BasicResp<Object>("error", "등록되지 않았습니다.", null);
 			return ResponseEntity.badRequest().body(respBody);
 		}
-		
-	
-		
 	}
+
 }
