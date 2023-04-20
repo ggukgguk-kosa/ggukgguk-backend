@@ -24,6 +24,7 @@ import com.ggukgguk.api.auth.service.OAuthService;
 import com.ggukgguk.api.auth.vo.AuthTokenPayload;
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
+import com.ggukgguk.api.member.service.MemberService;
 import com.ggukgguk.api.member.vo.Member;
 
 @RestController
@@ -33,7 +34,13 @@ public class AuthController {
 	
 	@Autowired
 	private AuthService service;
-
+	@Autowired
+	private MemberService memberSerivce;
+	
+	@Autowired
+	private OAuthService oauth;
+	
+	// 일반 로그인 방식
 	@PostMapping(value = "/login")
 	public ResponseEntity<?> loginHandler(@RequestBody Member reqLoginInfo) {
 		BasicResp<Object> respBody = null;
@@ -50,7 +57,7 @@ public class AuthController {
 			return ResponseEntity.ok(respBody);
 		}
 	}
-
+	
 	@PostMapping(value = "/refresh")
 	public ResponseEntity<?> verifyHandler(@RequestBody HashMap<String, String> reqPayload) {
 
@@ -77,11 +84,8 @@ public class AuthController {
 	// 서버에서 받은 access_token을 이용하여 카카오 서버에서 사용자 정보를 받음
 	// 2. 받은 사용자 정보를 이용하여 회원가입 또는 로그인을 진행함
 	// 참고 주소 : https://suyeoniii.tistory.com/79
-	
-	@Autowired
-	private OAuthService oauth;
-	
 
+	// 카카오 로그인 방식
 	@PostMapping(value="/kakao")   //kakao의 접근 토큰을 반환하는지 메서드 
 	public ResponseEntity<?> kakaoCallback(@RequestParam String code) throws Exception {
 		BasicResp<Object> respBody;	
@@ -100,6 +104,7 @@ public class AuthController {
 		}
 		
 	}
+	// 구글 로그인 방식
 	@PostMapping("/google")
 	public ResponseEntity<?> googleCallback(@RequestParam String code) throws Exception{
 		BasicResp<Object> respBody;
@@ -115,5 +120,24 @@ public class AuthController {
 			respBody = new BasicResp<Object>("error", "구글 정보 가져오기를 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
+	}
+	
+	// 회원가입  컨트롤러
+	@PostMapping("/register")
+	public ResponseEntity<?> registerHandler(@RequestBody Member member){
+		BasicResp<Object> respBody;
+		boolean result = memberSerivce.enrollMember(member);
+		if(result) {
+			log.debug("회원 가입 등록");
+			respBody = new BasicResp<Object>("success", "등록되었습니다.", result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("회원 가입 실패");
+			respBody = new BasicResp<Object>("error","등록되지 않았습니다.",null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+	
+		
 	}
 }
