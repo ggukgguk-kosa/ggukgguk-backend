@@ -7,4 +7,8 @@ public interface MemberService {
 	public Member findMemberById(String memberId);
 
 	public boolean enrollMember(Member member);
+
+	public Member getMemberByEmail(String memberEmail);
+
+	public Boolean getMemberByEmailandId(Member member);
 }

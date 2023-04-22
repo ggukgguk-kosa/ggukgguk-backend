@@ -2,6 +2,7 @@ package com.ggukgguk.api.member.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class MemberServiceImpl implements MemberService {
 	
 	
 	@Override
+	// 아이디 중복검사 // 회원 정보 조회
 	public Member findMemberById(String memberId) {
 		return dao.selectMemberById(memberId);
 	}
@@ -38,4 +40,19 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	// 이메일 값으로 아이디 찾기.
+	@Override
+	public Member getMemberByEmail(String memberEmail) {
+		return dao.selectMemberByEmail(memberEmail);
+	}
+
+	// 비밀번호 찾기 
+	@Override
+	public Boolean getMemberByEmailandId(Member member) {
+		
+	 Member user = dao.selectMemberByEmailandId(member);
+	 if(!user.equals(null)) return true;
+	 return false;
+	}
+	
 }

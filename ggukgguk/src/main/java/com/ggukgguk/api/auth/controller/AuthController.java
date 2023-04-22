@@ -155,5 +155,58 @@ public class AuthController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}
-
+	
+	// 아이디 중복 검사
+	@GetMapping("/exist/{memberId}")
+	public ResponseEntity<?> getduplicatecheckId(@PathVariable String memberId){
+		BasicResp<Object> respBody;
+		Member result = memberSerivce.findMemberById(memberId);
+		
+		if(!result.equals(null)) {
+			log.debug("아이디 중복");
+			respBody = new BasicResp<Object>("success", "아이디  중복 되었습니다.", result);
+			return ResponseEntity.ok(respBody);
+		}else {
+			log.debug("아이디 ");
+			respBody = new BasicResp<Object>("error", "아이디가 중복되지 않았습니다.", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	// 아이디 찾기 (이메일 주소로  DB에 있는 회원 ID찾기)
+	@GetMapping("/{memberEmail}")
+	public ResponseEntity<?> getMemberIdHandler(@PathVariable String memberEmail){
+		BasicResp<Object> respBody;
+		Member result = memberSerivce.getMemberByEmail(memberEmail);
+		
+		if(!result.equals(null)) {
+			log.debug("아이디 찾기 완료");
+			respBody = new BasicResp<Object>("success", "아이디 찾기 완료 하였습니다.", result);
+			return ResponseEntity.ok(respBody);
+		}else {
+			log.debug("아이디 찾기 실패");
+			respBody = new BasicResp<Object>("error", "아이디 찾기 실패하였습니다.", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	// 비밀번호 찾기 
+	@GetMapping("")
+	public ResponseEntity<?> getMemberIdHandler(@RequestParam String memberEmail, @RequestParam String memberId, @RequestBody Member member){
+		BasicResp<Object> respBody;
+		member.setMemberEmail(memberEmail);
+		member.setMemberId(memberId);
+		log.debug(member);
+		Boolean result = memberSerivce.getMemberByEmailandId(member);
+		
+		if(!result.equals(null)) {
+			log.debug("아이디 찾기 완료");
+			respBody = new BasicResp<Object>("success", "가입된 회원 입니다.", result);
+			return ResponseEntity.ok(respBody);
+		}else {
+			log.debug("아이디 찾기 실패");
+			respBody = new BasicResp<Object>("error", "가입된 회원이 아닙니다.", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
 }
