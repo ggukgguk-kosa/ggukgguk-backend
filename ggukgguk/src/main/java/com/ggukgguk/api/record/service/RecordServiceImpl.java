@@ -48,21 +48,25 @@ public class RecordServiceImpl implements RecordService{
 
 	@Override
 	public boolean saveMediaAndRecord(MultipartFile media, Record record) {
-		String contentType = media.getContentType();
+		MediaFile metadata = null;
+				
+		if (media != null) {
+			String contentType = media.getContentType();
 
-		String format = contentType.split("/")[0];
-		String saveName = (UUID.randomUUID()).toString();
-		MediaFile metadata = new MediaFile(saveName, format, false);
-		record.setMediaFileId(saveName);
-		
-		boolean fileSaveResult = mediaFileService.saveFile(media, format, saveName);
-		if (!fileSaveResult) return false;
+			String format = contentType.split("/")[0];
+			String saveName = (UUID.randomUUID()).toString();
+			metadata = new MediaFile(saveName, format, false);
+			record.setMediaFileId(saveName);
+			
+			boolean fileSaveResult = mediaFileService.saveFile(media, format, saveName);
+			if (!fileSaveResult) return false;
+		}
 		
         TransactionStatus txStatus =
                 transactionManager.getTransaction(new DefaultTransactionDefinition());
         
     	try {
-			dao.insertMediaFile(metadata);
+			if (media != null) dao.insertMediaFile(metadata);
 			dao.insertRecord(record);
 		} catch (Exception e) {
 			transactionManager.rollback(txStatus);
