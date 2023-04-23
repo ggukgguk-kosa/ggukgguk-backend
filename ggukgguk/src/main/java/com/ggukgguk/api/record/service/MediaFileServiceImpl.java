@@ -23,6 +23,9 @@ public class MediaFileServiceImpl implements MediaFileService {
 	@Value("${file.baseDir}")
 	String baseDir;
 	
+	/**
+	 * 미디어 파일을 저장한다.
+	 */
 	@Override
 	public boolean saveFile(MultipartFile file, String subDir, String saveName) {
 		File saveFile = new File(baseDir + "/" + subDir + "/" + saveName);
@@ -46,6 +49,12 @@ public class MediaFileServiceImpl implements MediaFileService {
 		}
 	}
 	
+	/**
+	 * 미디어 파일을 저장한 후에 포맷 등을 통일하는 작업을 수행한다.
+	 * @param file
+	 * @param contentType
+	 * @return
+	 */
 	private boolean prcessMedia(File file, String contentType) {
 		String format = contentType.split("/")[0];
 		boolean result = false;
@@ -59,12 +68,12 @@ public class MediaFileServiceImpl implements MediaFileService {
 			case "video":
 				log.debug("비디오 후처리");
 				result = true;
-				//
+				// 여기에 후처리 로직을 추가
 				break;
 			case "audio":
 				log.debug("오디오 후처리");
 				result = true;
-				//
+				// 여기에 후처리 로직을 추가
 				break;
 			default:
 				log.debug("지원하지 않는 미디어 타입은 처리할 수 없습니다.");
@@ -75,6 +84,9 @@ public class MediaFileServiceImpl implements MediaFileService {
 		return result;
 	}
 	
+	/*
+	 * 이미지의 너비가 특정 수준을 넘어서면, 해당 수준에 맞게 리사이징한다.
+	 */
 	private boolean resizeImage(File imgFile) {
 		// 원본 이미지 로드
 		BufferedImage originalImage = null;

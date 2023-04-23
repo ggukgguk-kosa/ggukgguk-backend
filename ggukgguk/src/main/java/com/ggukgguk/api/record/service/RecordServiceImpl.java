@@ -49,7 +49,7 @@ public class RecordServiceImpl implements RecordService{
 	@Override
 	public boolean saveMediaAndRecord(MultipartFile media, Record record) {
 		MediaFile metadata = null;
-				
+		
 		if (media != null) {
 			String contentType = media.getContentType();
 
