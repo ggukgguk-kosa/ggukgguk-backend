@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ggukgguk.api.admin.vo.NoticeOption;
+import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.dao.MemberDao;
 import com.ggukgguk.api.member.vo.Member;
 
@@ -48,11 +50,32 @@ public class MemberServiceImpl implements MemberService {
 
 	// 비밀번호 찾기 
 	@Override
-	public Boolean getMemberByEmailandId(Member member) {
+	public boolean getMemberByEmailandId(Member member) {
 		
 	 Member user = dao.selectMemberByEmailandId(member);
 	 if(!user.equals(null)) return true;
 	 return false;
+	}
+
+	// 회원정보 수정
+	@Override
+	public boolean modifyMember(Member member) {
+		try {
+			member.setMemberPw(passwordEncorder.encode(member.getMemberPw()));
+			dao.updateMemberInfo(member);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	// 전체 회원 리스트 조회(관리자용)
+	@Override
+	public TotalAndListPayload getMemberList(NoticeOption option) {
+		TotalAndListPayload payload = new TotalAndListPayload();
+		payload.setList(dao.selectMemberList(option)); // 전체 회원 리스트 조회
+		payload.setTotal(dao.selectMemberListTotal(option)); // 페이징 처리를 위한 전체회원 수 구하기
+		return payload;
 	}
 	
 }

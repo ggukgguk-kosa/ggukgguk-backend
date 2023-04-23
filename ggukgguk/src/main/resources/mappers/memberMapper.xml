@@ -5,6 +5,18 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ggukgguk.api.Member">
+<!-- 관리자용 회원 조회 목록 -->
+	<resultMap id="AdminMemberResultSet" type="Member">
+	    <id property="memberId" column="member_id" />
+	    <result property="memberName" column="member_name" />
+	    <result property="memberNickname" column="member_nickname" />
+	    <result property="memberBirth" column="member_birth" />
+	    <result property="memberEmail" column="member_email" />
+	    <result property="memberPhone" column="member_phone" />
+	    <result property="memberAuthority" column="member_authority" />
+	    <result property="memberSocial" column="member_social" />
+	</resultMap>
+	
 	<!-- 아이디 회원 조회 --> <!-- 아이디 중복조회 -->
 	<select id="selectById" parameterType="java.lang.String"
 		resultType="Member">
@@ -46,4 +58,30 @@
  		 WHERE member_email = #{memberEmail} and member_id = #{memberId}
      ]]>
 	</select>
+	<!-- 회원 정보 수정 -->
+	<update id="updateMemberInfo" parameterType="Member">
+	 <![CDATA[   
+         UPDATE member 
+         SET member_pw= #{memberPw}, member_nickname= #{memberNickname}, member_email= #{memberEmail}, 
+         member_phone= #{memberPhone}, member_birth= #{memberBirth}
+ 		 WHERE member_id = #{memberId}
+     ]]>
+	</update>
+	<!-- 전체 회원 리스트 조회 (관리자용) -->
+	<select id="totalMemberList" parameterType="NoticeOption" resultMap="AdminMemberResultSet">
+	<![CDATA[
+		SELECT member_id, member_name, member_nickname, member_email,
+         		member_phone, member_birth, member_authority, member_social
+		FROM member
+		ORDER BY member_id DESC
+		LIMIT #{skip}, #{size}
+	]]>
+	</select>
+	<!-- 페이징 처리를 하기 위한 전체 회원 수 -->
+	 <select id="selectMemberTotal" parameterType="NoticeOption" resultType="int">
+		<![CDATA[   
+			SELECT COUNT(*) FROM member
+		]]>
+   </select>
+	
 </mapper>

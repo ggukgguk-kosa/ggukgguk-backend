@@ -1,11 +1,14 @@
 package com.ggukgguk.api.member.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.ggukgguk.api.admin.vo.NoticeOption;
 import com.ggukgguk.api.member.vo.Member;
 
 @Repository
@@ -39,6 +42,27 @@ public class MemberDaoImpl implements MemberDao {
 	public Member selectMemberByEmailandId(Member member) {
 		return session.selectOne("com.ggukgguk.api.Member.selectByPassword", member);
 	}
-	
 
+	
+	@Override // 회원정보 수정
+	public void updateMemberInfo(Member member) throws Exception {
+		log.debug(member);
+		int updateMember = session.update("com.ggukgguk.api.Member.updateMemberInfo", member);
+		
+		if(updateMember != 1) {
+			throw new Exception();
+		}
+	}
+
+	
+	@Override // 전체 회원 리스트 
+	public List<?> selectMemberList(NoticeOption option) {
+		return session.selectList("com.ggukgguk.api.Member.totalMemberList",option);
+	}
+
+	@Override // 페이징 처리를 위한 전체 회원 수 구하기
+	public int selectMemberListTotal(NoticeOption option) {
+		return session.selectOne("com.ggukgguk.api.Member.selectMemberTotal", option);
+	}
+	
 }

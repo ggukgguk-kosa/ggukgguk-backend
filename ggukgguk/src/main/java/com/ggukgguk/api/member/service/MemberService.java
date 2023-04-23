@@ -1,5 +1,7 @@
 package com.ggukgguk.api.member.service;
 
+import com.ggukgguk.api.admin.vo.NoticeOption;
+import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.vo.Member;
 
 public interface MemberService {
@@ -10,5 +12,9 @@ public interface MemberService {
 
 	public Member getMemberByEmail(String memberEmail);
 
-	public Boolean getMemberByEmailandId(Member member);
+	public boolean getMemberByEmailandId(Member member);
+
+	public boolean modifyMember(Member member);
+
+	public TotalAndListPayload getMemberList(NoticeOption option);
 }
