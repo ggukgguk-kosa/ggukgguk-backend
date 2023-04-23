@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.ggukgguk.api.admin.vo.NoticeOption;
+import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
 
 @Repository
@@ -63,6 +64,14 @@ public class MemberDaoImpl implements MemberDao {
 	@Override // 페이징 처리를 위한 전체 회원 수 구하기
 	public int selectMemberListTotal(NoticeOption option) {
 		return session.selectOne("com.ggukgguk.api.Member.selectMemberTotal", option);
+	}
+
+	@Override // 친구요청
+	public void requestFriend(FriendRequest request) throws Exception {
+		int result = session.insert("com.ggukgguk.api.Member.requestFriend", request);
+		if(result != 1) {
+			throw new Exception();
+		}
 	}
 	
 }

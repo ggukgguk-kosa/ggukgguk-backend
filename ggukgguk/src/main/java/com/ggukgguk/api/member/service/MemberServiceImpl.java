@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ggukgguk.api.admin.vo.NoticeOption;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.dao.MemberDao;
+import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
 
 @Service
@@ -76,6 +77,18 @@ public class MemberServiceImpl implements MemberService {
 		payload.setList(dao.selectMemberList(option)); // 전체 회원 리스트 조회
 		payload.setTotal(dao.selectMemberListTotal(option)); // 페이징 처리를 위한 전체회원 수 구하기
 		return payload;
+	}
+	
+	//친구 요청 
+	@Override
+	public boolean requestFriend(FriendRequest request) {
+		try {
+			dao.requestFriend(request);
+			return true;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 }

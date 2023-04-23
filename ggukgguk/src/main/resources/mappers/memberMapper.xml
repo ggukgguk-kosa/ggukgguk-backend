@@ -78,10 +78,17 @@
 	]]>
 	</select>
 	<!-- 페이징 처리를 하기 위한 전체 회원 수 -->
-	 <select id="selectMemberTotal" parameterType="NoticeOption" resultType="int">
+	<select id="selectMemberTotal" parameterType="NoticeOption" resultType="int">
 		<![CDATA[   
 			SELECT COUNT(*) FROM member
 		]]>
    </select>
+   <!-- 친구 요청 -->
+   <insert id="requestFriend" parameterType="FriendRequest">
+   	<![CDATA[   
+   	INSERT INTO friend_request(friend_request_id,from_member_id,to_member_id,friend_request_time) 
+	VALUES(default,#{fromMemberId},#{toMemberId},default);
+	]]>
+   </insert>
 	
 </mapper>

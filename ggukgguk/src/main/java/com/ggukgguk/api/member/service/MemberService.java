@@ -2,6 +2,7 @@ package com.ggukgguk.api.member.service;
 
 import com.ggukgguk.api.admin.vo.NoticeOption;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
+import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
 
 public interface MemberService {
@@ -17,4 +18,6 @@ public interface MemberService {
 	public boolean modifyMember(Member member);
 
 	public TotalAndListPayload getMemberList(NoticeOption option);
+
+	public boolean requestFriend(FriendRequest request);
 }

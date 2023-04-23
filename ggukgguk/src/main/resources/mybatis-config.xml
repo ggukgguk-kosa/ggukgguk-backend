@@ -24,5 +24,6 @@
 	 	<typeAlias type="com.ggukgguk.api.diary.vo.DiaryRecord" alias="DiaryRecord"/>
 	 	<typeAlias type="com.ggukgguk.api.diary.vo.DiaryKeyword" alias="DiaryKeyword"/>
 	 	<typeAlias type="com.ggukgguk.api.diary.vo.DiaryColor" alias="DiaryColor"/>
+	 	<typeAlias type="com.ggukgguk.api.member.vo.FriendRequest" alias="FriendRequest"/>
 	 </typeAliases>
 </configuration>
