@@ -4,27 +4,61 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ggukgguk.api.Notice">
+<mapper namespace="com.ggukgguk.api.Notice.">
 
-   <select id="selectList" parameterType="NoticeOption" resultType="Notice">
-       <![CDATA[   
-			SELECT notice_id, notice_title, notice_content, notice_created_at
-			FROM notice
-			ORDER BY notice_id DESC
-			LIMIT #{skip}, #{size}     
- 		]]>
-   </select>
-   
-   <select id="selectListTotal" parameterType="NoticeOption" resultType="int">
-		<![CDATA[   
-			SELECT COUNT(*) FROM notice
-		]]>
-   </select>
-   
-   <insert id="insert" parameterType="Notice">
-        <![CDATA[   
-	         INSERT INTO notice VALUES (NULL, #{noticeTitle}, #{noticeContent}, default)       
-		]]>
-   </insert>
+	<select id="select" parameterType="int" resultType="Notice">
+		SELECT
+		notice_id, notice_title, notice_content, notice_created_at,
+		notice_is_emergency
+		FROM notice
+		WHERE notice_id = #{noticeId}
+	</select>
 
+	<select id="count" resultType="int">
+		SELECT COUNT(*) FROM notice
+	</select>
+
+	<insert id="insert" parameterType="Notice">
+		INSERT INTO notice
+		(notice_title, notice_content)
+		VALUES
+		(#{noticeTitle}, #{noticeContent})
+	</insert>
+
+	<update id="update" parameterType="Notice">
+		UPDATE notice
+		SET notice_title
+		= #{noticeTitle},
+		content = #{noticeContent},
+		WHERE notice_id =
+		#{noticeId}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM notice
+		WHERE notice_id = #{notice_id}
+	</delete>
+
+	<select id="selectAll" resultType="Notice">
+		SELECT notice_id,
+		notice_title, notice_content, notice_created_at
+		FROM notice
+		ORDER BY
+		notice_created_at DESC
+	</select>
+
+	<select id="selectPage" parameterType="map" resultType="Notice">
+		SELECT
+		notice_id, notice_title, notice_content, notice_created_at
+		FROM notice
+		ORDER BY notice_created_at DESC
+		LIMIT #{offset}, #{pageSize}
+	</select>
+
+	<update id="increaseViewCnt" parameterType="int">
+		UPDATE notice
+		SET
+		view_cnt = view_cnt + 1
+		WHERE notice_id = #{noticeId}
+	</update>
 </mapper>

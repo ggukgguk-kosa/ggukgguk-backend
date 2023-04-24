@@ -1,13 +1,19 @@
 package com.ggukgguk.api.admin.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ggukgguk.api.admin.vo.Notice;
-import com.ggukgguk.api.admin.vo.NoticeOption;
-import com.ggukgguk.api.common.vo.TotalAndListPayload;
 
 public interface AdminService {
+    int getCount() throws Exception;
+    int remove(int noticeId, String writer) throws Exception;
+    int write(Notice notice) throws Exception;
+    List<Notice> getList() throws Exception;
+    Notice read(int noticeId) throws Exception;
+    List<Notice> getPage(Map map) throws Exception;
+    int modify(Notice notice) throws Exception;
 
-	public boolean addNotice(Notice notice);
-	public TotalAndListPayload getNoticeList(NoticeOption option);
+//    int getSearchResultCnt(SearchCondition sc) throws Exception;
+//    List<Notice> getSearchResultPage(SearchCondition sc) throws Exception;
 }
