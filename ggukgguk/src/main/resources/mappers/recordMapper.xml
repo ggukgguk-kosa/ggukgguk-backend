@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ggukgguk.api.Record">
+   
+<!-- record와 reply를 매핑하는 resultMap -->
+	<resultMap id="RecordResultSet" type="Record">
+	    <id property="recordId" column="record_id" />
+	    <result property="memberId" column="member_id" />
+	    <result property="recordComment" column="record_comment" />
+	    <result property="recordCreateAt" column="record_created_at" />
+	    <result property="mediaFileId" column="media_file_id" />
+	    <result property="recordLocationY" column="record_location_y" />
+	    <result property="recordLocationX" column="record_location_x" />
+	    <result property="recordIsOpen" column="record_is_open" />
+	    <result property="recordShareTo" column="record_share_to" />
+	    <result property="recordShareAccepted" column="record_share_accepted" />
+	    <collection property="replyList" ofType="ReplyNickname">
+	        <id property="replyId" column="reply_id" />
+	        <result property="replyContent" column="reply_content" />
+	        <result property="replyDate" column="reply_date" />
+	        <result property="recordId" column="record_id" />
+	        <result property="memberNickname" column="member_nickname" />
+	    </collection>
+	</resultMap>
+
+   <select id="selectList" parameterType="RecordSearch" resultMap="RecordResultSet">  
+			SELECT record.*, reply.*, member.member_nickname
+			FROM record
+			LEFT JOIN reply ON record.record_id = reply.record_id
+			LEFT JOIN member ON reply.member_id = member.member_id
+ 			<where>
+ 				record.member_id=#{memberId}
+ 				<if test="startDate != null">
+ 					AND record.record_created_at BETWEEN DATE_SUB(#{startDate}, INTERVAL 5 DAY) AND #{startDate}
+ 				</if>
+ 				<if test="keyword != null">
+ 					AND record.record_comment LIKE CONCAT('%', #{keyword}, '%')
+ 				</if>
+ 			</where>
+   </select>
+   
+   <delete id="delete" parameterType="Integer">
+       <![CDATA[   
+         DELETE FROM record
+         WHERE record_id=#{recordId}
+      ]]>
+   </delete>
+   
+   <insert id="insertMedia" parameterType="MediaFile">
+       <![CDATA[   
+         INSERT INTO media_file
+         (media_file_id, media_type_id, media_file_processed)
+         VALUES (#{mediaFileId}, #{mediaTypeId}, #{mediaFileProcessed})
+      ]]>
+   </insert>
+   
+    <insert id="insertRecord" parameterType="Record">
+       <![CDATA[   
+         INSERT INTO record
+         (record_id, member_id, record_comment, record_created_at,
+         	media_file_id, record_location_y, record_location_x,
+         	record_is_open, record_share_to, record_share_accepted)
+         VALUES (null, #{memberId}, #{recordComment}, default,
+         	#{mediaFileId}, #{recordLocationY}, #{recordLocationX},
+         	#{recordIsOpen}, #{recordShareTo}, #{recordShareAccepted})
+      ]]>
+   </insert>
+  
+</mapper>

@@ -28,6 +28,7 @@
     </beans:bean>
     
     <http use-expressions="true" entry-point-ref="jwtAuthenticationEntryPoint" create-session="stateless">
+    	<cors configuration-source-ref="corsConfigurationSource" />
 		<csrf disabled="true" />
 		<intercept-url pattern="/**/*" method="OPTIONS"
 			access="permitAll" />

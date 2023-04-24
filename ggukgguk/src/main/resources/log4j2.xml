@@ -44,6 +44,12 @@
         
         <Logger name="com.ggukgguk.api.Notice" level="trace">
         </Logger>
+
+        <Logger name="com.ggukgguk.api.Record" level="trace">
+        </Logger>
+
+        <Logger name="com.ggukgguk.api.Diary" level="trace">
+        </Logger>
   
         <Root level="INFO">
             <AppenderRef ref="stdout_2" />
