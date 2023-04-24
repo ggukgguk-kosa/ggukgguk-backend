@@ -90,5 +90,24 @@
 	VALUES(default,#{fromMemberId},#{toMemberId},default);
 	]]>
    </insert>
-	
+   
+   <!-- 친구 요청 테이블 조회 -->
+   <select id="selectRequestFriendList" parameterType="FriendRequest" resultType="FriendRequest">
+   <![CDATA[
+   	SELECT * FROM friend_request WHERE from_member_id = #{fromMemberId} and to_member_id = #{toMemberId}
+   ]]>
+   </select>
+   <!-- 친구 수락 -->
+   <insert id="createFriend" parameterType="Friend">
+   	<![CDATA[   
+   	INSERT INTO friend(friend_id,member1_id,member2_id,friend_created_at) 
+	VALUES(default,#{member1Id},#{member2Id},default);
+	]]>
+   </insert>
+   	<!-- 친구요청 관계 삭제 -->
+	<delete id="deleteRequestFriend" parameterType="java.lang.String">
+	 <![CDATA[   
+   		DELETE FROM friend_request WHERE friend_request_id = #{friendRequestId};
+	]]>
+	</delete>
 </mapper>

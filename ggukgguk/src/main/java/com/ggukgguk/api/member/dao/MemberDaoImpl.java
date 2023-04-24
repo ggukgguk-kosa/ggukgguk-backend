@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.ggukgguk.api.admin.vo.NoticeOption;
+import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
 
@@ -72,6 +73,31 @@ public class MemberDaoImpl implements MemberDao {
 		if(result != 1) {
 			throw new Exception();
 		}
+	}	
+	
+	@Override // 친구 요청 테이블 조회
+	public FriendRequest selectFriendRequestList(FriendRequest friendRequest) {
+		return session.selectOne("com.ggukgguk.api.Member.selectRequestFriendList", friendRequest);
 	}
+
+	// 친구 수락
+	@Override
+	public void newRelationship(Friend friend) throws Exception {
+		int result = session.insert("com.ggukgguk.api.Member.createFriend", friend);
+		if(result != 1) {
+			throw new Exception();
+		}
+		
+	}
+	// 친구 요청 테이블 행 삭제
+	@Override
+	public void deleteFriendRequeset(String friendRequestId) throws Exception {
+		int result = session.delete("com.ggukgguk.api.Member.deleteRequestFriend", friendRequestId);
+		if(result != 1) {
+			throw new Exception();
+		}
+		
+	}
+
 	
 }

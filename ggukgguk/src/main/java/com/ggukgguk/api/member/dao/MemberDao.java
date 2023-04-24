@@ -3,6 +3,7 @@ package com.ggukgguk.api.member.dao;
 import java.util.List;
 
 import com.ggukgguk.api.admin.vo.NoticeOption;
+import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
 
@@ -23,4 +24,10 @@ public interface MemberDao {
 	public int selectMemberListTotal(NoticeOption option);
 
 	public void requestFriend(FriendRequest request) throws Exception;
+
+	public void newRelationship(Friend friend) throws Exception;
+
+	public FriendRequest selectFriendRequestList(FriendRequest friendRequest);
+
+	void deleteFriendRequeset(String friendRequestId) throws Exception ;
 }
