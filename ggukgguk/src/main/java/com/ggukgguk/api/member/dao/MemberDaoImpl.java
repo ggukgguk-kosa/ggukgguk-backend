@@ -21,6 +21,7 @@ public class MemberDaoImpl implements MemberDao {
 	@Autowired
 	private SqlSession session;
 	
+	// 친구 찾기, 회원정보 찾기
 	@Override
 	public Member selectMemberById(String memberId) {
 		return session.selectOne("com.ggukgguk.api.Member.selectById", memberId);
@@ -98,6 +99,27 @@ public class MemberDaoImpl implements MemberDao {
 		}
 		
 	}
+	// 친구 아이디 찾기 (일부분 값으로)
+	@Override
+	public List<Member> selectFindPartOfId(String memberId) {
+		return session.selectList("com.ggukgguk.api.Member.selectFindPartOfId", memberId);
+		
+	}
 
+	// 현재 친구 목록조회 
+	@Override
+	public List<Member> selectFriendList(String myMemberId){
+		return session.selectList("com.ggukgguk.api.Member.selectFriendList", myMemberId);
+		
+	}
+
+	// 친구 관계 차단
+	@Override
+	public void breakRelationship(Friend friend) throws Exception {
+		int result = session.delete("com.ggukgguk.api.Member.deleteRelationship",friend);
+		if(result != 1) {
+			throw new Exception();
+		}
+	}
 	
 }

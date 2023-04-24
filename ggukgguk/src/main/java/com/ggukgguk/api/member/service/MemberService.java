@@ -1,5 +1,7 @@
 package com.ggukgguk.api.member.service;
 
+import java.util.List;
+
 import com.ggukgguk.api.admin.vo.NoticeOption;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.vo.Friend;
@@ -23,4 +25,10 @@ public interface MemberService {
 	public boolean requestFriend(FriendRequest request);
 
 	public boolean acceptFriend(Friend friend, FriendRequest friendRequest, String fromMemberId, String toMemberId);
+
+	public List<Member> findmyFriend(String memberId);
+
+	public List<Member> findFriendList(String mymemberId);
+
+	public boolean breakFriend(String myMemberId, String toMemberid, Friend friend);
 }
