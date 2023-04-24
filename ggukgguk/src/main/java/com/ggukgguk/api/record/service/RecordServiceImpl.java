@@ -52,10 +52,11 @@ public class RecordServiceImpl implements RecordService{
 		
 		if (media != null) {
 			String contentType = media.getContentType();
+			System.out.println(contentType);
 
 			String format = contentType.split("/")[0];
 			String saveName = (UUID.randomUUID()).toString();
-			metadata = new MediaFile(saveName, format, false);
+			metadata = new MediaFile(saveName, format, false, false);
 			record.setMediaFileId(saveName);
 			
 			boolean fileSaveResult = mediaFileService.saveFile(media, format, saveName);

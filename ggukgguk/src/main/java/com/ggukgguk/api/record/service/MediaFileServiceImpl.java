@@ -14,6 +14,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import ws.schild.jave.Encoder;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.encode.EncodingAttributes;
+import ws.schild.jave.encode.VideoAttributes;
+
 @Service
 public class MediaFileServiceImpl implements MediaFileService {
 	
@@ -67,8 +72,7 @@ public class MediaFileServiceImpl implements MediaFileService {
 				break;
 			case "video":
 				log.debug("비디오 후처리");
-				result = true;
-				// 여기에 후처리 로직을 추가
+				result = encodeVideo(file);
 				break;
 			case "audio":
 				log.debug("오디오 후처리");
@@ -123,6 +127,38 @@ public class MediaFileServiceImpl implements MediaFileService {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	private boolean encodeVideo(File videoFile) {
+		try {
+			log.debug("비디오 인코딩 시작: ", videoFile);
+			
+			File tmp = new File(videoFile.getCanonicalFile() + "_PROCESSING");
+		 	videoFile.renameTo(tmp); // 우선 임시로 이름을 부여한다.
+		 	
+		 	File source = tmp;
+		 	File target = videoFile; // 도착 경로 지정
+		 	
+		 	VideoAttributes vAttr = new VideoAttributes();
+		 	vAttr.setCodec("libx264");
+		 	vAttr.setBitRate(2500000);
+		 	
+		 	EncodingAttributes attrs = new EncodingAttributes();                                  
+		 	attrs.setVideoAttributes(vAttr);
+		 	attrs.setOutputFormat("mp4");
+		 	
+		 	Encoder encoder = new Encoder();
+		 	encoder.encode(new MultimediaObject(source), target, attrs);
+		 	log.debug("비디오 인코딩 성공");
+		 	
+		 	tmp.delete();
+		} catch (Exception e) {
+			log.debug("비디오 인코딩 실패");
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 
 }
