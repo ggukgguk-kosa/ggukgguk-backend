@@ -227,6 +227,12 @@
 		    <version>2.11.0</version>
 		</dependency>
 		
+		<!-- 비디오 인코딩 -->
+		<dependency>
+			<groupId>ws.schild</groupId>
+			<artifactId>jave-all-deps</artifactId>
+			<version>3.3.1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

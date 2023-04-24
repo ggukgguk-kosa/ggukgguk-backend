@@ -15,5 +15,8 @@
 	
 	<!-- Global Properties -->
 	<context:property-placeholder
-		location="classpath:config/database.properties, classpath:config/auth.properties, classpath:config/file.properties" />
+		location="classpath:config/database.properties,
+		classpath:config/auth.properties,
+		classpath:config/file.properties,
+		classpath:config/mail.properties" />
 </beans>
