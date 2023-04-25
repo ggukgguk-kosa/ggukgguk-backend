@@ -4,9 +4,9 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ggukgguk.api.Notice.">
+<mapper namespace="com.ggukgguk.api.Notice">
 
-	<select id="select" parameterType="int" resultType="Notice">
+	<select id="select" parameterType="int" resultType="int">
 		SELECT
 		notice_id, notice_title, notice_content, notice_created_at,
 		notice_is_emergency
@@ -25,13 +25,11 @@
 		(#{noticeTitle}, #{noticeContent})
 	</insert>
 
-	<update id="update" parameterType="Notice">
+	<update id="update" parameterType="int">
 		UPDATE notice
-		SET notice_title
-		= #{noticeTitle},
-		content = #{noticeContent},
-		WHERE notice_id =
-		#{noticeId}
+		SET notice_title= #{noticeTitle},
+		notice_content = #{noticeContent}
+		WHERE notice_id =#{noticeId}
 	</update>
 
 	<delete id="delete">
@@ -39,7 +37,7 @@
 		WHERE notice_id = #{notice_id}
 	</delete>
 
-	<select id="selectAll" resultType="Notice">
+	<select id="selectList" resultType="Notice">
 		SELECT notice_id,
 		notice_title, notice_content, notice_created_at
 		FROM notice
@@ -47,15 +45,15 @@
 		notice_created_at DESC
 	</select>
 
-	<select id="selectPage" parameterType="map" resultType="Notice">
+	<select id="selectPage" parameterType="NoticeOption" resultType="Notice">
 		SELECT
 		notice_id, notice_title, notice_content, notice_created_at
 		FROM notice
 		ORDER BY notice_created_at DESC
-		LIMIT #{offset}, #{pageSize}
+		LIMIT #{skip}, #{size}
 	</select>
 
-	<update id="increaseViewCnt" parameterType="int">
+	<update id="increaseViewCnt" parameterType="java.lang.String">
 		UPDATE notice
 		SET
 		view_cnt = view_cnt + 1

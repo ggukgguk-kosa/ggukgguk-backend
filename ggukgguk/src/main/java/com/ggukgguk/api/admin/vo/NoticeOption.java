@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class NoticeOption {
 
-	private int page;
-	private int size;
-	private int skip; // �뒪�궢 �븷 寃뚯떆臾� �닔( (pageNum-1) * amount )
+	int page;
+	int size;
+	int skip; 
 	
 	public NoticeOption() {
 		this(1,  10);
