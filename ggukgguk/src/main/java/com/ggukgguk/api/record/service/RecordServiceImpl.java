@@ -65,7 +65,7 @@ public class RecordServiceImpl implements RecordService{
 		
         TransactionStatus txStatus =
                 transactionManager.getTransaction(new DefaultTransactionDefinition());
-        
+
     	try {
 			if (media != null) dao.insertMediaFile(metadata);
 			dao.insertRecord(record);

@@ -2,6 +2,7 @@ package com.ggukgguk.api.notification.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.javassist.compiler.ast.NewExpr;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,7 +32,15 @@ public class NotificationDaoImpl implements NotificationDao {
 			throw new Exception();
 		}
 	}
+
+
+	@Override // 알림 삭제
+	public void deleteNotification(int notificationId) throws Exception {
+		int result = session.insert("com.ggukgguk.api.Notification.deleteNotification", notificationId);
 	
-	
+		if(result != 1) {
+			throw new Exception();
+		}
+	}
 
 }

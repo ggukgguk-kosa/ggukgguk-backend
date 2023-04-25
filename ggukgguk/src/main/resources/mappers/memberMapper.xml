@@ -89,10 +89,13 @@
 	</select>
 	<!-- 친구 요청 -->
 	<insert id="requestFriend" parameterType="FriendRequest">
-   	<![CDATA[   
-   	INSERT INTO friend_request(friend_request_id,from_member_id,to_member_id,friend_request_time) 
-	VALUES(default,#{fromMemberId},#{toMemberId},default);
-	]]>
+    <![CDATA[   
+        INSERT INTO friend_request(friend_request_id,from_member_id,to_member_id,friend_request_time) 
+        VALUES(default,#{fromMemberId},#{toMemberId},default);
+    ]]>
+      <selectKey resultType="int" keyProperty="friendRequestId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
 	</insert>
 
 	<!-- 친구 요청 테이블 조회 -->
@@ -110,8 +113,7 @@
 	]]>
 	</insert>
 	<!-- 친구요청 관계 삭제 -->
-	<delete id="deleteRequestFriend"
-		parameterType="int">
+	<delete id="deleteRequestFriend" parameterType="int">
 	 <![CDATA[   
    		DELETE FROM friend_request WHERE friend_request_id = #{friendRequestId};
 	]]>
@@ -136,7 +138,7 @@
        UNION SELECT member2_id FROM friend WHERE member1_id = #{myMemberId} )
      ]]>
 	</select>
-	
+
 	<!-- 친구 차단 -->
 	<delete id="deleteRelationship" parameterType="Friend">
 		<![CDATA[ 

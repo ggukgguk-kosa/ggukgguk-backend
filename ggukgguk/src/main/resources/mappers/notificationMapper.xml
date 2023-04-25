@@ -7,7 +7,8 @@
 <mapper namespace="com.ggukgguk.api.Notification">
 
 	<!-- 회원별 알림 조회 -->
-	<select id="selectNotificationList" parameterType="java.lang.String" resultType="Notification">
+	<select id="selectNotificationList"
+		parameterType="java.lang.String" resultType="Notification">
 		 <![CDATA[   
          SELECT notification_id, receiver_id, notification_type_id, 
          notification_created_at, reference_id,notification_is_read, 
@@ -16,13 +17,20 @@
  		 WHERE receiver_id = #{receiverId}
      	 ]]>
 	</select>
-	
+
 	<!-- 알림 생성 -->
-	<insert id="createNotification" parameterType="Notification">
-	 	<![CDATA[   
-	 	INSERT INTO notification (receiver_id, notification_type_id, reference_id, notification_message)
-		VALUES (#{receiverId}, #{notificationTypeId}, #{referenceId}, #{notificationMessage});
-     	]]>
+	<insert id="createNotification" parameterType="Notification"> 
+	<![CDATA[ 
+		INSERT INTO notification (receiver_id, notification_type_id, reference_id, 
+		notification_message) VALUES (#{receiverId}, #{notificationTypeId}, #{referenceId}, 
+		#{notificationMessage}); 
+	]]>
 	</insert>
-	
+
+	<!-- 알림 삭제 -->
+	<delete id="deleteNotification" parameterType="Notification">
+		<![CDATA[ 
+		DELETE FROM notification WHERE notification_id = #{notificationId}
+		]]>
+	</delete>
 </mapper>

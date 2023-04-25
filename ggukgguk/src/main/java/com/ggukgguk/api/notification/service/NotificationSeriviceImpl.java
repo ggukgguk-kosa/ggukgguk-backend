@@ -102,6 +102,18 @@ public class NotificationSeriviceImpl implements NotificationService {
 		}
 		return false;
 	}
+
+	
+	// 알림 삭제
+	@Override
+	public boolean deleteNotify(int notificationId) {
+		try {
+		dao.deleteNotification(notificationId);	
+		}catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
 	
 	
 }

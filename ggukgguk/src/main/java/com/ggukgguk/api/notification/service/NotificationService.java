@@ -11,4 +11,6 @@ public interface NotificationService {
 
 	boolean createNotification(Notification noiNotification, String receiverId, String notficationId, int referenceId);
 
+	boolean deleteNotify(int notificationId);
+
 }

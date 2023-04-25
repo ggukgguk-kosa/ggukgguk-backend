@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,7 +56,7 @@ public class NotificationController {
 	public ResponseEntity<?> notifyListHandler(Authentication authentication){
 		BasicResp<Object> respBody;
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String receiverId = userDetails.getUsername(); // 로그인한 상대방 ID
+		String receiverId = userDetails.getUsername(); // 로그인한 본인 아이디
 		
 		List<Notification> result = service.ListNotification(receiverId);
 		
@@ -69,6 +70,20 @@ public class NotificationController {
 
 	}
 	
-	
+	// 알림 삭제
+	@DeleteMapping(value = "{notificationId}")
+	public ResponseEntity<?> notifyDeleteHandler(@PathVariable int notificationId, Authentication authentication){
+		BasicResp<Object> respBody;
+		
+		boolean result = service.deleteNotify(notificationId);
+		
+		if (result) {
+			respBody = new BasicResp<Object>("success", "알림 삭제를 성공하였습니다.", result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			respBody = new BasicResp<Object>("error", "알림 삭제를 실패하였습니다.", result);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
 	
 }

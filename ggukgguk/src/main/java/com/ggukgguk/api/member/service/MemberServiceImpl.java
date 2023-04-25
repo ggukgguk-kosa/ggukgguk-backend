@@ -3,6 +3,7 @@ package com.ggukgguk.api.member.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.ibatis.util.MapUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.MementoMessage;
@@ -12,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-
 import com.ggukgguk.api.admin.vo.NoticeOption;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.controller.friendController;
@@ -23,6 +22,7 @@ import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
 import com.ggukgguk.api.notification.dao.NotificationDao;
 import com.ggukgguk.api.notification.vo.Notification;
+import com.nimbusds.oauth2.sdk.util.MapUtils;
 
 import oracle.net.aso.f;
 
@@ -107,9 +107,12 @@ public class MemberServiceImpl implements MemberService {
 			// 친구 요청
 			dao.requestFriend(request);
 			
-			// 친구 요청 알림 생성. // 수정 필요 why 방금 위애서 한 친구 요청을 하면, 해당 행의 테이블 아이디 값을 가져와서 알림 테이블의 참조아이디 값을 넣어야 하는 데  무조건 0으로 입력 됨.. 
-			Notification noti = new Notification(0, "FRIEND_REQUEST",new Date(), request.getFriendRequestId(), request.getToMemberId(),0, "친구 요청을 하였습니다.");
-										     	  //알림 순번, 알림 타입 = "친구 요청". 알림 날짜 , 참조 아이디 = "친구 요청 테이블 아이디", 수신자  = "전달받는 아이디", 수신 여부 = 0, 전달 메시지                
+			// 위애서 친구요청한 테이블의 아이디 값을 가져오기  
+			int friendRequestId = (int)request.getFriendRequestId();
+			
+			// 친구 요청 알림 생성. 
+			Notification noti = new Notification(0, "FRIEND_REQUEST",new Date(), friendRequestId, request.getToMemberId(),0, "친구 요청을 하였습니다.");
+										     	  //알림 순번, 알림 타입 = "친구 요청". 알림 날짜 , 참조 아이디 = "방금 친구 요청 테이블 아이디", 수신자  = "전달받는 아이디", 수신 여부 = 0, 전달 메시지                
 			notificationDao.createNotification(noti);
 			
 		} catch (Exception e) {
