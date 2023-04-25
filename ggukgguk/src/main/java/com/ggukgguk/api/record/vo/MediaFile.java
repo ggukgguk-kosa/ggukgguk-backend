@@ -11,5 +11,6 @@ public class MediaFile {
 	
 	private String mediaFileId;
 	private String mediaTypeId;
-	private boolean mediaFileProcessed;
+	private boolean mediaFileBlocked;
+	private boolean mediaFileChecked;
 }

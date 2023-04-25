@@ -73,7 +73,8 @@ INSERT INTO `media_type` VALUES ('AUDIO', 'wav');
 CREATE TABLE `media_file` (
     `media_file_id`    CHAR(36)    NOT NULL    PRIMARY KEY    COMMENT 'UUID',
     `media_type_id`    VARCHAR(8)    NOT NULL,
-    `media_file_processed`    BOOLEAN    NULL,
+    `media_file_blocked`    BOOLEAN    NULL,
+    `media_file_checked`    BOOLEAN    NOT NULL    DEFAULT FALSE,
     FOREIGN KEY (`media_type_id`) REFERENCES `media_type` (`media_type_id`)
 );
 
@@ -111,13 +112,24 @@ CREATE TABLE `diary` (
     `main_keyword`    VARCHAR(16)    NOT NULL,
     FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`)
 );
+ALTER TABLE `diary` ADD CONSTRAINT `diary_UN` UNIQUE KEY (`member_id`,`diary_year`,`diary_month`);
+
+
+CREATE TABLE `record_keyword` (
+    `record_keyword_id`    INT    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
+    `record_id`    INT    NOT NULL,
+    `record_keyword`    VARCHAR(16)    NOT NULL,
+    FOREIGN KEY (`record_id`) REFERENCES `record` (`record_id`)
+);
 
 CREATE TABLE `diary_keyword` (
     `diary_keyword_id`    INT    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
     `diary_id`    INT    NOT NULL,
     `diary_keyword`    VARCHAR(16)    NOT NULL,
+    `diary_freq`    INT    NOT NULL,
     FOREIGN KEY (`diary_id`) REFERENCES `diary` (`diary_id`)
 );
+ALTER TABLE diary_keyword ADD CONSTRAINT diary_keyword_UN UNIQUE KEY (diary_keyword,diary_id);
 
 CREATE TABLE `diary_color` (
     `diary_color_id`    INT    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
