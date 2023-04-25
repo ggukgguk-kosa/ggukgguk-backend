@@ -1,5 +1,6 @@
 package com.ggukgguk.api.member.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +21,8 @@ import com.ggukgguk.api.member.dao.MemberDao;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.notification.dao.NotificationDao;
+import com.ggukgguk.api.notification.vo.Notification;
 
 import oracle.net.aso.f;
 
@@ -33,7 +36,10 @@ public class MemberServiceImpl implements MemberService {
 
 	@Autowired
 	private MemberDao dao;
-
+	
+	@Autowired
+	private NotificationDao notificationDao;
+	
 	@Autowired
 	private PasswordEncoder passwordEncorder;
 
@@ -95,13 +101,25 @@ public class MemberServiceImpl implements MemberService {
 	// 친구 요청
 	@Override
 	public boolean requestFriend(FriendRequest request) {
+		// 친구 요청을 하면 알림도 같이 전송되어야 하기에 트랜잭션 처리를 해야.. 하지 않을 까 싶음.
+		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
 		try {
+			// 친구 요청
 			dao.requestFriend(request);
-			return true;
+			
+			// 친구 요청 알림 생성. // 수정 필요 why 방금 위애서 한 친구 요청을 하면, 해당 행의 테이블 아이디 값을 가져와서 알림 테이블의 참조아이디 값을 넣어야 하는 데  무조건 0으로 입력 됨.. 
+			Notification noti = new Notification(0, "FRIEND_REQUEST",new Date(), request.getFriendRequestId(), request.getToMemberId(),0, "친구 요청을 하였습니다.");
+										     	  //알림 순번, 알림 타입 = "친구 요청". 알림 날짜 , 참조 아이디 = "친구 요청 테이블 아이디", 수신자  = "전달받는 아이디", 수신 여부 = 0, 전달 메시지                
+			notificationDao.createNotification(noti);
+			
 		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
 			e.printStackTrace();
 			return false;
 		}
+		
+		transactionManager.commit(txStatus);
+		return true;
 	}
 
 	// 친구 수락
@@ -113,7 +131,7 @@ public class MemberServiceImpl implements MemberService {
 		log.debug(toMemberId);
 		log.debug(friendRequest);
 		FriendRequest result = dao.selectFriendRequestList(friendRequest);
-		if (result.getFriendRequestId().equals(null))
+		if (result.equals(null))
 			return false;
 		// 이후 트랜잭션 처리로 친구요청 테이블 해당 값 삭제. 친구 테이블에 각각 쌍방 친구관계 성립.
 		// 트랜잭션을 처리하는 이유는 만약 친구요청 테이블을 삭제가 실패 할 경우 친구 테이블 삽입도 같이 rollback해야 함.
@@ -129,6 +147,7 @@ public class MemberServiceImpl implements MemberService {
 			dao.newRelationship(friend);
 			// 친구 요청 테이블 삭제.
 			dao.deleteFriendRequeset(result.getFriendRequestId());
+			
 		} catch (Exception e) {
 			transactionManager.rollback(txStatus);
 			return false;

@@ -29,13 +29,13 @@ public interface MemberDao {
 
 	public FriendRequest selectFriendRequestList(FriendRequest friendRequest);
 	
-	public void deleteFriendRequeset(String friendRequestId) throws Exception;
-	
 	public List<Member> selectFindPartOfId(String memberId);
 
 	public List<Member> selectFriendList(String mymemberId);
 
 	public void breakRelationship(Friend friend) throws Exception;
+
+	public void deleteFriendRequeset(int friendRequestId) throws Exception;
 
 	
 }

@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -43,12 +44,29 @@ public class OAuthService {
 
 	@Autowired
 	RestTemplate restTemplate; // REST API를 호출할 수 있는 내장 Srping 내장 클래스.
+	
+	@Value("${google.secret}")
+	private String googleSecretClientId;
+	
+	@Value("${google.secretPW}")
+	private String googleClientSecret;
+	
+	@Value("${google.redirectUrl}")
+	private String googleRedirectUrl;
+	
+	@Value("${kakao.secret}")
+	private String kakaoSecretClientId;
 
+	@Value("${kakao.redirectUrl}")
+	private String kakaoRedirectUrl;
+	
 	// 참고) https://2bmw3.tistory.com/15
 
 	// 카카오의 권한 토크를 받는 메소드
-	public String getKakaoAccessToken(String code) {
-
+	public String getKakaoAccessToken(String code) { 
+		log.debug("@Value 테스트: " + googleSecretClientId);
+		log.debug("@Value 테스트2: " + kakaoSecretClientId);
+		
 		String accessToken = "";
 
 		// restTemplate을 사용하여 API 호출
@@ -59,8 +77,8 @@ public class OAuthService {
 
 		MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
 		parameters.set("grant_type", "authorization_code");
-		parameters.set("client_id", "88ae00c6ba4b777f197c6d3b5c972acd"); // 카카오 REST API 주소
-		parameters.set("redirect_uri", "http://localhost:8080/api/auth/social/kakao"); // 리다이렉트 주소
+		parameters.set("client_id",kakaoSecretClientId); // 카카오 REST API 주소
+		parameters.set("redirect_uri",kakaoRedirectUrl); // 리다이렉트 주소
 		// 리다이렉트 주소 의미: 로그인에 성공하면 다시 로그인한 사용자가 만든 페이지로 돌아가야 하는데 그 돌아갈 페이지의 주소가
 		// redirect_uri
 		parameters.set("code", code); // 카카오에서 전달 받은 인가 코드
@@ -159,9 +177,9 @@ public class OAuthService {
 
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		params.add("code", code);
-		params.add("client_id", "720876072203-9qs394kg6d2ekko35ln9h0pil109lvft.apps.googleusercontent.com");
-		params.add("client_secret", "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");
-		params.add("redirectUri", "http://localhost:8080/api/auth/social/google");
+		params.add("client_id",googleSecretClientId);
+		params.add("client_secret",googleClientSecret);
+		params.add("redirectUri",googleRedirectUrl);
 		params.add("grant_type", "authorization_code"); // 어플리케이션이 authorization_code 유형을 사용한다고 명시.
 
 		HttpHeaders headers = new HttpHeaders();

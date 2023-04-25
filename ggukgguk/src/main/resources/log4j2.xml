@@ -50,7 +50,9 @@
 
         <Logger name="com.ggukgguk.api.Diary" level="trace">
         </Logger>
-  
+        
+  		<Logger name="com.ggukgguk.api.Notification" level="trace">
+        </Logger>
         <Root level="INFO">
             <AppenderRef ref="stdout_2" />
         </Root>

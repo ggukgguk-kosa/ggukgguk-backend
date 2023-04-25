@@ -25,6 +25,7 @@
             <value>classpath:mappers/recordMapper.xml</value>
             <value>classpath:mappers/replyMapper.xml</value>
             <value>classpath:mappers/diaryMapper.xml</value>
+            <value>classpath:mappers/notificationMapper.xml</value>
          </list>
       </property>
    </bean>

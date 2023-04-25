@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Friend {
-	private String friendId;
+	private int friendId;
 	private String member1Id; // 본인 ID
 	private String member2Id; // 상대방 ID
 	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")

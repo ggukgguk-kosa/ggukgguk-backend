@@ -111,7 +111,7 @@
 	</insert>
 	<!-- 친구요청 관계 삭제 -->
 	<delete id="deleteRequestFriend"
-		parameterType="java.lang.String">
+		parameterType="int">
 	 <![CDATA[   
    		DELETE FROM friend_request WHERE friend_request_id = #{friendRequestId};
 	]]>

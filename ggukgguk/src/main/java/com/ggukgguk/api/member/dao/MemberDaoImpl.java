@@ -92,7 +92,7 @@ public class MemberDaoImpl implements MemberDao {
 	}
 	// 친구 요청 테이블 행 삭제
 	@Override
-	public void deleteFriendRequeset(String friendRequestId) throws Exception {
+	public void deleteFriendRequeset(int friendRequestId) throws Exception {
 		int result = session.delete("com.ggukgguk.api.Member.deleteRequestFriend", friendRequestId);
 		if(result != 1) {
 			throw new Exception();
