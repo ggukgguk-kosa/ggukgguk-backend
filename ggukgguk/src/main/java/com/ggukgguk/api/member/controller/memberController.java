@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ggukgguk.api.admin.vo.NoticeOption;
+import com.ggukgguk.api.common.vo.PageOption;
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.service.MemberService;
@@ -59,7 +59,7 @@ public class memberController {
 	}
 	// 전체 회원 조회 (관리자)
 	@GetMapping("")
-	public ResponseEntity<?> getMemberListHandler(@ModelAttribute NoticeOption option){
+	public ResponseEntity<?> getMemberListHandler(@ModelAttribute PageOption option){
 		log.debug(option);
 		
 		BasicResp<Object> respBody;

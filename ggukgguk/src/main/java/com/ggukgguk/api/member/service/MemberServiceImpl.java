@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import com.ggukgguk.api.admin.vo.NoticeOption;
+import com.ggukgguk.api.common.vo.PageOption;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.controller.friendController;
 import com.ggukgguk.api.member.dao.MemberDao;
@@ -91,7 +91,7 @@ public class MemberServiceImpl implements MemberService {
 
 	// 전체 회원 리스트 조회(관리자용)
 	@Override
-	public TotalAndListPayload getMemberList(NoticeOption option) {
+	public TotalAndListPayload getMemberList(PageOption option) {
 		TotalAndListPayload payload = new TotalAndListPayload();
 		payload.setList(dao.selectMemberList(option)); // 전체 회원 리스트 조회
 		payload.setTotal(dao.selectMemberListTotal(option)); // 페이징 처리를 위한 전체회원 수 구하기

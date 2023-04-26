@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.ggukgguk.api.admin.vo.NoticeOption;
+import com.ggukgguk.api.common.vo.PageOption;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
@@ -59,12 +59,12 @@ public class MemberDaoImpl implements MemberDao {
 
 	
 	@Override // 전체 회원 리스트 
-	public List<?> selectMemberList(NoticeOption option) {
+	public List<?> selectMemberList(PageOption option) {
 		return session.selectList("com.ggukgguk.api.Member.totalMemberList",option);
 	}
 
 	@Override // 페이징 처리를 위한 전체 회원 수 구하기
-	public int selectMemberListTotal(NoticeOption option) {
+	public int selectMemberListTotal(PageOption option) {
 		return session.selectOne("com.ggukgguk.api.Member.selectMemberTotal", option);
 	}
 
