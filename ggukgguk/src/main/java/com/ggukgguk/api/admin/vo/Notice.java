@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class Notice {
-	private int noticeId;
-	private String noticeTitle;
-	private String noticeContent;
-	private Date noticeCreatedAt;
+    private int noticeId;
+    private String noticeTitle;
+    private String noticeContent;
+    private Date noticeCreatedAt;
 }
