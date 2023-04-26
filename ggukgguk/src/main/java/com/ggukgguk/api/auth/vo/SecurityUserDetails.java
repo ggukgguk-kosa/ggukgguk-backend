@@ -45,9 +45,9 @@ public class SecurityUserDetails extends User implements UserDetails {
 			role = authority.getAuthority(); // 이 서비스에서는 1계정당 1권한이므로 한 번만 루프를 돌게 됨. 덮어써도 무방.
 		}
 			
-		boolean isAdmin = MemberRoleEnum.valueOfLabel(role).isAdmin();
+		String roleLabel = MemberRoleEnum.valueOfLabel(role).label();
 		
-		member.setMemberIsAdmin(isAdmin);
+		member.setMemberAuthority(roleLabel);
 	}
 
 	@Override

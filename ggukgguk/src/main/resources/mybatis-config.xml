@@ -12,6 +12,17 @@
 	 <typeAliases>
 	 	<typeAlias type="com.ggukgguk.api.member.vo.Member" alias="Member"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.Notice" alias="Notice"/>
-	 	<typeAlias type="com.ggukgguk.api.admin.vo.NoticeOption" alias="NoticeOption"/>
+	 	<typeAlias type="com.ggukgguk.api.common.vo.PageOption" alias="PageOption"/>
+	 	<typeAlias type="com.ggukgguk.api.record.vo.Record" alias="Record"/>
+	 	<typeAlias type="com.ggukgguk.api.record.vo.MediaFile" alias="MediaFile"/>
+	 	<typeAlias type="com.ggukgguk.api.record.vo.RecordSearch" alias="RecordSearch"/>
+	 	<typeAlias type="com.ggukgguk.api.record.vo.Reply" alias="Reply"/>
+	 	<typeAlias type="com.ggukgguk.api.record.vo.ReplyNickname" alias="ReplyNickname"/>
+	 	<typeAlias type="com.ggukgguk.api.diary.vo.Diary" alias="Diary"/>
+	 	<typeAlias type="com.ggukgguk.api.diary.vo.DiarySearch" alias="DiarySearch"/>
+	 	<typeAlias type="com.ggukgguk.api.diary.vo.DiaryMonth" alias="DiaryMonth"/>
+	 	<typeAlias type="com.ggukgguk.api.diary.vo.DiaryRecord" alias="DiaryRecord"/>
+	 	<typeAlias type="com.ggukgguk.api.diary.vo.DiaryKeyword" alias="DiaryKeyword"/>
+	 	<typeAlias type="com.ggukgguk.api.diary.vo.DiaryColor" alias="DiaryColor"/>
 	 </typeAliases>
 </configuration>

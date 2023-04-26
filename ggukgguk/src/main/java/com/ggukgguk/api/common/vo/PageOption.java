@@ -1,20 +1,19 @@
-package com.ggukgguk.api.admin.vo;
+package com.ggukgguk.api.common.vo;
 
 import lombok.Data;
-import lombok.Getter;
 
 @Data
-public class NoticeOption {
+public class PageOption {
 
-	private int page;
-	private int size;
-	private int skip; // 스킵 할 게시물 수( (pageNum-1) * amount )
+	int page;
+	int size;
+	int skip; 
 	
-	public NoticeOption() {
+	public PageOption() {
 		this(1,  10);
 	}
 	
-	public NoticeOption(int page, int size) {
+	public PageOption(int page, int size) {
 		this.page = page;
 		this.size = size;
 		computeSkip();

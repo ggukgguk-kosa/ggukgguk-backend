@@ -22,6 +22,9 @@
          <list>
             <value>classpath:mappers/memberMapper.xml</value>
             <value>classpath:mappers/noticeMapper.xml</value>
+            <value>classpath:mappers/recordMapper.xml</value>
+            <value>classpath:mappers/replyMapper.xml</value>
+            <value>classpath:mappers/diaryMapper.xml</value>
          </list>
       </property>
    </bean>
@@ -30,4 +33,9 @@
       class="org.mybatis.spring.SqlSessionTemplate">
       <constructor-arg ref="sqlSessionFactory" />
    </bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<constructor-arg ref="dataSource" />
+	</bean>
 </beans>
