@@ -38,58 +38,60 @@ public class DiaryController {
 		BasicResp<Object> respBody;	
 		
 		if(diarySearch.getDiaryYear()==null) {
-			log.debug("�떎�씠�뼱由� 由ъ뒪�듃 議고쉶 �떎�뙣1");
-			respBody = new BasicResp<Object>("error", "�뿰�룄媛� 鍮꾩뼱�엳�뒿�땲�떎.", null);		
+			log.debug("다이어리 리스트 조회 실패1");
+			respBody = new BasicResp<Object>("error", "연도가 비어있습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		} else if(diarySearch.getDiaryYear()!=null && diarySearch.getDiaryMonth()==null) {
 			List<Diary> diaryList = service.getDiaries(diarySearch);
 			if (diaryList != null) {
-				log.debug("�떎�씠�뼱由� 由ъ뒪�듃 議고쉶 �꽦怨�2");
+				log.debug("다이어리 리스트 조회 성공2");
 				respBody = new BasicResp<Object>("success", null, diaryList);
 				return ResponseEntity.ok(respBody);
 			} else {
-				log.debug("�떎�씠�뼱由� 由ъ뒪�듃 議고쉶 �떎�뙣2");
-				respBody = new BasicResp<Object>("error", "�떎�씠�뼱由� 議고쉶�뿉 �떎�뙣�븯���뒿�땲�떎.", null);		
-				return ResponseEntity.badRequest().body(respBody);
+				log.debug("다이어리 리스트 조회 실패2");
+				respBody = new BasicResp<Object>("error", "해당 연도의 다이어리가 없습니다.", null);		
+				return ResponseEntity.ok(respBody);
 			}
 		} else if(diarySearch.getDiaryYear()!=null && diarySearch.getDiaryMonth()!=null) {
 			DiaryMonth diaryMonth = service.getDiary(diarySearch);
 			log.debug(diaryMonth);
 			if (diaryMonth != null) {
-				log.debug("�떎�씠�뼱由� 由ъ뒪�듃 議고쉶 �꽦怨�3");
+				log.debug("다이어리 리스트 조회 성공3");
 				respBody = new BasicResp<Object>("success", null, diaryMonth);
 				return ResponseEntity.ok(respBody);
 			} else {
-				log.debug("�떎�씠�뼱由� 由ъ뒪�듃 議고쉶 �떎�뙣3");
-				respBody = new BasicResp<Object>("error", "�떎�씠�뼱由� 議고쉶�뿉 �떎�뙣�븯���뒿�땲�떎.", null);		
-				return ResponseEntity.badRequest().body(respBody);
+				log.debug("다이어리 리스트 조회 실패3");
+				respBody = new BasicResp<Object>("error", "해당 월의 다이어리가 없습니다.", null);		
+				return ResponseEntity.ok(respBody);
 			}
 		} else {
-			log.debug("�떎�씠�뼱由� 由ъ뒪�듃 議고쉶 �떎�뙣4");
-			respBody = new BasicResp<Object>("error", "�떎�씠�뼱由� 議고쉶�뿉 �떎�뙣�븯���뒿�땲�떎.", null);		
+			log.debug("다이어리 리스트 조회 실패4");
+			respBody = new BasicResp<Object>("error", "다이어리 조회에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
+		
 	}
 	
-	// 異붿쿇 而щ윭 議고쉶
+	// 추천 컬러 조회
 	@GetMapping("/{diaryId}")
 	public ResponseEntity<?> getColors(@PathVariable int diaryId){
 		
 		BasicResp<Object> respBody;	
 		List<DiaryColor> colorList = service.getColors(diaryId);
 		if (colorList != null) {
-			log.debug("�깋�긽 由ъ뒪�듃 議고쉶 �꽦怨�");
+			log.debug("색상 리스트 조회 성공");
 			respBody = new BasicResp<Object>("success", null, colorList);
 			return ResponseEntity.ok(respBody);
 		} else {
-			log.debug("�깋�긽 由ъ뒪�듃 議고쉶 �떎�뙣");
-			respBody = new BasicResp<Object>("error", "異붿쿇 �깋�긽 議고쉶�뿉 �떎�뙣�븯���뒿�땲�떎.", null);		
+			log.debug("색상 리스트 조회 실패");
+			respBody = new BasicResp<Object>("error", "추천 색상 조회에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
+		
 	}
 	
 	
-	// 硫붿씤 而щ윭 �닔�젙
+	// 메인 컬러 수정
 	@PutMapping("/{diaryId}")
 	public ResponseEntity<?> editDiary(@PathVariable int diaryId, @RequestBody Diary diary){
 		
@@ -99,12 +101,12 @@ public class DiaryController {
 		boolean result = service.editDiary(diary);
 		
 		if(result) {
-			log.debug("�떎�씠�뼱由� �닔�젙 �꽦怨�");
-			respBody = new BasicResp<Object>("success", "�깋�긽 �닔�젙�뿉 �꽦怨듯뻽�뒿�땲�떎", null);
+			log.debug("다이어리 수정 성공");
+			respBody = new BasicResp<Object>("success", "색상 수정에 성공했습니다", null);
 			return ResponseEntity.ok(respBody);
 		} else {
-			log.debug("寃뚯떆湲� �옉�꽦 �떎�뙣");
-			respBody = new BasicResp<Object>("error", "�깋�긽 �닔�젙�뿉 �떎�뙣�븯���뒿�땲�떎.", null);		
+			log.debug("게시글 작성 실패");
+			respBody = new BasicResp<Object>("error", "색상 수정에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
 		

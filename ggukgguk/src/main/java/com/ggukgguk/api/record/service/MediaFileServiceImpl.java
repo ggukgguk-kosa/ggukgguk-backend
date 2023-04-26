@@ -34,6 +34,7 @@ public class MediaFileServiceImpl implements MediaFileService {
 	@Override
 	public boolean saveFile(MultipartFile file, String subDir, String saveName) {
 		File saveFile = new File(baseDir + "/" + subDir + "/" + saveName);
+		
 		try {
 			file.transferTo(saveFile);
 			log.debug("파일 저장 성공");
