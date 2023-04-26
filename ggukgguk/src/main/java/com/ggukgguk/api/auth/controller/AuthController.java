@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.ggukgguk.api.admin.vo.NoticeOption;
 import com.ggukgguk.api.auth.service.AuthService;
 import com.ggukgguk.api.auth.service.OAuthService;
 import com.ggukgguk.api.auth.vo.AuthTokenPayload;
 import com.ggukgguk.api.common.vo.BasicResp;
+import com.ggukgguk.api.common.vo.PageOption;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.service.MemberService;
 import com.ggukgguk.api.member.vo.Member;
