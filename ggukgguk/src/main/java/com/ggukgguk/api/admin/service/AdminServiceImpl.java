@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ggukgguk.api.admin.dao.AdminDao;
 import com.ggukgguk.api.admin.vo.Notice;
-import com.ggukgguk.api.admin.vo.NoticeOption;
+import com.ggukgguk.api.common.vo.PageOption;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -54,13 +54,18 @@ public class AdminServiceImpl implements AdminService {
     }
 
 	@Override
-	public List<Notice> getListPaging(NoticeOption option) {
+	public List<Notice> getListPaging(PageOption option) {
 		return dao.pagingInsertBoard(option);
 	}
 	
 	@Override
 	public int getNoticeCount() {
 		return dao.totalCount();
+	}
+
+	@Override
+	public List<Notice> getMediaList(PageOption option) {
+		return dao.selectMediaList(option);
 	}
 
 }

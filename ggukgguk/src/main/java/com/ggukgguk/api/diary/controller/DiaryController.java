@@ -69,7 +69,6 @@ public class DiaryController {
 			respBody = new BasicResp<Object>("error", "�떎�씠�뼱由� 議고쉶�뿉 �떎�뙣�븯���뒿�땲�떎.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
-		
 	}
 	
 	// 異붿쿇 而щ윭 議고쉶

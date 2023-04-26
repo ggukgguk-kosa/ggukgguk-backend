@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.ggukgguk.api.admin.vo.Notice;
-import com.ggukgguk.api.admin.vo.NoticeOption;
+import com.ggukgguk.api.common.vo.PageOption;
 
 @Repository
 public class AdminDaoImpl implements AdminDao {
@@ -48,7 +48,7 @@ public class AdminDaoImpl implements AdminDao {
             throw new Exception();
         }
     }
-    public List<Notice> pagingInsertBoard(NoticeOption option) {
+    public List<Notice> pagingInsertBoard(PageOption option) {
 		
 		return session.selectList("com.ggukgguk.api.Notice.selectPage",option);
 	}
@@ -56,6 +56,11 @@ public class AdminDaoImpl implements AdminDao {
 	@Override
 	public int totalCount() {
 		return session.selectOne("com.ggukgguk.api.Notice.increaseViewCnt");
+	}
+
+	@Override
+	public List<Notice> selectMediaList(PageOption option) {
+		return session.selectList("com.ggukgguk.api.Notice.selectPage",option);
 	}
 
 

@@ -45,7 +45,7 @@
 		notice_created_at DESC
 	</select>
 
-	<select id="selectPage" parameterType="NoticeOption" resultType="Notice">
+	<select id="selectPage" parameterType="PageOption" resultType="Notice">
 		SELECT
 		notice_id, notice_title, notice_content, notice_created_at
 		FROM notice
