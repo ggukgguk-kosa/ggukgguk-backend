@@ -56,8 +56,8 @@
    <insert id="insertMedia" parameterType="MediaFile">
        <![CDATA[   
          INSERT INTO media_file
-         (media_file_id, media_type_id, media_file_processed)
-         VALUES (#{mediaFileId}, #{mediaTypeId}, #{mediaFileProcessed})
+         (media_file_id, media_type_id, media_file_blocked, media_file_checked)
+         VALUES (#{mediaFileId}, #{mediaTypeId}, #{mediaFileBlocked}, #{mediaFileChecked})
       ]]>
    </insert>
    

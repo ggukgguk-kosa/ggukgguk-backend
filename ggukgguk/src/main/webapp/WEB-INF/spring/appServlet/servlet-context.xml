@@ -24,7 +24,7 @@
 	</beans:bean>
 	
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<beans:property name="maxUploadSize" value="10000000" />
+		<beans:property name="maxUploadSize" value="1000000000" />
 		<beans:property name="defaultEncoding" value="utf-8" />
 	</beans:bean>
 	
@@ -34,5 +34,8 @@
 
 	<!-- Global Properties -->
 	<context:property-placeholder
-		location="classpath:config/database.properties, classpath:config/auth.properties, classpath:config/file.properties" />
+		location="classpath:config/database.properties,
+		classpath:config/auth.properties,
+		classpath:config/file.properties,
+		classpath:config/mail.properties" />
 </beans:beans>
