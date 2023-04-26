@@ -19,7 +19,7 @@
   
   <select id="selectList" parameterType="Integer" resultType="replyNickname">
        <![CDATA[   
-        SELECT reply.*, member.member_nickname
+        SELECT reply.*, member.member_nickname, member.member_id
 		FROM reply
 		JOIN member
 		ON reply.member_id=member.member_id
@@ -41,5 +41,4 @@
          WHERE reply_id=#{replyId}
       ]]>
    </delete>
-  
 </mapper>

@@ -19,5 +19,5 @@ public class ReplyNickname {
 	private Date replyDate;
 	private int recordId;
 	private String memberNickname;
-	
+	private String memberId;
 }
