@@ -70,7 +70,7 @@
      ]]>
 	</update>
 	<!-- 전체 회원 리스트 조회 (관리자용) -->
-	<select id="totalMemberList" parameterType="NoticeOption"
+	<select id="totalMemberList" parameterType="PageOption"
 		resultMap="AdminMemberResultSet">
 	<![CDATA[
 		SELECT member_id, member_name, member_nickname, member_email,
@@ -81,7 +81,7 @@
 	]]>
 	</select>
 	<!-- 페이징 처리를 하기 위한 전체 회원 수 -->
-	<select id="selectMemberTotal" parameterType="NoticeOption"
+	<select id="selectMemberTotal" parameterType="PageOption"
 		resultType="int">
 		<![CDATA[   
 			SELECT COUNT(*) FROM member
