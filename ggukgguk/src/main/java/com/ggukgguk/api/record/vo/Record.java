@@ -4,10 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-<<<<<<< HEAD
-=======
-import com.ggukgguk.api.record.vo.ReplyNickname;
->>>>>>> 50eba2ab7301fdf647dc0a28790cdf2a0cc0d8c2
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
