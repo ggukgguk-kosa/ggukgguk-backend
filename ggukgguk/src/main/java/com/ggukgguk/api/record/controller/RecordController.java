@@ -103,7 +103,7 @@ public class RecordController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> addRecord(@RequestParam("mediaFile") MultipartFile media,
+	public ResponseEntity<?> addRecord(@RequestParam(value = "mediaFile", required = false) MultipartFile media,
 			@ModelAttribute Record record,
 			Authentication authentication) {
 		
@@ -118,6 +118,7 @@ public class RecordController {
 		}
 		
 		boolean result = service.saveMediaAndRecord(media, record);
+		
 		if (result) {
 			log.debug("조각 INSERT 성공");
 			respBody = new BasicResp<Object>("success", null, null);
