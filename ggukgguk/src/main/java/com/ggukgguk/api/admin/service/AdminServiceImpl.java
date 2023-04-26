@@ -7,33 +7,65 @@ import org.springframework.stereotype.Service;
 
 import com.ggukgguk.api.admin.dao.AdminDao;
 import com.ggukgguk.api.admin.vo.Notice;
-import com.ggukgguk.api.admin.vo.NoticeOption;
-import com.ggukgguk.api.common.vo.TotalAndListPayload;
+import com.ggukgguk.api.common.vo.PageOption;
 
 @Service
 public class AdminServiceImpl implements AdminService {
-
 	@Autowired
 	AdminDao dao;
+
+    public boolean addNotice(Notice notice) {
+        try {
+            dao.insertNotice(notice);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean readNotice(int noticeId) {
+        try {
+            dao.readNotice(noticeId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean updateNotice(int noticeId) {
+        try {
+            dao.updateNotice(noticeId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean deleteNotice(int noticeId) {
+        try {
+            dao.deleteNotice(noticeId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+	@Override
+	public List<Notice> getListPaging(PageOption option) {
+		return dao.pagingInsertBoard(option);
+	}
 	
 	@Override
-	public boolean addNotice(Notice notice) {
-		try {
-			dao.insertNotice(notice);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+	public int getNoticeCount() {
+		return dao.totalCount();
 	}
 
 	@Override
-	public TotalAndListPayload getNoticeList(NoticeOption option) {
-		TotalAndListPayload payload = new TotalAndListPayload();
-		payload.setList(dao.selectNoticeList(option));
-		payload.setTotal(dao.selectNoticeListTotal(option));
-		
-		return payload;
+	public List<Notice> getMediaList(PageOption option) {
+		return dao.selectMediaList(option);
 	}
 
 }

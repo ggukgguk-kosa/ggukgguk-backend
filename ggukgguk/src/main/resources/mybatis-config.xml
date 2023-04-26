@@ -12,7 +12,7 @@
 	 <typeAliases>
 	 	<typeAlias type="com.ggukgguk.api.member.vo.Member" alias="Member"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.Notice" alias="Notice"/>
-	 	<typeAlias type="com.ggukgguk.api.admin.vo.NoticeOption" alias="NoticeOption"/>
+	 	<typeAlias type="com.ggukgguk.api.common.vo.PageOption" alias="PageOption"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.Record" alias="Record"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.MediaFile" alias="MediaFile"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.RecordSearch" alias="RecordSearch"/>

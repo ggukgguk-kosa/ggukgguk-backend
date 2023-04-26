@@ -49,8 +49,8 @@ public class DiaryController {
 				return ResponseEntity.ok(respBody);
 			} else {
 				log.debug("다이어리 리스트 조회 실패2");
-				respBody = new BasicResp<Object>("error", "다이어리 조회에 실패하였습니다.", null);		
-				return ResponseEntity.badRequest().body(respBody);
+				respBody = new BasicResp<Object>("error", "해당 연도의 다이어리가 없습니다.", null);		
+				return ResponseEntity.ok(respBody);
 			}
 		} else if(diarySearch.getDiaryYear()!=null && diarySearch.getDiaryMonth()!=null) {
 			DiaryMonth diaryMonth = service.getDiary(diarySearch);
@@ -61,8 +61,8 @@ public class DiaryController {
 				return ResponseEntity.ok(respBody);
 			} else {
 				log.debug("다이어리 리스트 조회 실패3");
-				respBody = new BasicResp<Object>("error", "다이어리 조회에 실패하였습니다.", null);		
-				return ResponseEntity.badRequest().body(respBody);
+				respBody = new BasicResp<Object>("error", "해당 월의 다이어리가 없습니다.", null);		
+				return ResponseEntity.ok(respBody);
 			}
 		} else {
 			log.debug("다이어리 리스트 조회 실패4");

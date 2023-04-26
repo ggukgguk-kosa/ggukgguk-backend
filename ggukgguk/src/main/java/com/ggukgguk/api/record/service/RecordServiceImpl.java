@@ -49,7 +49,7 @@ public class RecordServiceImpl implements RecordService{
 	@Override
 	public boolean saveMediaAndRecord(MultipartFile media, Record record) {
 		MediaFile metadata = null;
-		
+
 		if (media != null) {
 			String contentType = media.getContentType();
 			System.out.println(contentType);
@@ -58,7 +58,7 @@ public class RecordServiceImpl implements RecordService{
 			String saveName = (UUID.randomUUID()).toString();
 			metadata = new MediaFile(saveName, format, false, false);
 			record.setMediaFileId(saveName);
-			
+
 			boolean fileSaveResult = mediaFileService.saveFile(media, format, saveName);
 			if (!fileSaveResult) return false;
 		}
