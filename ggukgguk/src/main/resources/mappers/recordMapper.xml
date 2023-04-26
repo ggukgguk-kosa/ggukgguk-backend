@@ -11,8 +11,9 @@
 	    <id property="recordId" column="record_id" />
 	    <result property="memberId" column="member_id" />
 	    <result property="recordComment" column="record_comment" />
-	    <result property="recordCreateAt" column="record_created_at" />
+	    <result property="recordCreatedAt" column="record_created_at" />
 	    <result property="mediaFileId" column="media_file_id" />
+	    <result property="mediaTypeId" column="media_type_id" />
 	    <result property="recordLocationY" column="record_location_y" />
 	    <result property="recordLocationX" column="record_location_x" />
 	    <result property="recordIsOpen" column="record_is_open" />
@@ -28,19 +29,21 @@
 	</resultMap>
 
    <select id="selectList" parameterType="RecordSearch" resultMap="RecordResultSet">  
-			SELECT record.*, reply.*, member.member_nickname
+			SELECT record.*, reply.*, member.member_nickname, media_file.media_type_id
 			FROM record
+			LEFT JOIN media_file ON record.media_file_id = media_file.media_file_id
 			LEFT JOIN reply ON record.record_id = reply.record_id
 			LEFT JOIN member ON reply.member_id = member.member_id
  			<where>
  				record.member_id=#{memberId}
  				<if test="startDate != null">
- 					AND record.record_created_at BETWEEN DATE_SUB(#{startDate}, INTERVAL 5 DAY) AND #{startDate}
+ 					AND record.record_created_at BETWEEN DATE_SUB(#{startDate}, INTERVAL 4 DAY) AND DATE_ADD(#{startDate}, INTERVAL 1 DAY)
  				</if>
  				<if test="keyword != null">
  					AND record.record_comment LIKE CONCAT('%', #{keyword}, '%')
  				</if>
  			</where>
+ 			ORDER BY record.record_created_at DESC
    </select>
    
    <delete id="delete" parameterType="Integer">
