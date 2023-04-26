@@ -12,11 +12,14 @@
 		 INSERT INTO reply(reply_content, reply_date, record_id, member_id)
          VALUES(#{replyContent}, NOW(), #{recordId}, #{memberId})
  		]]>
+ 		<selectKey resultType="int" keyProperty="replyId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
    </insert>
   
   <select id="selectList" parameterType="Integer" resultType="replyNickname">
        <![CDATA[   
-        SELECT reply.*, member.member_nickname
+        SELECT reply.*, member.member_nickname, member.member_id
 		FROM reply
 		JOIN member
 		ON reply.member_id=member.member_id
@@ -38,5 +41,4 @@
          WHERE reply_id=#{replyId}
       ]]>
    </delete>
-  
 </mapper>
