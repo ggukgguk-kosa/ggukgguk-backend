@@ -20,6 +20,7 @@ public class Record {
 	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")
 	private Date recordCreatedAt;
 	private String mediaFileId;
+	private String mediaTypeId;
 	private double recordLocationY;
 	private double recordLocationX;
 	private boolean recordIsOpen;
