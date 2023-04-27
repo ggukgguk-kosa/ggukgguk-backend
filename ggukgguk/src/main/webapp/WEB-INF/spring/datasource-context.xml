@@ -23,13 +23,9 @@
             <value>classpath:mappers/adminMapper.xml</value>
             <value>classpath:mappers/replyMapper.xml</value>
             <value>classpath:mappers/diaryMapper.xml</value>
-<<<<<<< HEAD
             <value>classpath:mappers/recordMapper.xml</value>
             <value>classpath:mappers/memberMapper.xml</value>
-            
-=======
             <value>classpath:mappers/notificationMapper.xml</value>
->>>>>>> 1e21cd3d86dffd205a1a8f7308684012ea741a78
          </list>
       </property>
    </bean>
