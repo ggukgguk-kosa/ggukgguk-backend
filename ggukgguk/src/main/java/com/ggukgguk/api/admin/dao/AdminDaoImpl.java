@@ -6,6 +6,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.ggukgguk.api.admin.vo.Content;
+import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
 
@@ -15,8 +17,8 @@ public class AdminDaoImpl implements AdminDao {
     SqlSession session;
    
     @Override
-    public void insertNotice(Notice notice) throws Exception {
-        int affectedRow = session.insert("com.ggukgguk.api.Notice.insert", notice);
+    public void noticeInsert(Notice notice) throws Exception {
+        int affectedRow = session.insert("com.ggukgguk.api.Admin.noticeInsert", notice);
         
         if (affectedRow != 1) {
             throw new Exception();
@@ -24,8 +26,8 @@ public class AdminDaoImpl implements AdminDao {
     }
     
     @Override
-    public void readNotice(int noticeId) throws Exception {
-        int affectedRow = session.selectOne("com.ggukgguk.api.Notice.select", noticeId);
+    public void noticeSelect(int noticeId) throws Exception {
+        int affectedRow = session.selectOne("com.ggukgguk.api.Admin.noticeSelect", noticeId);
         
         if (affectedRow != 1) {
             throw new Exception();
@@ -34,7 +36,7 @@ public class AdminDaoImpl implements AdminDao {
     
     @Override
     public void updateNotice(int noticeId) throws Exception {
-        int affectedRow = session.update("com.ggukgguk.api.Notice.update", noticeId);
+        int affectedRow = session.update("com.ggukgguk.api.Admin.noticeUpdate", noticeId);
         
         if (affectedRow != 1) {
             throw new Exception();
@@ -42,27 +44,39 @@ public class AdminDaoImpl implements AdminDao {
     }
     @Override
     public void deleteNotice(int noticeId) throws Exception {
-        int affectedRow = session.delete("com.ggukgguk.api.Notice.delete", noticeId);
+        int affectedRow = session.delete("com.ggukgguk.api.Admin.noticeDelete", noticeId);
         
         if (affectedRow != 1) {
             throw new Exception();
         }
     }
-    public List<Notice> pagingInsertBoard(PageOption option) {
+    public List<Notice> noticeSelectPaging(PageOption option) {
 		
-		return session.selectList("com.ggukgguk.api.Notice.selectPage",option);
+		return session.selectList("com.ggukgguk.api.Admin.noticeSelectPage",option);
 	}
     
+
 	@Override
-	public int totalCount() {
-		return session.selectOne("com.ggukgguk.api.Notice.increaseViewCnt");
+	public List<Content> contentSelectPaging(PageOption option) {
+		return session.selectList("com.ggukgguk.api.Admin.contentSelectList",option);
 	}
 
 	@Override
-	public List<Notice> selectMediaList(PageOption option) {
-		return session.selectList("com.ggukgguk.api.Notice.selectPage",option);
+	public List<Member> memberSelectPaging(PageOption option) {
+		return session.selectList("com.ggukgguk.api.Admin.memberSelectList",option);
 	}
 
+	// 회원 삭제
+	@Override
+	public void memberDelete(String memberId) throws Exception {
+        int affectedRow = session.delete("com.ggukgguk.api.Admin.memberDelete", memberId);
+        
+        if (affectedRow != 1) {
+            throw new Exception();
+        }
+	}
+	
+	
 
 }
 

@@ -4,18 +4,77 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ggukgguk.api.Notice">
+<mapper namespace="com.ggukgguk.api.Admin">
+ 	<!-- 공지사항  관련 mapper-->
+ 	
+	<select id="noticeSelect" parameterType="int" resultType="int">
+		SELECT
+		notice_id, notice_title, notice_content, notice_created_at,
+		notice_is_emergency
+		FROM notice
+		WHERE notice_id = #{noticeId}
+	</select>
 
-<!-- select * from record r
-left join media_file m
-on r.media_file_id = m.media_file_id; -->
+	<insert id="noticeInsert" parameterType="Notice">
+		INSERT INTO notice
+		(notice_title, notice_content)
+		VALUES
+		(#{noticeTitle}, #{noticeContent})
+	</insert>
 
-	<select id="selectList" resultType="Notice">
-		select * from record r
-		left join media_file m
-		on r.media_file_id = m.media_file_id
-				ORDER BY notice_created_at DESC
+	<update id="noticeUpdate" parameterType="int">
+		UPDATE notice
+		SET notice_title= #{noticeTitle},
+		notice_content = #{noticeContent}
+		WHERE notice_id =#{noticeId}
+	</update>
+
+	<delete id="noticeDelete">
+		DELETE FROM notice
+		WHERE notice_id = #{noticeId}
+	</delete>
+
+	<select id="noticeSelectList" resultType="Notice">
+		SELECT notice_id,
+		notice_title, notice_content, notice_created_at
+		FROM notice
+		ORDER BY
+		notice_created_at DESC
+	</select>
+
+	<select id="noticeSelectPage" parameterType="PageOption" resultType="Notice">
+		SELECT
+		notice_id, notice_title, notice_content, notice_created_at
+		FROM notice
+		ORDER BY notice_created_at DESC
 		LIMIT #{skip}, #{size}
 	</select>
+
+	<!-- 컨텐츠관리 관련 mapper -->
+    <select id="contentSelectList" parameterType="PageOption" resultType="Content">
+		SELECT record_id, member_id, record_created_at, record_comment,
+		media_file_blocked, media_file_checked
+		FROM record r
+		LEFT JOIN media_file m
+		ON r.media_file_id = m.media_file_id
+		ORDER BY record_created_at DESC
+		LIMIT #{skip}, #{size};
+	</select>
 	
+	<!-- 회원관리 관련 mapper -->		
+  	<select id="memberSelectList" parameterType="PageOption" resultType="Content">
+  		SELECT member_id, member_name, member_email, member_phone, member_birth
+		FROM member
+		
+  	</select> 
+  		<update id="memberDelete" parameterType="java.lang.String">
+		UPDATE member
+		SET member_pw = '',
+		    member_name = '',
+		    member_nickname = '',
+		    member_email = NULL,
+		    member_phone = '',
+		    member_activated = 0
+		WHERE member_id = #{memberId};	
+		</update>
 </mapper>
