@@ -18,6 +18,7 @@ public class ReplyNickname {
 	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")
 	private Date replyDate;
 	private int recordId;
+	private String memberId;
 	private String memberNickname;
 	
 }

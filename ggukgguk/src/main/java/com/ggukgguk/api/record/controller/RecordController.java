@@ -210,7 +210,10 @@ public class RecordController {
 	@PutMapping("/reply/{replyId}")
 	public ResponseEntity<?> editReply(@PathVariable int replyId, @RequestBody Reply reply){
 		
+		log.debug("여기로 연결되니?");
+		log.debug(reply);
 		reply.setReplyId(replyId);
+		log.debug(reply);
 		BasicResp<Object> respBody;
 		List<ReplyNickname> replyList = rservice.editReply(reply);
 		
@@ -232,6 +235,7 @@ public class RecordController {
 		reply.setReplyId(replyId);
 		BasicResp<Object> respBody;
 		List<ReplyNickname> replyList = rservice.removeReply(reply);
+		log.debug("삭제컨트롤러");
 		
 		if (replyList != null) {
 			log.debug("댓글 삭제 성공");
