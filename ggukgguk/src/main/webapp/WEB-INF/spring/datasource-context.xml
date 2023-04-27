@@ -20,11 +20,12 @@
          value="classpath:mybatis-config.xml" />
       <property name="mapperLocations">
          <list>
-            <value>classpath:mappers/memberMapper.xml</value>
-            <value>classpath:mappers/noticeMapper.xml</value>
-            <value>classpath:mappers/recordMapper.xml</value>
+            <value>classpath:mappers/adminMapper.xml</value>
             <value>classpath:mappers/replyMapper.xml</value>
             <value>classpath:mappers/diaryMapper.xml</value>
+            <value>classpath:mappers/recordMapper.xml</value>
+            <value>classpath:mappers/memberMapper.xml</value>
+            
          </list>
       </property>
    </bean>

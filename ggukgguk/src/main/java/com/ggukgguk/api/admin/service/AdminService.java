@@ -2,25 +2,35 @@ package com.ggukgguk.api.admin.service;
 
 import java.util.List;
 
+import com.ggukgguk.api.admin.vo.Content;
+import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
 
 public interface AdminService {
 
-    public boolean addNotice(Notice notice);
+	// 공지사항 리스트 출력
+	public List<Notice> noticeSelectPage(PageOption option);
 
-	public boolean readNotice(int noticeId);
+	// 게시글 작성
+    public boolean noticeWrite(Notice notice);
 
-	public boolean updateNotice(int noticeId);
+    // 게시글 조회
+	public boolean noticeRead(int noticeId);
 
-	public boolean deleteNotice(int noticeId);
+	// 게시글 수정
+	public boolean noticeUpdate(int noticeId);
 
-	
-	public List<Notice> getListPaging(PageOption option);
+	// 게시글 삭제
+	public boolean noticeDelete(int noticeId);
 
-	public int getNoticeCount();
+	// 컨텐츠 리스트 출력
+	public List<Content> contentSelectPage(PageOption option);
 
-	public List<Notice> getMediaList(PageOption option);
+	public List<Member> memberSelectPage(PageOption option);
+
+	// 회원삭제
+	public boolean memberDelete(String memberId);
 	
 	
 }
