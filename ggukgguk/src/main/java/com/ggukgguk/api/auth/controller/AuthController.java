@@ -82,7 +82,8 @@ public class AuthController {
 	
 	// [사용형태]
 	// kauth.kakao.com/oauth/authorize?client_id={Rest_API키}&redirect_uri={Redirect URI 주소}&response_type=code
-	// kauth.kakao.com/oauth/authorize?client_id=88ae00c6ba4b777f197c6d3b5c972acd&redirect_uri=http://localhost:8080/api/auth/kakao&response_type=code
+	// kauth.kakao.com/oauth/authorize?client_id=88ae00c6ba4b777f197c6d3b5c972acd&redirect_uri=http://localhost:8080/api/auth/social/kakao&response_type=code
+
 	
 	// 위의 url을 실행하면 
 	// http://localhost:8080/api/auth/kakao?code= 카카오 서비스에서 준 인가 코드
@@ -115,7 +116,7 @@ public class AuthController {
 	// [사용형태]
 	// https://accounts.google.com/o/oauth2/auth?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile
 	// 1. 나의 ID와 리다이렉팅할 주소를 삽입  후 위 주소를 실행하면 리다이렉팅으로 인가 코드를 받음
-	// https://accounts.google.com/o/oauth2/auth?client_id=720876072203-9qs394kg6d2ekko35ln9h0pil109lvft.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/auth/google&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile
+	// https://accounts.google.com/o/oauth2/auth?client_id=720876072203-9qs394kg6d2ekko35ln9h0pil109lvft.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/auth/social/google&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile
 	// 2. 인가 코드 받음
 	// http://localhost:8080/api/auth/google?code={구글 인가 코드 }&scope=동의하는 범위 및 목록...
 	// http://localhost:8080/api/auth/google?code=4%2F0AVHEtk5QQtcheSNO6hMPC1Sh1gH5ht_shwjWwbCcZMFtH4qj1k10O5BchwxLMloQ-F8zGQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&authuser=0&prompt=none
@@ -124,18 +125,18 @@ public class AuthController {
 
 	// 구글 로그인 방식
 	@PostMapping("/google")
-	public ResponseEntity<?> googleCallback(@RequestParam String code) throws Exception {
+	public ResponseEntity<?> googleCallback(@RequestParam String code)  {
 		BasicResp<Object> respBody;
-		String access_Token = oauth.getGoogleAccessToken(code); // 권한 토큰 반환.
-		JsonNode resouce = oauth.getGoogleUserInfo(access_Token);//사용자 정보 반환
-
-		if (resouce != null) {
+//		String token = oauth.getGoogleAccessToken(code);
+//		JsonNode result = oauth.getGoogleUserInfo(token);
+		Boolean result = oauth.googleLogin(code);
+		if (result) {
 			log.debug("구글 정보 반환 성공");
-			respBody = new BasicResp<Object>("success", "구글 사용자 정보를 반환합니다.", resouce);
+			respBody = new BasicResp<Object>("success", "구글 사용자로 로그인합니다.", result);
 			return ResponseEntity.ok(respBody);
 		} else {
 			log.debug("구글 정보 반환 실패");
-			respBody = new BasicResp<Object>("error", "구글  사용자 정보 가져오기를 실패하였습니다.", null);
+			respBody = new BasicResp<Object>("error", "로그인 되지 않습니다.", null);
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}
@@ -155,5 +156,59 @@ public class AuthController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}
-
+	
+	// 아이디 중복 검사
+	@GetMapping("/exist/{memberId}")
+	public ResponseEntity<?> getduplicatecheckId(@PathVariable String memberId){
+		BasicResp<Object> respBody;
+		Member result = memberSerivce.findMemberById(memberId);
+		
+		if(!result.equals(null)) {
+			log.debug("아이디 중복");
+			respBody = new BasicResp<Object>("success", "아이디  중복 되었습니다.", result);
+			return ResponseEntity.ok(respBody);
+		}else {
+			log.debug("아이디 ");
+			respBody = new BasicResp<Object>("error", "아이디가 중복되지 않았습니다.", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	// 아이디 찾기 (이메일 주소로  DB에 있는 회원 ID찾기)
+	@GetMapping("/{memberEmail}")
+	public ResponseEntity<?> getMemberIdHandler(@PathVariable String memberEmail){
+		BasicResp<Object> respBody;
+		Member result = memberSerivce.getMemberByEmail(memberEmail);
+		
+		if(!result.equals(null)) {
+			log.debug("아이디 찾기 완료");
+			respBody = new BasicResp<Object>("success", "아이디 찾기 완료 하였습니다.", result);
+			return ResponseEntity.ok(respBody);
+		}else {
+			log.debug("아이디 찾기 실패");
+			respBody = new BasicResp<Object>("error", "아이디 찾기 실패하였습니다.", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	// 비밀번호 찾기 
+	@GetMapping("")
+	public ResponseEntity<?> getMemberIdHandler(@RequestParam String memberEmail, @RequestParam String memberId, @RequestBody Member member){
+		BasicResp<Object> respBody;
+		member.setMemberEmail(memberEmail);
+		member.setMemberId(memberId);
+		log.debug(member);
+		Boolean result = memberSerivce.getMemberByEmailandId(member);
+		
+		if(!result.equals(null)) {
+			log.debug("아이디 찾기 완료");
+			respBody = new BasicResp<Object>("success", "가입된 회원 입니다.", result);
+			return ResponseEntity.ok(respBody);
+		}else {
+			log.debug("아이디 찾기 실패");
+			respBody = new BasicResp<Object>("error", "가입된 회원이 아닙니다.", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
 }

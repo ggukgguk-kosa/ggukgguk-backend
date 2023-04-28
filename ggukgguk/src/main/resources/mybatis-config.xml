@@ -11,6 +11,8 @@
 	 
 	 <typeAliases>
 	 	<typeAlias type="com.ggukgguk.api.member.vo.Member" alias="Member"/>
+	 	<typeAlias type="com.ggukgguk.api.admin.vo.Content" alias="Content"/>
+	 	<typeAlias type="com.ggukgguk.api.admin.vo.Member" alias="MemberAdmin"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.Notice" alias="Notice"/>
 	 	<typeAlias type="com.ggukgguk.api.common.vo.PageOption" alias="PageOption"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.Record" alias="Record"/>
@@ -24,5 +26,8 @@
 	 	<typeAlias type="com.ggukgguk.api.diary.vo.DiaryRecord" alias="DiaryRecord"/>
 	 	<typeAlias type="com.ggukgguk.api.diary.vo.DiaryKeyword" alias="DiaryKeyword"/>
 	 	<typeAlias type="com.ggukgguk.api.diary.vo.DiaryColor" alias="DiaryColor"/>
+	 	<typeAlias type="com.ggukgguk.api.member.vo.FriendRequest" alias="FriendRequest"/>
+	 	<typeAlias type="com.ggukgguk.api.member.vo.Friend" alias="Friend"/>
+	 	<typeAlias type="com.ggukgguk.api.notification.vo.Notification" alias="Notification"/>
 	 </typeAliases>
 </configuration>
