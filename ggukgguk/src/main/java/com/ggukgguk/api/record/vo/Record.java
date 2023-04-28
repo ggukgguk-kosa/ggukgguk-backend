@@ -26,5 +26,6 @@ public class Record {
 	private boolean recordIsOpen;
 	private String recordShareTo;
 	private boolean recordShareAccepted;
+	private String mainColor;
 	private List<ReplyNickname> replyList;
 }
