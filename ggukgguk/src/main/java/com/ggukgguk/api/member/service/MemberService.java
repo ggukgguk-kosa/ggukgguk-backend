@@ -31,4 +31,6 @@ public interface MemberService {
 	public List<Member> findFriendList(String mymemberId);
 
 	public boolean breakFriend(String myMemberId, String toMemberid, Friend friend);
+
+	public boolean checkDuplicateId(String memberId);
 }

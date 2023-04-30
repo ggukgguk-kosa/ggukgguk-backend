@@ -111,7 +111,7 @@ public class OAuthService {
 	}
 
 	// 카카오 로그인 및 회원가입
-	public Boolean kakaoLogin(String code) {
+	public Member kakaoLogin(String code) {
 		// 1. 먼저 카카오 서비스에 로그인 후 사용자 이용동의를 커치면 카카오에서 인가 코드를 전송해주는 방식으로 진행.
 		// 2. 인가 코드를 통해 권한 토큰을 반환시킴.
 		String token = getKakaoAccessToken(code);
@@ -119,28 +119,26 @@ public class OAuthService {
 		JsonNode userInfo = getkakaoUserInfo(token);
 		log.debug(userInfo);
 		// (1) 사용자 아이디 값을 가져와서 DB에 있는 지 여부를 확인 [카카오 로그인]
-		Boolean memberCheck = socialEnrollconfirmation(userInfo);
-		if (memberCheck) {
-			return true;
+		Member memberCheck = socialEnrollconfirmation(userInfo);
+		if (memberCheck.getMemberId()!=null) {
+			return memberCheck;
 		}
 //			// (2) DB에 사용자 정보가 없으면 새롭게 가입시키면 됨.
 
-		KaKaoRegister(userInfo);
-		return true;
+		
+		return KaKaoRegister(userInfo);
 	}
 
 	// DB에서 소셜사용자가 정보가 이미 등록되어 있는지 확인.
-	public Boolean socialEnrollconfirmation(JsonNode userInfo) {
+	public Member socialEnrollconfirmation(JsonNode userInfo) {
 
 		String id = userInfo.get("id").asText().substring(0,10);
 		Member member = memberDao.selectMemberById(id);
-		if (member == null)
-			return false;
-		return true;
+		return member;
 	}
 
 	// 카카오 로그인한 정보를 꾹꾹 서비스에 등록.
-	public Boolean KaKaoRegister(JsonNode userInfo) {
+	public Member KaKaoRegister(JsonNode userInfo) {
 		Member member = new Member();
 		member.setMemberId(userInfo.get("id").asText().toString()); // 카카오에서 임의로 부여한 ID 값.
 		member.setMemberSocial("KAKAO"); // 사용한 소셜 정보
@@ -158,12 +156,13 @@ public class OAuthService {
 		log.debug(member);
 		try {
 			memberDao.insertMember(member);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} // 위 과정이 정상적으로 진행하면 회원가입이 정상적을 실행.
 
-		return true;
+		return memberDao.selectMemberById(member.getMemberId());
 	}
 
 	// 1. 구글 로그인 하면 구글에서 리다이렉트한 코드를 받아오기
@@ -179,7 +178,7 @@ public class OAuthService {
 		params.add("code", code);
 		params.add("client_id",googleSecretClientId);
 		params.add("client_secret",googleClientSecret);
-		params.add("redirectUri",googleRedirectUrl);
+		params.add("redirect_uri",googleRedirectUrl);
 		params.add("grant_type", "authorization_code"); // 어플리케이션이 authorization_code 유형을 사용한다고 명시.
 
 		HttpHeaders headers = new HttpHeaders();
@@ -199,21 +198,21 @@ public class OAuthService {
 		String resouceUri = "https://www.googleapis.com/oauth2/v2/userinfo";
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer" + accessToken);
+		headers.set("Authorization", "Bearer " + accessToken);
 		HttpEntity entity = new HttpEntity(headers);
 		return restTemplate.exchange(resouceUri, HttpMethod.GET, entity, JsonNode.class).getBody();
 	}
 
 	// 구글 로그인 및 회원 가입
-	public boolean googleLogin(String code) {
+	public Member googleLogin(String code) {
 		String token = getGoogleAccessToken(code);
 		JsonNode userInfo = getGoogleUserInfo(token);
-		Boolean memberCheck = socialEnrollconfirmation(userInfo);
-		if (memberCheck) {
-			return true;
+		Member memberCheck = socialEnrollconfirmation(userInfo);
+		if (memberCheck.getMemberId()!=null) {
+			return memberCheck;
 		} else {
-			googleRegister(userInfo);
-			return true;
+			
+			return googleRegister(userInfo);
 		}
 	}
 

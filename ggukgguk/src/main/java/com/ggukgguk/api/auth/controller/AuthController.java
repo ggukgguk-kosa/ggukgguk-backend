@@ -38,6 +38,7 @@ public class AuthController {
 	@Autowired
 	private MemberService memberSerivce;
 
+	
 	@Autowired
 	private OAuthService oauth;
 
@@ -96,12 +97,12 @@ public class AuthController {
 	// 참고 주소 : https://suyeoniii.tistory.com/79
 	
 	// 카카오 로그인 방식
-	@PostMapping(value = "/kakao") 
+	@GetMapping(value = "/social/kakao") 
 	public ResponseEntity<?> kakaoCallback(@RequestParam String code) throws Exception {
 		BasicResp<Object> respBody;
-		Boolean result = oauth.kakaoLogin(code);
+		Member result = oauth.kakaoLogin(code);
 		
-		if (result) {
+		if (result != null) {
 			log.debug("카카오  성공");
 			respBody = new BasicResp<Object>("success", "카카오 로그인 성공하였습니다.", result);
 			return ResponseEntity.ok(respBody);
@@ -124,13 +125,13 @@ public class AuthController {
 	// 참고, https://darrenlog.tistory.com/40
 
 	// 구글 로그인 방식
-	@PostMapping("/google")
+	@GetMapping("/social/google")
 	public ResponseEntity<?> googleCallback(@RequestParam String code)  {
 		BasicResp<Object> respBody;
 //		String token = oauth.getGoogleAccessToken(code);
 //		JsonNode result = oauth.getGoogleUserInfo(token);
-		Boolean result = oauth.googleLogin(code);
-		if (result) {
+		Member result = oauth.googleLogin(code);
+		if (result != null) {
 			log.debug("구글 정보 반환 성공");
 			respBody = new BasicResp<Object>("success", "구글 사용자로 로그인합니다.", result);
 			return ResponseEntity.ok(respBody);
@@ -146,6 +147,7 @@ public class AuthController {
 	public ResponseEntity<?> registerHandler(@RequestBody Member member) {
 		BasicResp<Object> respBody;
 		boolean result = memberSerivce.enrollMember(member);
+		log.debug(member);
 		if (result) {
 			log.debug("회원 가입 등록");
 			respBody = new BasicResp<Object>("success", "등록되었습니다.", result);
@@ -161,16 +163,16 @@ public class AuthController {
 	@GetMapping("/exist/{memberId}")
 	public ResponseEntity<?> getduplicatecheckId(@PathVariable String memberId){
 		BasicResp<Object> respBody;
-		Member result = memberSerivce.findMemberById(memberId);
+		boolean result = memberSerivce.checkDuplicateId(memberId);
 		
-		if(!result.equals(null)) {
+		if(result) {
 			log.debug("아이디 중복");
 			respBody = new BasicResp<Object>("success", "아이디  중복 되었습니다.", result);
 			return ResponseEntity.ok(respBody);
 		}else {
-			log.debug("아이디 ");
+			log.debug("아이디 중복되지 않았습니다.");
 			respBody = new BasicResp<Object>("error", "아이디가 중복되지 않았습니다.", null);
-			return ResponseEntity.badRequest().body(respBody);
+			return ResponseEntity.ok(respBody);
 		}
 	}
 	

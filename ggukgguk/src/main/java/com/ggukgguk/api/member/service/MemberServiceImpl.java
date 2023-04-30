@@ -36,10 +36,10 @@ public class MemberServiceImpl implements MemberService {
 
 	@Autowired
 	private MemberDao dao;
-	
+
 	@Autowired
 	private NotificationDao notificationDao;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncorder;
 
@@ -106,21 +106,23 @@ public class MemberServiceImpl implements MemberService {
 		try {
 			// 친구 요청
 			dao.requestFriend(request);
-			
-			// 위애서 친구요청한 테이블의 아이디 값을 가져오기  
-			int friendRequestId = (int)request.getFriendRequestId();
-			
-			// 친구 요청 알림 생성. 
-			Notification noti = new Notification(0, "FRIEND_REQUEST",new Date(), friendRequestId, request.getToMemberId(),0, "친구 요청을 하였습니다.");
-										     	  //알림 순번, 알림 타입 = "친구 요청". 알림 날짜 , 참조 아이디 = "방금 친구 요청 테이블 아이디", 수신자  = "전달받는 아이디", 수신 여부 = 0, 전달 메시지                
+
+			// 위애서 친구요청한 테이블의 아이디 값을 가져오기
+			int friendRequestId = (int) request.getFriendRequestId();
+
+			// 친구 요청 알림 생성.
+			Notification noti = new Notification(0, "FRIEND_REQUEST", new Date(), friendRequestId,
+					request.getToMemberId(), 0, "친구 요청을 하였습니다.");
+			// 알림 순번, 알림 타입 = "친구 요청". 알림 날짜 , 참조 아이디 = "방금 친구 요청 테이블 아이디", 수신자 = "전달받는
+			// 아이디", 수신 여부 = 0, 전달 메시지
 			notificationDao.createNotification(noti);
-			
+
 		} catch (Exception e) {
 			transactionManager.rollback(txStatus);
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		transactionManager.commit(txStatus);
 		return true;
 	}
@@ -150,7 +152,7 @@ public class MemberServiceImpl implements MemberService {
 			dao.newRelationship(friend);
 			// 친구 요청 테이블 삭제.
 			dao.deleteFriendRequeset(result.getFriendRequestId());
-			
+
 		} catch (Exception e) {
 			transactionManager.rollback(txStatus);
 			return false;
@@ -177,7 +179,7 @@ public class MemberServiceImpl implements MemberService {
 			return null;
 		}
 	}
-	
+
 	// 친구 차단
 	@Override
 	public boolean breakFriend(String myMemberId, String toMemberid, Friend friend) {
@@ -193,11 +195,22 @@ public class MemberServiceImpl implements MemberService {
 			friend.setMember2Id(myMemberId);
 			log.debug(friend);
 			dao.breakRelationship(friend);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			transactionManager.rollback(txStatus);
 			return false;
 		}
 		transactionManager.commit(txStatus);
 		return true;
+	}
+
+	// 아이디 중복조회
+	@Override
+	public boolean checkDuplicateId(String memberId) {
+		try {
+			Member member = dao.selectMemberById(memberId);
+			return member != null;
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 }
