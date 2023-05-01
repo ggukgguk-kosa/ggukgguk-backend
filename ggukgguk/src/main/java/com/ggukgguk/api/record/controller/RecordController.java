@@ -90,8 +90,7 @@ public class RecordController {
 		List<Record> recordList = null;
 		
 		if(recordSearch.getFriendId() != null ) {
-			int result = mservice.getFriendship(recordSearch);
-			if(result == 1) {
+			if(mservice.getFriendship(recordSearch)) {
 				recordList = service.getFreindRecordList(recordSearch);
 				log.debug(recordSearch);
 			} else {
@@ -131,6 +130,13 @@ public class RecordController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 		
+		
+		if(!mservice.getFriendship(record.getMemberId(), record.getRecordShareTo())) {
+			log.debug("조각 INSERT 실패 2");
+			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다. (SHARED_TO_SOMEONE_NOT_FRIEND)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
 		boolean result = service.saveMediaAndRecord(media, record);
 		
 		if (result) {
@@ -138,7 +144,7 @@ public class RecordController {
 			respBody = new BasicResp<Object>("success", null, null);
 			return ResponseEntity.ok(respBody);
 		} else {
-			log.debug("조각 INSERT 실패 2");
+			log.debug("조각 INSERT 실패 3");
 			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
