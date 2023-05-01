@@ -145,5 +145,14 @@
 		 DELETE FROM friend where member1_id = #{member1Id} and member2_id =#{member2Id}
 		]]>
 	</delete>
+	
+	<select id="selectFriendship" parameterType="RecordSearch"
+	resultType="Integer">
+	 <![CDATA[   
+       SELECT count(*) 
+       FROM friend
+       WHERE member1_id=#{memberId} AND member2_id=#{friendId}
+     ]]>
+	</select>
 
 </mapper>

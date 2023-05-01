@@ -6,6 +6,7 @@ import com.ggukgguk.api.common.vo.PageOption;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.record.vo.RecordSearch;
 
 public interface MemberDao {
 
@@ -36,6 +37,8 @@ public interface MemberDao {
 	public void breakRelationship(Friend friend) throws Exception;
 
 	public void deleteFriendRequeset(int friendRequestId) throws Exception;
+
+	public int selectFriendship(RecordSearch recordSearch);
 
 	
 }
