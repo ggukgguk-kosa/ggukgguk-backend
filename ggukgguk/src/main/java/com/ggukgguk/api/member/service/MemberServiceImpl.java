@@ -203,8 +203,19 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	@Override
-	public int getFriendship(RecordSearch recordSearch) {
+	public boolean getFriendship(RecordSearch recordSearch) {
 		
-		return dao.selectFriendship(recordSearch);
+		if (dao.selectFriendship(recordSearch) == 1) return true;
+		return false;
+	}
+
+	@Override
+	public boolean getFriendship(String member1, String member2) {
+		RecordSearch recordSearch = new RecordSearch(member1, null, null, member2);
+		recordSearch.setMemberId(member1);
+		recordSearch.setFriendId(member2);
+		
+		if (dao.selectFriendship(recordSearch) == 1) return true;
+		return false;
 	}
 }
