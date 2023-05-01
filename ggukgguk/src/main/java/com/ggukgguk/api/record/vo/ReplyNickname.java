@@ -20,5 +20,4 @@ public class ReplyNickname {
 	private int recordId;
 	private String memberId;
 	private String memberNickname;
-	private String memberId;
 }

@@ -52,4 +52,10 @@ public class RecordDaoImpl implements RecordDao{
 			throw new Exception();
 		}
 	}
+	
+	@Override
+	public List<Record> selectFriendRecordList(RecordSearch recordSearch) {
+		// TODO Auto-generated method stub
+		return session.selectList("com.ggukgguk.api.Record.selectFriendRecordList", recordSearch);
+	}
 }

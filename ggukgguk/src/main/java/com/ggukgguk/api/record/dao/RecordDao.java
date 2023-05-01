@@ -16,4 +16,6 @@ public interface RecordDao {
 
 	void insertRecord(Record record) throws Exception;
 
+	List<Record> selectFriendRecordList(RecordSearch recordSearch);
+
 }
