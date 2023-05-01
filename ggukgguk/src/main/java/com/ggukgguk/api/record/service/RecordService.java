@@ -17,4 +17,6 @@ public interface RecordService {
 	
 	public boolean saveMediaAndRecord(MultipartFile media, Record record);
 
+	public List<Record> getFreindRecordList(RecordSearch recordSearch);
+
 }

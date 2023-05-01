@@ -12,6 +12,7 @@ import com.ggukgguk.api.common.vo.PageOption;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.record.vo.RecordSearch;
 
 @Repository
 public class MemberDaoImpl implements MemberDao {
@@ -122,4 +123,9 @@ public class MemberDaoImpl implements MemberDao {
 		}
 	}
 	
+	@Override
+	public int selectFriendship(RecordSearch recordSearch) {
+		
+		return session.selectOne("com.ggukgguk.api.Member.selectFriendship", recordSearch);
+	}
 }
