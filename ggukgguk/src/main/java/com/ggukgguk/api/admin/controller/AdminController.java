@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ggukgguk.api.admin.service.AdminService;
 import com.ggukgguk.api.admin.vo.Content;
+import com.ggukgguk.api.admin.vo.Main;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.BasicResp;
@@ -39,6 +40,25 @@ public class AdminController {
 	@Autowired
 	DiaryService diaryService;
 
+	
+	// 전체 회원수 조회
+	@GetMapping("")
+	public ResponseEntity<?> noticeeadHandler() {
+		BasicResp<Object> respBody;
+		Main result = service.mainAdmin();
+		log.debug(result);
+		if (result != null) {
+			log.debug("admim page 조회 성공");
+			respBody = new BasicResp<Object>("success", "admim page 조회 성공", result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("admim page 조회 실패");
+			respBody = new BasicResp<Object>("error", "admim page 조회 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+
+	
 	// 전체 게시글 리스트 조회
 	@GetMapping("/notice/list")
 	public ResponseEntity<?> noticeSelectPageHandler(@RequestParam("page") int page, @RequestParam("size") int size) {

@@ -77,4 +77,24 @@
 		    member_activated = 0
 		WHERE member_id = #{memberId};	
 		</update>
+		
+	<!-- 관리자 메인 페이지 통계 -->
+	<select id="totalMemberSelect" resultType="int">
+		SELECT COUNT(*) AS member_count FROM member;	
+	</select>
+	
+	<select id="todayMemberSelect" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*) AS num_members FROM member
+			WHERE member_created_at >= CONCAT(CURDATE(), ' 00:00:00') AND member_created_at <= CONCAT(CURDATE(), ' ', TIME(NOW()));
+		]]>
+	</select>	
+	<select id="totalContentSelect" resultType="int">
+		SELECT COUNT(record_id) AS total_content FROM record
+	</select>
+	
+	<select id="todayContentSelect" resultType="int">
+		SELECT COUNT(record_id) as today_content FROM record
+		WHERE DATE(record_created_at) = CURDATE();
+	</select>
 </mapper>

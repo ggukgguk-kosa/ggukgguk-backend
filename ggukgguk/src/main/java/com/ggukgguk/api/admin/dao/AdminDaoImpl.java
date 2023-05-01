@@ -75,8 +75,24 @@ public class AdminDaoImpl implements AdminDao {
             throw new Exception();
         }
 	}
-	
-	
 
+	
+	
+	@Override
+	public int totalMember() {
+		return session.selectOne("com.ggukgguk.api.Admin.totalMemberSelect");
+	}
+	@Override
+	public int todayMember() {
+		return session.selectOne("com.ggukgguk.api.Admin.todayMemberSelect");
+	}
+	@Override
+	public int totalContent() {
+		return session.selectOne("com.ggukgguk.api.Admin.totalContentSelect");
+	}
+	@Override
+	public int todayContent() {
+		return session.selectOne("com.ggukgguk.api.Admin.todayContentSelect");
+	}
 }
 

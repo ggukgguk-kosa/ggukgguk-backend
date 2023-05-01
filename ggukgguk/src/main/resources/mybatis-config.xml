@@ -14,6 +14,7 @@
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.Content" alias="Content"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.Member" alias="MemberAdmin"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.Notice" alias="Notice"/>
+	 	<typeAlias type="com.ggukgguk.api.admin.vo.Main" alias="Main"/>
 	 	<typeAlias type="com.ggukgguk.api.common.vo.PageOption" alias="PageOption"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.Record" alias="Record"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.MediaFile" alias="MediaFile"/>

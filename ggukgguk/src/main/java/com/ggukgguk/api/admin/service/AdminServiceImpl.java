@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ggukgguk.api.admin.dao.AdminDao;
 import com.ggukgguk.api.admin.vo.Content;
+import com.ggukgguk.api.admin.vo.Main;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -83,5 +84,35 @@ public class AdminServiceImpl implements AdminService {
         }
 
 	}
+
+	@Override
+	public Main mainAdmin() {
+		Main main = new Main();
+		try {
+			int totalMember = dao.totalMember();
+			main.setTotalMember(totalMember);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			int todayMember = dao.todayMember();
+			main.setTodayMember(todayMember);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			int totalContent = dao.totalContent();
+			main.setTotalContent(totalContent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			int todayContent = dao.todayContent();
+			main.setTodayContent(todayContent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return main;
+		}
 
 }
