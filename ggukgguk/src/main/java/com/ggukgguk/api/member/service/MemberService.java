@@ -7,6 +7,7 @@ import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.record.vo.RecordSearch;
 
 public interface MemberService {
 
@@ -31,4 +32,6 @@ public interface MemberService {
 	public List<Member> findFriendList(String mymemberId);
 
 	public boolean breakFriend(String myMemberId, String toMemberid, Friend friend);
+
+	public int getFriendship(RecordSearch recordSearch);
 }

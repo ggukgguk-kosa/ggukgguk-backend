@@ -22,6 +22,7 @@ import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
 import com.ggukgguk.api.notification.dao.NotificationDao;
 import com.ggukgguk.api.notification.vo.Notification;
+import com.ggukgguk.api.record.vo.RecordSearch;
 import com.nimbusds.oauth2.sdk.util.MapUtils;
 
 import oracle.net.aso.f;
@@ -199,5 +200,11 @@ public class MemberServiceImpl implements MemberService {
 		}
 		transactionManager.commit(txStatus);
 		return true;
+	}
+	
+	@Override
+	public int getFriendship(RecordSearch recordSearch) {
+		
+		return dao.selectFriendship(recordSearch);
 	}
 }

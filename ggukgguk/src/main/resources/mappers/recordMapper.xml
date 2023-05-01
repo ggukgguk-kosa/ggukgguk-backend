@@ -51,7 +51,7 @@
  			ORDER BY record.record_created_at DESC
    </select>
    
-      <select id="selectFriend" parameterType="RecordSearch" resultMap="RecordResultSet">  
+      <select id="selectFriendRecordList" parameterType="RecordSearch" resultMap="RecordResultSet">  
 			SELECT record.*, reply.*, member.member_nickname, media_file.media_type_id, diary.main_color
 			FROM record
 			LEFT JOIN media_file ON record.media_file_id = media_file.media_file_id
@@ -59,10 +59,10 @@
 			LEFT JOIN member ON reply.member_id = member.member_id
 			LEFT JOIN diary ON YEAR(record.record_created_at) = diary.diary_year AND MONTH(record.record_created_at) = diary.diary_month
  			<where>
- 				(record.member_id=#{friendId} and record.record_is_open='Y' and record.record_share_to is null) OR 
+ 				((record.member_id=#{friendId} and record.record_is_open='Y' and record.record_share_to is null) OR 
 	  			(record.member_id=#{friendId} and record.record_is_open='Y' and record.record_share_to IS NOT NULL AND record.record_share_accepted = 'Y') OR
       			(record.record_share_to=#{friendId} and record.record_is_open='Y' and record.record_share_accepted='Y') OR
-	  			(record.member_id=#{memberId} and record.record_share_to=#{friendId} AND record.record_share_accepted='Y')
+	  			(record.member_id=#{memberId} and record.record_share_to=#{friendId} AND record.record_share_accepted='Y'))
  				<if test="startDate != null">
  					AND record.record_created_at BETWEEN DATE_SUB(#{startDate}, INTERVAL 4 DAY) AND DATE_ADD(#{startDate}, INTERVAL 1 DAY)
  				</if>
