@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ws.schild.jave.Encoder;
 import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.encode.AudioAttributes;
 import ws.schild.jave.encode.EncodingAttributes;
 import ws.schild.jave.encode.VideoAttributes;
 
@@ -144,8 +145,12 @@ public class MediaFileServiceImpl implements MediaFileService {
 		 	vAttr.setCodec("libx264");
 		 	vAttr.setBitRate(2500000);
 		 	
+		 	AudioAttributes aAttr = new AudioAttributes();
+		 	aAttr.setCodec("aac");
+		 	
 		 	EncodingAttributes attrs = new EncodingAttributes();                                  
 		 	attrs.setVideoAttributes(vAttr);
+		 	attrs.setAudioAttributes(aAttr);
 		 	attrs.setOutputFormat("mp4");
 		 	
 		 	Encoder encoder = new Encoder();
