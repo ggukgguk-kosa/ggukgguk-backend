@@ -45,9 +45,9 @@
       ]]>
    </select>
    
-   <select id="selectColorList" parameterType="Integer" resultType="DiaryColor">
+   <select id="selectColorList" parameterType="Integer" resultType="String">
        <![CDATA[   
-        SELECT *
+        SELECT diary_color.diary_color
 		FROM diary_color
 		WHERE diary_color.diary_id=#{diaryId}
       ]]>
