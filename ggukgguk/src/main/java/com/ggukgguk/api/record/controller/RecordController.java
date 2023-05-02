@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ggukgguk.api.common.vo.BasicResp;
+import com.ggukgguk.api.member.service.MemberService;
 import com.ggukgguk.api.record.service.RecordService;
 import com.ggukgguk.api.record.service.ReplyService;
 import com.ggukgguk.api.record.vo.Record;
@@ -49,6 +49,8 @@ public class RecordController {
 	RecordService service;
 	@Autowired
 	ReplyService rservice;
+	@Autowired
+	MemberService mservice;
 	
 	@Value("${file.baseDir}")
 	String baseDir;
@@ -59,23 +61,21 @@ public class RecordController {
 			// date=2023-04-17 로 넣어줘야 한다. 날짜를 따옴표로 감싸면 안된다.
 		
 		log.debug(recordSearch);
-		BasicResp<Object> respBody;		
+		BasicResp<Object> respBody;
 		
-		 Date startDate = null;
-		    if (startDateStr != null && !startDateStr.isEmpty()) {
-		        try {
-		            startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startDateStr);
-		            recordSearch.setStartDate(startDate);
-		        } catch (Exception e) {
-		            // startDate 파라미터가 유효하지 않을 경우 처리
-		        	e.printStackTrace();
-		        	log.debug("게시글 리스트 조회 실패");
-					respBody = new BasicResp<Object>("error", "날짜 형식이 잘 못되었습니다.", null);		
-					return ResponseEntity.badRequest().body(respBody);
-		        }
-		    }
-		    
-		log.debug(recordSearch);
+		Date startDate = null;
+	    if (startDateStr != null && !startDateStr.isEmpty()) {
+	        try {
+	            startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startDateStr);
+	            recordSearch.setStartDate(startDate);
+	        } catch (Exception e) {
+	            // startDate 파라미터가 유효하지 않을 경우 처리
+	        	e.printStackTrace();
+	        	log.debug("게시글 리스트 조회 실패");
+				respBody = new BasicResp<Object>("error", "날짜 형식이 잘 못되었습니다.", null);		
+				return ResponseEntity.badRequest().body(respBody);
+	        }
+	    }
 		
 		if(recordSearch.getMemberId() == null) {
 			log.debug("게시글 리스트 조회 실패");
@@ -86,8 +86,21 @@ public class RecordController {
 			respBody = new BasicResp<Object>("error", "날짜와 키워드를 동시에 넣을 수 없습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
+	    
+		List<Record> recordList = null;
 		
-		List<Record> recordList = service.getRecordList(recordSearch);
+		if(recordSearch.getFriendId() != null ) {
+			if(mservice.getFriendship(recordSearch)) {
+				recordList = service.getFreindRecordList(recordSearch);
+				log.debug(recordSearch);
+			} else {
+				log.debug("게시글 리스트 조회 실패");
+				respBody = new BasicResp<Object>("error", "친구 관계가 아닙니다.", null);		
+				return ResponseEntity.badRequest().body(respBody);
+			}
+		} else {
+			recordList = service.getRecordList(recordSearch);
+		}
 		
 		if (recordList != null) {
 			log.debug("게시글 리스트 조회 성공");
@@ -117,6 +130,13 @@ public class RecordController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 		
+		
+		if(!mservice.getFriendship(record.getMemberId(), record.getRecordShareTo())) {
+			log.debug("조각 INSERT 실패 2");
+			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다. (SHARED_TO_SOMEONE_NOT_FRIEND)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
 		boolean result = service.saveMediaAndRecord(media, record);
 		
 		if (result) {
@@ -124,7 +144,7 @@ public class RecordController {
 			respBody = new BasicResp<Object>("success", null, null);
 			return ResponseEntity.ok(respBody);
 		} else {
-			log.debug("조각 INSERT 실패 2");
+			log.debug("조각 INSERT 실패 3");
 			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
@@ -210,7 +230,10 @@ public class RecordController {
 	@PutMapping("/reply/{replyId}")
 	public ResponseEntity<?> editReply(@PathVariable int replyId, @RequestBody Reply reply){
 		
+		log.debug("여기로 연결되니?");
+		log.debug(reply);
 		reply.setReplyId(replyId);
+		log.debug(reply);
 		BasicResp<Object> respBody;
 		List<ReplyNickname> replyList = rservice.editReply(reply);
 		
@@ -232,6 +255,7 @@ public class RecordController {
 		reply.setReplyId(replyId);
 		BasicResp<Object> respBody;
 		List<ReplyNickname> replyList = rservice.removeReply(reply);
+		log.debug("삭제컨트롤러");
 		
 		if (replyList != null) {
 			log.debug("댓글 삭제 성공");

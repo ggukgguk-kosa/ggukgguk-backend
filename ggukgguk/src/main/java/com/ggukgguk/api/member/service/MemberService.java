@@ -7,6 +7,7 @@ import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.record.vo.RecordSearch;
 
 public interface MemberService {
 
@@ -33,5 +34,9 @@ public interface MemberService {
 	public boolean breakFriend(String myMemberId, String toMemberid, Friend friend);
 
 	public boolean checkDuplicateId(String memberId);
+
+	public boolean getFriendship(RecordSearch recordSearch);
+	
+	public boolean getFriendship(String member1, String member2);
 
 }

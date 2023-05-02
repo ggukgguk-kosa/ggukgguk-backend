@@ -22,6 +22,7 @@ import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
 import com.ggukgguk.api.notification.dao.NotificationDao;
 import com.ggukgguk.api.notification.vo.Notification;
+import com.ggukgguk.api.record.vo.RecordSearch;
 import com.nimbusds.oauth2.sdk.util.MapUtils;
 
 import oracle.net.aso.f;
@@ -214,4 +215,20 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	@Override
+	public boolean getFriendship(RecordSearch recordSearch) {
+		
+		if (dao.selectFriendship(recordSearch) == 1) return true;
+		return false;
+	}
+
+	@Override
+	public boolean getFriendship(String member1, String member2) {
+		RecordSearch recordSearch = new RecordSearch(member1, null, null, member2);
+		recordSearch.setMemberId(member1);
+		recordSearch.setFriendId(member2);
+		
+		if (dao.selectFriendship(recordSearch) == 1) return true;
+		return false;
+	}
 }

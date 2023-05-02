@@ -78,4 +78,10 @@ public class RecordServiceImpl implements RecordService{
     	transactionManager.commit(txStatus);
 		return true;
 	}
+	
+	@Override
+	public List<Record> getFreindRecordList(RecordSearch recordSearch) {
+		
+		return dao.selectFriendRecordList(recordSearch);
+	}
 }
