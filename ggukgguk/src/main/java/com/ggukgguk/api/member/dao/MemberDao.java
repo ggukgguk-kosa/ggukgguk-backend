@@ -39,6 +39,4 @@ public interface MemberDao {
 	public void deleteFriendRequeset(int friendRequestId) throws Exception;
 
 	public int selectFriendship(RecordSearch recordSearch);
-
-	
 }
