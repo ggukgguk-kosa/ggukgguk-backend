@@ -22,12 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ggukgguk.api.admin.service.AdminService;
 import com.ggukgguk.api.admin.vo.Content;
+import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.common.vo.PageOption;
 import com.ggukgguk.api.diary.service.DiaryService;
+import com.ggukgguk.api.record.service.RecordService;
+import com.ggukgguk.api.record.service.ReplyService;
+import com.ggukgguk.api.record.vo.Reply;
+import com.ggukgguk.api.record.vo.ReplyNickname;
 
 @RestController
 @RequestMapping("/admin")
@@ -35,17 +40,23 @@ public class AdminController {
 	private Logger log = LogManager.getLogger("base");
 
 	@Autowired
-	AdminService service;
+	AdminService adminService;
 
 	@Autowired
 	DiaryService diaryService;
+	
+	@Autowired
+	ReplyService replyService;
+	
+	@Autowired
+	RecordService recordService;
 
 	
 	// 전체 회원수 조회
 	@GetMapping("")
 	public ResponseEntity<?> noticeeadHandler() {
 		BasicResp<Object> respBody;
-		Main result = service.mainAdmin();
+		Main result = adminService.mainAdmin();
 		log.debug(result);
 		if (result != null) {
 			log.debug("admim page 조회 성공");
@@ -58,14 +69,13 @@ public class AdminController {
 		}
 	}
 
-	
 	// 전체 게시글 리스트 조회
 	@GetMapping("/notice/list")
 	public ResponseEntity<?> noticeSelectPageHandler(@RequestParam("page") int page, @RequestParam("size") int size) {
 		PageOption option = new PageOption();
 		option.setPage(page);
 		option.setSize(size);
-		List<Notice> result = service.noticeSelectPage(option);
+		List<Notice> result = adminService.noticeSelectPage(option);
 
 		BasicResp<Object> respBody = null;
 		int respCode = 0;
@@ -84,11 +94,11 @@ public class AdminController {
 		return new ResponseEntity<Object>(respBody, null, respCode);
 	}
 
-	// 게시글 작성
+	// 공지사항 게시글 작성
 	@PostMapping("/notice/write")
 	public ResponseEntity<?> noticeWirteHandler(@RequestBody Notice notice) {
 		BasicResp<Object> respBody;
-		boolean result = service.noticeWrite(notice);
+		boolean result = adminService.noticeWrite(notice);
 		
 		if (result) {
 			log.debug("게시글 작성 성공");
@@ -101,11 +111,11 @@ public class AdminController {
 		}
 	}
 
-	// 게시글 읽기
+	// 공지사항 게시글 읽기
 	@GetMapping("/notice/read/{noticeId}")
 	public ResponseEntity<?> noticeReadHandler(@PathVariable int noticeId) {
 		BasicResp<Object> respBody;
-		boolean result = service.noticeRead(noticeId);
+		boolean result = adminService.noticeRead(noticeId);
 
 		if (result) {
 			log.debug("게시글 읽기 성공");
@@ -118,11 +128,11 @@ public class AdminController {
 		}
 	}
 
-	// 게시글 수정
+	// 공지사항 게시글 수정
 	@PutMapping("/notice/update/{noticeId}")
 	public ResponseEntity<?> noticeUpdateHandler(@PathVariable int noticeId) {
 		BasicResp<Object> respBody;
-		boolean result = service.noticeUpdate(noticeId);
+		boolean result = adminService.noticeUpdate(noticeId);
 
 		if (result) {
 			log.debug("게시글 수정 성공");
@@ -135,11 +145,11 @@ public class AdminController {
 		}
 	}
 
-	// 게시글 삭제
+	// 공지사항 게시글 삭제
 	@DeleteMapping("notice/delete/{noticeId}")
 	public ResponseEntity<?> noticeDeleteHandler(@PathVariable int noticeId) {
 		BasicResp<Object> respBody;
-		boolean result = service.noticeDelete(noticeId);
+		boolean result = adminService.noticeDelete(noticeId);
 
 		if (result) {
 			log.debug("게시글 삭제 성공");
@@ -158,7 +168,7 @@ public class AdminController {
 		PageOption option = new PageOption();
 		option.setPage(page);
 		option.setSize(size);
-		List<Content> result = service.contentSelectPage(option);
+		List<Content> result = adminService.contentSelectPage(option);
 		
 		BasicResp<Object> respBody = null;
 		int respCode = 0;
@@ -183,7 +193,7 @@ public class AdminController {
 		PageOption option = new PageOption();
 		option.setPage(page);
 		option.setSize(size);
-		List<Member> result = service.memberSelectPage(option);
+		List<Member> result = adminService.memberSelectPage(option);
 		
 		BasicResp<Object> respBody = null;
 		int respCode = 0;
@@ -201,11 +211,12 @@ public class AdminController {
 
 		return new ResponseEntity<Object>(respBody, null, respCode);
 	}	
+	
 	// 회원 삭제 
 	@PutMapping("/member/delete/{memberId}")
 	public ResponseEntity<?> memberDeleteHandler(@PathVariable String memberId) {
 		BasicResp<Object> respBody;
-		boolean result = service.memberDelete(memberId);
+		boolean result = adminService.memberDelete(memberId);
 
 		if (result) {
 			log.debug("회원 삭제 성공");
@@ -214,6 +225,65 @@ public class AdminController {
 		} else {
 			log.debug("회원 삭제 실패");
 			respBody = new BasicResp<Object>("error", "회원 삭제 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	// 조각 상세 조회
+	@GetMapping("/content/{recordId}")
+	public ResponseEntity<?> recordReadHandler(@PathVariable int recordId) {
+		BasicResp<Object> respBody;
+		List<ContentDetail> result = adminService.recordRead(recordId);
+
+		if (result != null) {
+			log.debug("게시글 읽기 성공");
+			respBody = new BasicResp<Object>("success", "게시글 읽기 성공", result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("게시글 읽기 실패");
+			respBody = new BasicResp<Object>("error", "게시글 읽기에 실패하였습니다", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+
+
+	
+	
+	// 조각 삭제
+	@DeleteMapping("record/{recordId}")
+	public ResponseEntity<?> removeRecord(@PathVariable int recordId){
+		
+		BasicResp<Object> respBody;
+		boolean result = recordService.removeRecord(recordId);
+		
+		if (result) {
+			log.debug("게시글 삭제 성공");
+			respBody = new BasicResp<Object>("success", null, null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("게시글 삭제 실패");
+			respBody = new BasicResp<Object>("error", "게시글 삭제에 실패하였습니다.", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+	}
+	
+	// 댓글 삭제
+	@DeleteMapping("/reply/{replyId}")
+	public ResponseEntity<?> removeReply(@PathVariable int replyId, @RequestBody Reply reply){
+	
+		reply.setReplyId(replyId);
+		BasicResp<Object> respBody;
+		List<ReplyNickname> replyList = replyService.removeReply(reply);
+		log.debug("삭제컨트롤러");
+		
+		if (replyList != null) {
+			log.debug("댓글 삭제 성공");
+			respBody = new BasicResp<Object>("success", null, replyList);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("댓글 삭제 실패");
+			respBody = new BasicResp<Object>("error", "댓글 삭제에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}

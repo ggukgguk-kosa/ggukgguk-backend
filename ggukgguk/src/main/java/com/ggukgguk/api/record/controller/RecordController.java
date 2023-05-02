@@ -113,7 +113,6 @@ public class RecordController {
 			respBody = new BasicResp<Object>("error", "게시글 조회에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
-		
 	}
 	
 	@PostMapping

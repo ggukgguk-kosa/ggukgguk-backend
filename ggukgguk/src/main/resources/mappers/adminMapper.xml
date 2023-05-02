@@ -5,8 +5,9 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ggukgguk.api.Admin">
+
+
  	<!-- 공지사항  관련 mapper-->
- 	
 	<select id="noticeSelect" parameterType="int" resultType="int">
 		SELECT
 		notice_id, notice_title, notice_content, notice_created_at,
@@ -52,7 +53,7 @@
 
 	<!-- 컨텐츠관리 관련 mapper -->
     <select id="contentSelectList" parameterType="PageOption" resultType="Content">
-		SELECT record_id, member_id, record_created_at, record_comment,
+		SELECT record_id, member_id, record_created_at,
 		media_file_blocked, media_file_checked
 		FROM record r
 		LEFT JOIN media_file m
@@ -96,5 +97,16 @@
 	<select id="todayContentSelect" resultType="int">
 		SELECT COUNT(record_id) as today_content FROM record
 		WHERE DATE(record_created_at) = CURDATE();
+	</select>
+	
+	<select id="recordSelectList" parameterType="int" resultType="ContentDetail">
+		SELECT record.record_id, member.member_id, record.record_comment, record.record_created_at, 
+			   record.media_file_id, record.record_is_open, record.record_share_to, 
+			   reply.reply_id, reply.member_id AS reply_member_id, reply.reply_content, reply.reply_date
+		FROM record
+		LEFT JOIN reply ON record.record_id = reply.record_id
+		LEFT JOIN member ON reply.member_id = member.member_id
+		WHERE record.record_id = #{recordId}
+		ORDER BY record.record_created_at DESC, reply.reply_date;	
 	</select>
 </mapper>

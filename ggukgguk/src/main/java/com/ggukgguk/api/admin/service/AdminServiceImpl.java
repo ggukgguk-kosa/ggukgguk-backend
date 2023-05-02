@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ggukgguk.api.admin.dao.AdminDao;
 import com.ggukgguk.api.admin.vo.Content;
+import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
@@ -114,5 +115,10 @@ public class AdminServiceImpl implements AdminService {
 		}
 		return main;
 		}
+
+	@Override
+	public List<ContentDetail> recordRead(int recordId) {
+           return dao.recordSelectList(recordId);
+	}
 
 }

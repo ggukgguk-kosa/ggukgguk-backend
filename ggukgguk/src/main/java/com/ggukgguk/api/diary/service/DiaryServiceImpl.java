@@ -45,6 +45,5 @@ public class DiaryServiceImpl implements DiaryService {
 			e.printStackTrace();
 			return false;
 		}
-		
 	}
 }

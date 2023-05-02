@@ -21,7 +21,6 @@ public class Content {
 	private int recordId;
 	private String memberId;	
 	private Date recordCreatedAt;
-	private String recordComment;
 	private int mediaFileBlocked; // block된 파일 확인 (0=non-blocked, 1=blocked)
 	private int mediaFileChecked; // 미디어 업로드 유무 
 }

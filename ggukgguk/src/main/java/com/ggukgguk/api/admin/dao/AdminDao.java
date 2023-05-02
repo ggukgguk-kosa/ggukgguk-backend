@@ -3,7 +3,7 @@ package com.ggukgguk.api.admin.dao;
 import java.util.List;
 
 import com.ggukgguk.api.admin.vo.Content;
-import com.ggukgguk.api.admin.vo.Main;
+import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -31,6 +31,8 @@ public interface AdminDao {
 	public int todayMember() throws Exception;
 	public int totalContent() throws Exception;
 	public int todayContent() throws Exception;
+
+	public List<ContentDetail> recordSelectList(int recordId);
 
 }
 

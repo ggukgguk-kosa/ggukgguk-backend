@@ -3,6 +3,7 @@ package com.ggukgguk.api.admin.service;
 import java.util.List;
 
 import com.ggukgguk.api.admin.vo.Content;
+import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
@@ -33,5 +34,7 @@ public interface AdminService {
 	// 회원삭제
 	public boolean memberDelete(String memberId);
 
-	Main mainAdmin();	
+	Main mainAdmin();
+
+	public List<ContentDetail> recordRead(int recordId);	
 }

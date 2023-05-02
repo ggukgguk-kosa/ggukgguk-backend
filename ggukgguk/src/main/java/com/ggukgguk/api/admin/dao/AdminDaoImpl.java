@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.ggukgguk.api.admin.vo.Content;
+import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -93,6 +94,11 @@ public class AdminDaoImpl implements AdminDao {
 	@Override
 	public int todayContent() {
 		return session.selectOne("com.ggukgguk.api.Admin.todayContentSelect");
+	}
+
+	@Override
+	public List<ContentDetail> recordSelectList(int recordId) {
+		return session.selectList("com.ggukgguk.api.Admin.recordSelectList", recordId);
 	}
 }
 
