@@ -82,7 +82,7 @@ public class OAuthService {
 		// 리다이렉트 주소 의미: 로그인에 성공하면 다시 로그인한 사용자가 만든 페이지로 돌아가야 하는데 그 돌아갈 페이지의 주소가
 		// redirect_uri
 		parameters.set("code", code); // 카카오에서 전달 받은 인가 코드
-
+		
 		HttpEntity<MultiValueMap<String, Object>> restRequest = new HttpEntity<>(parameters, headers); // 카카오에서 전달 받은
 																										// 파라미터 값을 인자로
 																										// 전달하여 전달.
@@ -111,21 +111,20 @@ public class OAuthService {
 	}
 
 	// 카카오 로그인 및 회원가입
-	public Member kakaoLogin(String code) {
+	public Member kakaoLogin(String token) {
 		// 1. 먼저 카카오 서비스에 로그인 후 사용자 이용동의를 커치면 카카오에서 인가 코드를 전송해주는 방식으로 진행.
 		// 2. 인가 코드를 통해 권한 토큰을 반환시킴.
-		String token = getKakaoAccessToken(code);
+		//String token = getKakaoAccessToken(code);
 		// 3. 권한 토큰을 가지고 사용자 정보를 가지지는 형태로 나타냄.
 		JsonNode userInfo = getkakaoUserInfo(token);
 		log.debug(userInfo);
 		// (1) 사용자 아이디 값을 가져와서 DB에 있는 지 여부를 확인 [카카오 로그인]
 		Member memberCheck = socialEnrollconfirmation(userInfo);
-		if (memberCheck.getMemberId()!=null) {
+		if (memberCheck != null) {
 			return memberCheck;
 		}
-//			// (2) DB에 사용자 정보가 없으면 새롭게 가입시키면 됨.
-
 		
+//		// (2) DB에 사용자 정보가 없으면 새롭게 가입시키면 됨.
 		return KaKaoRegister(userInfo);
 	}
 
@@ -189,23 +188,35 @@ public class OAuthService {
 		ResponseEntity<JsonNode> responseNode = restTemplate.exchange(tokenUri, HttpMethod.POST, entity,
 				JsonNode.class);
 		JsonNode accessTokenNode = responseNode.getBody();
+		log.debug("getGoogle:"+accessTokenNode);
+		log.debug("접근토큰 : "+ accessTokenNode.get("access_token").asText());
 		return accessTokenNode.get("access_token").asText();
 
 	}
 
 	// 구글에서 전달 받은 토큰을 가지고 로그인한 구글 사용자 정보를 반환하기
-	public JsonNode getGoogleUserInfo(String accessToken) {
-		String resouceUri = "https://www.googleapis.com/oauth2/v2/userinfo";
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + accessToken);
-		HttpEntity entity = new HttpEntity(headers);
-		return restTemplate.exchange(resouceUri, HttpMethod.GET, entity, JsonNode.class).getBody();
+//	public JsonNode getGoogleUserInfo(String token) {
+//		String resouceUri = "https://www.googleapis.com/oauth2/v2/userinfo";
+//
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.set("Authorization", "Bearer " + token);
+//		HttpEntity entity = new HttpEntity(headers);
+//		return restTemplate.exchange(resouceUri, HttpMethod.GET, entity, JsonNode.class).getBody();
+//	}
+	
+	public JsonNode getGoogleUserInfo(String token) {
+	    String resourceUri = "https://www.googleapis.com/oauth2/v2/userinfo";
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setBearerAuth(token);
+	    HttpEntity<?> entity = new HttpEntity<>(headers);
+	    ResponseEntity<JsonNode> response = restTemplate.exchange(resourceUri, HttpMethod.GET, entity, JsonNode.class);
+	    return response.getBody();
 	}
 
 	// 구글 로그인 및 회원 가입
-	public Member googleLogin(String code) {
-		String token = getGoogleAccessToken(code);
+	public Member googleLogin(String token) {
+		//String token = getGoogleAccessToken(code);
+		//log.debug(token);
 		JsonNode userInfo = getGoogleUserInfo(token);
 		Member memberCheck = socialEnrollconfirmation(userInfo);
 		if (memberCheck.getMemberId()!=null) {
@@ -240,5 +251,5 @@ public class OAuthService {
 
 		return member;
 	}
-
+	
 }

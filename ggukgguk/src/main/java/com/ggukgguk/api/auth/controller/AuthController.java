@@ -98,9 +98,9 @@ public class AuthController {
 	
 	// 카카오 로그인 방식
 	@GetMapping(value = "/social/kakao") 
-	public ResponseEntity<?> kakaoCallback(@RequestParam String code) throws Exception {
+	public ResponseEntity<?> kakaoCallback(@RequestParam String AccessToken) throws Exception {
 		BasicResp<Object> respBody;
-		Member result = oauth.kakaoLogin(code);
+		Member result = oauth.kakaoLogin(AccessToken);
 		
 		if (result != null) {
 			log.debug("카카오  성공");
@@ -124,22 +124,37 @@ public class AuthController {
 	// 3. 코드를 통해 접근 통큰 발급하여 토큰을 통해 사용자 정보 반환.
 	// 참고, https://darrenlog.tistory.com/40
 
-	// 구글 로그인 방식
+//	// 구글 로그인 방식
+//	@GetMapping("/social/google")
+//	public ResponseEntity<?> googleCallback(@RequestParam String code)  {
+//		BasicResp<Object> respBody;
+////		String token = oauth.getGoogleAccessToken(code);
+////		JsonNode result = oauth.getGoogleUserInfo(token);
+//		log.debug("테스트 :" + code);
+//		Member result = oauth.googleLogin(code);
+//		if (result != null) {
+//			log.debug("구글 정보 반환 성공");
+//			respBody = new BasicResp<Object>("success", "구글 사용자로 로그인합니다.", result);
+//			return ResponseEntity.ok(respBody);
+//		} else {
+//			log.debug("구글 정보 반환 실패");
+//			respBody = new BasicResp<Object>("error", "로그인 되지 않습니다.", null);
+//			return ResponseEntity.badRequest().body(respBody);
+//		}
+//	}
+	
 	@GetMapping("/social/google")
-	public ResponseEntity<?> googleCallback(@RequestParam String code)  {
-		BasicResp<Object> respBody;
-//		String token = oauth.getGoogleAccessToken(code);
-//		JsonNode result = oauth.getGoogleUserInfo(token);
-		Member result = oauth.googleLogin(code);
-		if (result != null) {
-			log.debug("구글 정보 반환 성공");
-			respBody = new BasicResp<Object>("success", "구글 사용자로 로그인합니다.", result);
-			return ResponseEntity.ok(respBody);
-		} else {
-			log.debug("구글 정보 반환 실패");
-			respBody = new BasicResp<Object>("error", "로그인 되지 않습니다.", null);
-			return ResponseEntity.badRequest().body(respBody);
-		}
+	public ResponseEntity<?> googleCallback(@RequestParam String token)  {
+	    BasicResp<Object> respBody;
+	    log.debug(token);
+	    Member result = oauth.googleLogin(token);
+	    if (result != null) {
+	        respBody = new BasicResp<Object>("success", "구글 사용자로 로그인합니다.", result);
+	        return ResponseEntity.ok(respBody);
+	    } else {
+	        respBody = new BasicResp<Object>("error", "로그인 되지 않습니다.", null);
+	        return ResponseEntity.badRequest().body(respBody);
+	    }
 	}
 
 	// 꾹꾹 서비스단 에서 일반적인 회원가입
