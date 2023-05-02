@@ -130,8 +130,9 @@ public class RecordController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 		
-		
-		if(!mservice.getFriendship(record.getMemberId(), record.getRecordShareTo())) {
+		// recordShareTo가 지정되어 있고, 친구 관계인 경우인지 확인
+		// recordShareTo가 null이면 검증 패스
+		if(record.getRecordShareTo() != null && !mservice.getFriendship(record.getMemberId(), record.getRecordShareTo())) {
 			log.debug("조각 INSERT 실패 2");
 			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다. (SHARED_TO_SOMEONE_NOT_FRIEND)", null);		
 			return ResponseEntity.badRequest().body(respBody);
