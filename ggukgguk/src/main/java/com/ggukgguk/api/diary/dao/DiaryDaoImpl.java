@@ -35,7 +35,7 @@ public class DiaryDaoImpl implements DiaryDao {
 	}
 	
 	@Override
-	public List<DiaryColor> selectColor(int diaryId) {
+	public List<String> selectColor(int diaryId) {
 		
 		return session.selectList("com.ggukgguk.api.Diary.selectColorList", diaryId);
 	}
