@@ -33,7 +33,10 @@ public interface MemberService {
 
 	public boolean breakFriend(String myMemberId, String toMemberid, Friend friend);
 
+	public boolean checkDuplicateId(String memberId);
+
 	public boolean getFriendship(RecordSearch recordSearch);
 	
 	public boolean getFriendship(String member1, String member2);
+
 }

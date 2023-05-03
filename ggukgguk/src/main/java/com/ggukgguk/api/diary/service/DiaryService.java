@@ -13,7 +13,7 @@ public interface DiaryService {
 
 	public DiaryMonth getDiary(DiarySearch diarySearch);
 
-	public List<DiaryColor> getColors(int diaryId);
+	public List<String> getColors(int diaryId);
 	
 	public boolean editDiary(Diary diary);
 

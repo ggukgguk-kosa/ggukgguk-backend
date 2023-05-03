@@ -77,7 +77,7 @@ public class DiaryController {
 	public ResponseEntity<?> getColors(@PathVariable int diaryId){
 		
 		BasicResp<Object> respBody;	
-		List<DiaryColor> colorList = service.getColors(diaryId);
+		List<String> colorList = service.getColors(diaryId);
 		if (colorList != null) {
 			log.debug("색상 리스트 조회 성공");
 			respBody = new BasicResp<Object>("success", null, colorList);
