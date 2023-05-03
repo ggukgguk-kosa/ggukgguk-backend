@@ -101,10 +101,12 @@ public class AuthController {
 	public ResponseEntity<?> kakaoCallback(@RequestParam String AccessToken) throws Exception {
 		BasicResp<Object> respBody;
 		Member result = oauth.kakaoLogin(AccessToken);
+		result.setMemberPw("kakao");
+		AuthTokenPayload tknPayload = service.login(result);
 		
 		if (result != null) {
 			log.debug("카카오  성공");
-			respBody = new BasicResp<Object>("success", "카카오 로그인 성공하였습니다.", result);
+			respBody = new BasicResp<Object>("success", "카카오 로그인 성공하였습니다.", tknPayload);
 			return ResponseEntity.ok(respBody);
 		} else {
 			log.debug("카카오 실패");

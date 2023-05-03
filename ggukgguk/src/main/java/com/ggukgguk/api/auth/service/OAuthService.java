@@ -21,6 +21,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.http.*;
 import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -44,6 +45,9 @@ public class OAuthService {
 
 	@Autowired
 	RestTemplate restTemplate; // REST API를 호출할 수 있는 내장 Srping 내장 클래스.
+	
+	@Autowired
+	private PasswordEncoder passwordEncorder;
 	
 	@Value("${google.secret}")
 	private String googleSecretClientId;
@@ -148,7 +152,7 @@ public class OAuthService {
 
 		// sql구문이 not null로 지정되어 있기에... member VO 나마지 값들을 더미 값으로 삽입.
 		member.setMemberName("");
-		member.setMemberPw("");
+		member.setMemberPw(passwordEncorder.encode("kakao"));
 		member.setMemberPhone("");
 		member.setMemberBirth(new Date(19700101)); // 카카오에 생일을 받아오나, 월 일 정도 만 불러와서. 임의로 우선 설정.
 		member.setMemberAuthority("NORMAL"); // 우선 NORMAL 설정함. => 향후 GUEST
