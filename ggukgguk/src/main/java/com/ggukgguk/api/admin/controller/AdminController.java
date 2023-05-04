@@ -50,7 +50,6 @@ public class AdminController {
 	
 	@Autowired
 	RecordService recordService;
-
 	
 	// 전체 회원수 조회
 	@GetMapping("")
@@ -265,7 +264,6 @@ public class AdminController {
 			respBody = new BasicResp<Object>("error", "게시글 삭제에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
-		
 	}
 	
 	// 댓글 삭제
