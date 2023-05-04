@@ -212,7 +212,11 @@ public class RecordController {
 	public ResponseEntity<?> addReply(@RequestBody Reply reply){
 		
 		BasicResp<Object> respBody;
-		List<ReplyNickname> replyList = rservice.addReply(reply);
+		
+		log.debug(reply);
+		
+		List<ReplyNickname> replyList = rservice.addReply(reply);	
+		
 		
 		if (replyList != null) {
 			log.debug("댓글 등록 성공");

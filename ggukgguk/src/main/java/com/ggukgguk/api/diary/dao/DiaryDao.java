@@ -13,7 +13,7 @@ public interface DiaryDao {
 
 	public DiaryMonth selectDiary(DiarySearch diarySearch);
 
-	public List<DiaryColor> selectColor(int diaryId);
+	public List<String> selectColor(int diaryId);
 	
 	public void updateDiary(Diary diary) throws Exception;
 

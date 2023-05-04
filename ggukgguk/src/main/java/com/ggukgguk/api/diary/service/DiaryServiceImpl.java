@@ -30,7 +30,7 @@ public class DiaryServiceImpl implements DiaryService {
 	}
 	
 	@Override
-	public List<DiaryColor> getColors(int diaryId) {
+	public List<String> getColors(int diaryId) {
 		
 		return dao.selectColor(diaryId);
 	}
