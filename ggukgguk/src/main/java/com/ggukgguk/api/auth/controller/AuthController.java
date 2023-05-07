@@ -212,20 +212,20 @@ public class AuthController {
 	
 	// 비밀번호 찾기 
 	@GetMapping("")
-	public ResponseEntity<?> getMemberIdHandler(@RequestParam String memberEmail, @RequestParam String memberId, @RequestBody Member member){
+	public ResponseEntity<?> getMemberIdHandler(@RequestParam String memberEmail, @RequestParam String memberId, @ModelAttribute Member member){
 		BasicResp<Object> respBody;
 		member.setMemberEmail(memberEmail);
 		member.setMemberId(memberId);
 		log.debug(member);
 		Boolean result = memberSerivce.getMemberByEmailandId(member);
 		
-		if(!result.equals(null)) {
+		if(result) {
 			log.debug("아이디 찾기 완료");
 			respBody = new BasicResp<Object>("success", "가입된 회원 입니다.", result);
 			return ResponseEntity.ok(respBody);
 		}else {
 			log.debug("아이디 찾기 실패");
-			respBody = new BasicResp<Object>("error", "가입된 회원이 아닙니다.", null);
+			respBody = new BasicResp<Object>("error", "가입된 회원이 아닙니다.", result);
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}
