@@ -236,4 +236,13 @@ public class MemberServiceImpl implements MemberService {
 		if (dao.selectFriendship(recordSearch) == 1) return true;
 		return false;
 	}
+
+	// 비밀번호 이메일 인증코드 확인
+	@Override
+	public boolean getCheckAuthenticationCode(String certificationNumber, String storedAuthCode) {
+		if(certificationNumber.equals(storedAuthCode)) {
+			return true;
+		}
+		return false;
+	}
 }
