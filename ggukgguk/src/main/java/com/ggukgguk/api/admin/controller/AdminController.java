@@ -28,6 +28,7 @@ import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.common.vo.PageOption;
+import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.diary.service.DiaryService;
 import com.ggukgguk.api.record.service.RecordService;
 import com.ggukgguk.api.record.service.ReplyService;
@@ -167,16 +168,13 @@ public class AdminController {
 		PageOption option = new PageOption();
 		option.setPage(page);
 		option.setSize(size);
-		List<Content> result = adminService.contentSelectPage(option);
+		TotalAndListPayload result = adminService.contentSelectPage(option);
 		
 		BasicResp<Object> respBody = null;
 		int respCode = 0;
 
 		if (result != null) {
-			Map<String, Object> payload = new HashMap<String, Object>();
-			payload.put("list", result);
-
-			respBody = new BasicResp<Object>("true", "컨텐츠 조회 성공", payload);
+			respBody = new BasicResp<Object>("true", "컨텐츠 조회 성공", result);
 			respCode = HttpServletResponse.SC_OK;
 		} else {
 			respBody = new BasicResp<Object>("false", "컨텐츠 조회 실패", null);

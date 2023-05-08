@@ -34,7 +34,9 @@ public interface AdminDao {
 
 	public List<ContentDetail> recordSelectList(int recordId);
 
-	public List<?> selectMemberList(PageOption option);
+	public int contentSelectCount(PageOption option);
+
+//	public List<?> selectMemberList(PageOption option);
 
 //	public int selectMemberListTotal(PageOption option);
 

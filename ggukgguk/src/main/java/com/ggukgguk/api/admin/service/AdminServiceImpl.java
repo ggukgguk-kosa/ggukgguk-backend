@@ -65,8 +65,13 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<Content> contentSelectPage(PageOption option) {
-		return dao.contentSelectPaging(option);
+	public TotalAndListPayload contentSelectPage(PageOption option) {
+		TotalAndListPayload payload = new TotalAndListPayload(
+			dao.contentSelectCount(option),
+			dao.contentSelectPaging(option)
+		);
+		
+		return payload;
 	}
 
 	@Override

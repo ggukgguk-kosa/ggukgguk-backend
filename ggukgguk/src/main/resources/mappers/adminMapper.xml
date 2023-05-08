@@ -69,6 +69,13 @@
 		record_created_at DESC
 		LIMIT #{skip}, #{size};
 	</select>
+	<!-- 페이징 처리를 하기 위한 전체 게시글 수 -->
+	<select id="selectContentTotal" parameterType="PageOption"
+		resultType="int">
+		<![CDATA[   
+			SELECT COUNT(*) FROM record
+		]]>
+	</select>
 
 	<!-- 회원관리 관련 mapper -->
 	<select id="memberSelectList" parameterType="PageOption"

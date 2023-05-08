@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 //ORDER BY record_created_at DESC
 
 public class Content {
+	private int totalRecord;
 	private int recordId;
 	private String memberId;	
 	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")

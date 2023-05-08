@@ -28,7 +28,7 @@ public interface AdminService {
 	public boolean noticeDelete(int noticeId);
 
 	// 컨텐츠 리스트 출력
-	public List<Content> contentSelectPage(PageOption option);
+	public TotalAndListPayload contentSelectPage(PageOption option);
 
 	public List<Member> memberSelectPage(PageOption option);
 

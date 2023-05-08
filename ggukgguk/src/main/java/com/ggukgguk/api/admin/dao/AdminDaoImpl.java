@@ -61,7 +61,7 @@ public class AdminDaoImpl implements AdminDao {
 	public List<Content> contentSelectPaging(PageOption option) {
 		return session.selectList("com.ggukgguk.api.Admin.contentSelectList",option);
 	}
-
+	
 	@Override
 	public List<Member> memberSelectPaging(PageOption option) {
 		return session.selectList("com.ggukgguk.api.Admin.memberSelectList",option);
@@ -100,12 +100,17 @@ public class AdminDaoImpl implements AdminDao {
 	public List<ContentDetail> recordSelectList(int recordId) {
 		return session.selectList("com.ggukgguk.api.Admin.recordSelectList", recordId);
 	}
-	
-	
-	@Override // 전체 컨텐츠 리스트 
-	public List<?> selectMemberList(PageOption option) {
-		return session.selectList("com.ggukgguk.api.Member.totalMemberList",option);
+
+	@Override
+	public int contentSelectCount(PageOption option) {
+		return session.selectOne("com.ggukgguk.api.Admin.selectContentTotal",option);
 	}
+	
+	
+//	@Override // 전체 컨텐츠 리스트 
+//	public List<?> selectMemberList(PageOption option) {
+//		return session.selectList("com.ggukgguk.api.Member.totalMemberList",option);
+//	}
 
 //	@Override // 페이징 처리를 위한 전체 컨텐츠 수 구하기
 //	public int selectMemberListTotal(PageOption option) {
