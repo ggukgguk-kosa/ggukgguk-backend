@@ -72,10 +72,15 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public boolean getMemberByEmailandId(Member member) {
 
-		Member user = dao.selectMemberByEmailandId(member);
-		if (!user.equals(null))
-			return true;
-		return false;
+		try {
+	        Member user = dao.selectMemberByEmailandId(member);
+	        if (user != null && user.getMemberId() != null) {
+	            return true;
+	        }
+	    } catch (NullPointerException e) {
+	        // You can log the exception here if needed
+	    }
+	    return false;
 	}
 
 	// 회원정보 수정
@@ -229,6 +234,15 @@ public class MemberServiceImpl implements MemberService {
 		recordSearch.setFriendId(member2);
 		
 		if (dao.selectFriendship(recordSearch) == 1) return true;
+		return false;
+	}
+
+	// 비밀번호 이메일 인증코드 확인
+	@Override
+	public boolean getCheckAuthenticationCode(String certificationNumber, String storedAuthCode) {
+		if(certificationNumber.equals(storedAuthCode)) {
+			return true;
+		}
 		return false;
 	}
 }

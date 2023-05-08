@@ -39,4 +39,6 @@ public interface MemberService {
 	
 	public boolean getFriendship(String member1, String member2);
 
+	public boolean getCheckAuthenticationCode(String certificationNumber, String storedAuthCode);
+
 }
