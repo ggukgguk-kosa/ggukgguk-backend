@@ -15,6 +15,7 @@
 		<result property="memberPhone" column="member_phone" />
 		<result property="memberAuthority" column="member_authority" />
 		<result property="memberSocial" column="member_social" />
+		<result property="memberAllowEmail" column="member_allow_email" />
 	</resultMap>
 
 	<!-- 아이디 회원 조회 --> <!-- 아이디 중복조회 -->
@@ -23,7 +24,7 @@
        <![CDATA[   
          SELECT member_id, member_pw, member_name, member_nickname, member_email,
          		member_phone, member_birth, member_created_at, member_activated,
-         		member_authority, member_social
+         		member_authority, member_social, member_allow_email
          FROM member
  		 WHERE member_id = #{memberId}
      	 ]]>
@@ -33,9 +34,9 @@
   	 <![CDATA[
    		INSERT INTO member 
    		(member_id, member_pw, member_name, member_birth, member_nickname, member_email, member_phone, member_created_at,
-   		member_activated, member_authority, member_social)
+   		member_activated, member_authority, member_social, member_allow_email)
    		VALUES(#{memberId},#{memberPw},#{memberName},#{memberBirth},#{memberNickname},
-		#{memberEmail},#{memberPhone},default,1,#{memberAuthority},#{memberSocial})
+		#{memberEmail},#{memberPhone},default,1,#{memberAuthority},#{memberSocial},#{memberAllowEmail})
   	    ]]>
 	</insert>
 	<!-- 아이디 찾기 -->
@@ -44,7 +45,7 @@
 	 <![CDATA[   
          SELECT member_id, member_pw, member_name, member_nickname, member_email,
          		member_phone, member_birth, member_created_at, member_activated,
-         		member_authority, member_social
+         		member_authority, member_social, member_allow_email
          FROM member
  		 WHERE member_email = #{memberEmail}  
      ]]>
@@ -55,26 +56,27 @@
 	 <![CDATA[   
          SELECT member_id, member_pw, member_name, member_nickname, member_email,
          		member_phone, member_birth, member_created_at, member_activated,
-         		member_authority, member_social
+         		member_authority, member_social, member_allow_email
          FROM member
  		 WHERE member_email = #{memberEmail} and member_id = #{memberId}
      ]]>
 	</select>
 	<!-- 회원 정보 수정 -->
 	<update id="updateMemberInfo" parameterType="Member">
-	 <![CDATA[   
          UPDATE member 
-         SET member_pw= #{memberPw}, member_nickname= #{memberNickname}, member_email= #{memberEmail}, 
-         member_phone= #{memberPhone}, member_birth= #{memberBirth}
+         SET member_nickname= #{memberNickname}, member_email= #{memberEmail}, 
+         member_phone= #{memberPhone}, member_birth= #{memberBirth}, member_allow_email = #{memberAllowEmail}
+         <if test="memberPw != null">
+         	, member_pw= #{memberPw}
+         </if>
  		 WHERE member_id = #{memberId}
-     ]]>
 	</update>
 	<!-- 전체 회원 리스트 조회 (관리자용) -->
 	<select id="totalMemberList" parameterType="PageOption"
 		resultMap="AdminMemberResultSet">
 	<![CDATA[
 		SELECT member_id, member_name, member_nickname, member_email,
-         		member_phone, member_birth, member_authority, member_social
+         		member_phone, member_birth, member_authority, member_social, member_allow_email
 		FROM member
 		ORDER BY member_id DESC
 		LIMIT #{skip}, #{size}
@@ -125,7 +127,7 @@
 		 <![CDATA[   
          SELECT member_id, member_pw, member_name, member_nickname, member_email,
          		member_phone, member_birth, member_created_at, member_activated,
-         		member_authority, member_social
+         		member_authority, member_social, memberAllowEmail
          FROM member
  		 WHERE member_id LIKE CONCAT ('%',#{memberId},'%') 
      ]]>

@@ -82,10 +82,13 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public boolean modifyMember(Member member) {
 		try {
-			member.setMemberPw(passwordEncorder.encode(member.getMemberPw()));
+			if (member.getMemberPw() != null) {
+				member.setMemberPw(passwordEncorder.encode(member.getMemberPw()));
+			}
 			dao.updateMemberInfo(member);
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
