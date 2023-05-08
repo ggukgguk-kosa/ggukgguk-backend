@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,11 +22,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ggukgguk.api.admin.service.AdminService;
+import com.ggukgguk.api.admin.vo.BatchJobExecution;
+import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.common.vo.PageOption;
+import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.diary.service.DiaryService;
 
 @RestController
@@ -194,6 +198,45 @@ public class AdminController {
 		} else {
 			log.debug("회원 삭제 실패");
 			respBody = new BasicResp<Object>("error", "회원 삭제 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	/**
+	 * 각 배치의 최근 실행된 인스턴스의 실행 현황을 조회한다
+	 */
+	@GetMapping("/batch")
+	public ResponseEntity<?> getBatchStatusHandler() {
+		BasicResp<Object> respBody;
+		Map<String, List<BatchJobExecution>> result = service.fetchBatchStatus();
+
+		if (result != null) {
+			log.debug("배치 현황 조회 성공");
+			respBody = new BasicResp<Object>("success", null, result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("배치 현황 조회 실패");
+			respBody = new BasicResp<Object>("error", "배치 현황 조회 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@GetMapping("/batch/{jobName}")
+	public ResponseEntity<?> getBatchStatusByJobNameHandler(@ModelAttribute BatchPageOption option) {
+		BasicResp<Object> respBody;
+		TotalAndListPayload payload = service.fetchBatchStatusByJobName(option);
+
+		if (payload != null) {
+			log.debug("배치 세부 현황 조회 성공");
+			respBody = new BasicResp<Object>("success", null, payload);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("배치 세부 현황 조회 실패");
+			respBody = new BasicResp<Object>("error", "배치 세부 현황 조회 실패", null);
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}

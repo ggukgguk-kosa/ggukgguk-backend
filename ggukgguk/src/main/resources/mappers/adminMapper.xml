@@ -77,4 +77,37 @@
 		    member_activated = 0
 		WHERE member_id = #{memberId};	
 		</update>
+		
+  	<select id="selectRecentBatchJobExecution" parameterType="String" resultType="BatchJobExecution">
+		SELECT JOB_EXECUTION_ID, VERSION, JOB_INSTANCE_ID, CREATE_TIME,
+			START_TIME, END_TIME, STATUS, EXIT_CODE,
+			EXIT_MESSAGE, LAST_UPDATED, JOB_CONFIGURATION_LOCATION
+		FROM BATCH_JOB_EXECUTION
+		WHERE JOB_INSTANCE_ID = (
+			SELECT JOB_INSTANCE_ID AS jid
+			FROM BATCH_JOB_INSTANCE
+			WHERE JOB_NAME = #{jobName}
+			ORDER BY JOB_INSTANCE_ID DESC LIMIT 1
+		);
+  	</select>
+  	
+ 	<select id="selectBatchJobExecution" parameterType="BatchPageOption" resultType="BatchJobExecution">
+		SELECT bji.JOB_NAME, bje.JOB_EXECUTION_ID, bje.VERSION, bje.JOB_INSTANCE_ID, bje.CREATE_TIME,
+			bje.START_TIME, bje.END_TIME, bje.STATUS, bje.EXIT_CODE,
+			bje.EXIT_MESSAGE, bje.LAST_UPDATED, bje.JOB_CONFIGURATION_LOCATION
+		FROM BATCH_JOB_EXECUTION bje
+		LEFT JOIN BATCH_JOB_INSTANCE bji 
+		ON bje.JOB_EXECUTION_ID = bji.JOB_INSTANCE_ID
+		WHERE bji.JOB_NAME = #{jobName}
+		ORDER BY bje.JOB_EXECUTION_ID DESC
+		LIMIT #{skip}, #{size};
+  	</select>
+  	
+	 <select id="selectBatchJobExecutionCount" parameterType="BatchPageOption" resultType="int">
+		SELECT COUNT(*)
+		FROM BATCH_JOB_EXECUTION bje
+		LEFT JOIN BATCH_JOB_INSTANCE bji 
+		ON bje.JOB_EXECUTION_ID = bji.JOB_INSTANCE_ID
+		WHERE bji.JOB_NAME = 'extractKeywordJob';
+  	</select>
 </mapper>

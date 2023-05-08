@@ -46,6 +46,7 @@ public class memberController {
 	// 회원 정보 수정
 	@PutMapping(value= "/{memberId}")
 	public ResponseEntity<?> updateMemberInfo(@RequestBody Member member,@PathVariable String memberId){
+		log.debug("asdf");
 		BasicResp<Object> respBody;
 		member.setMemberId(memberId);
 		boolean result = Memberservice.modifyMember(member);
