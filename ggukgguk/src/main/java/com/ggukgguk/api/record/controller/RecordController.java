@@ -131,11 +131,11 @@ public class RecordController {
 		}
 		
 		
-		if(!mservice.getFriendship(record.getMemberId(), record.getRecordShareTo())) {
-			log.debug("조각 INSERT 실패 2");
-			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다. (SHARED_TO_SOMEONE_NOT_FRIEND)", null);		
-			return ResponseEntity.badRequest().body(respBody);
-		}
+//		if(!mservice.getFriendship(record.getMemberId(), record.getRecordShareTo())) {
+//			log.debug("조각 INSERT 실패 2");
+//			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다. (SHARED_TO_SOMEONE_NOT_FRIEND)", null);		
+//			return ResponseEntity.badRequest().body(respBody);
+//		}
 		
 		boolean result = service.saveMediaAndRecord(media, record);
 		
@@ -191,8 +191,28 @@ public class RecordController {
 		}
 	}
 
+	@PutMapping(value="/{recordId}")
+	public ResponseEntity<?> updateRecord(@PathVariable int recordId, @RequestBody Record record){
+		log.debug(record);
+		BasicResp<Object> respBody;
+		boolean result = service.updateRecord(record);
+		
+		if(result) {
+			log.debug("게시글 수정 성공");
+			respBody = new BasicResp<Object>("success", null, null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("게시글 수정 실패");
+			respBody = new BasicResp<Object>("error", "게시글 수정에 실패했습니다.", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+	}
+	
 	@DeleteMapping(value="/{recordId}")
 	public ResponseEntity<?> removeRecord(@PathVariable int recordId){
+		
+		log.debug("삭제");
 		
 		BasicResp<Object> respBody;
 		boolean result = service.removeRecord(recordId);
@@ -272,4 +292,44 @@ public class RecordController {
 		}
 	}
 	
+	@GetMapping("/unaccepted")
+	public ResponseEntity<?> getUnaccepted(@RequestParam(value = "memberId") String memberId){
+		
+		BasicResp<Object> respBody;
+		
+		List<Record> recordList = null;
+		
+		recordList = service.getUnaccepted(memberId);
+		
+		if (recordList != null) {
+			log.debug("미수락 교환일기 리스트 조회 성공");
+			
+			respBody = new BasicResp<Object>("success", null, recordList);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("미수락 교환일기 리스트 없음");
+			respBody = new BasicResp<Object>("success", null, recordList);
+			return ResponseEntity.ok(respBody);
+		}
+	}
+	
+	@PutMapping("/unaccepted/{recordId}")
+	public ResponseEntity<?> updateUnaccepted(@PathVariable(value = "recordId") int recordId){
+		
+		log.debug(recordId);
+		BasicResp<Object> respBody;
+		
+		boolean result = service.updateUnaccepted(recordId);
+		
+		if (result) {
+			log.debug("교환일기 수락 성공");
+			
+			respBody = new BasicResp<Object>("success", null, null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("교환일기 수락 실패");
+			respBody = new BasicResp<Object>("error", "교환일기 수락에 실패하였습니다.", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
 }
