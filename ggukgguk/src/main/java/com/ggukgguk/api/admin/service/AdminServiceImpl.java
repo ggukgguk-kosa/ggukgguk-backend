@@ -12,6 +12,7 @@ import com.ggukgguk.api.admin.vo.Main;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
+import com.ggukgguk.api.common.vo.TotalAndListPayload;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -22,45 +23,46 @@ public class AdminServiceImpl implements AdminService {
 	public List<Notice> noticeSelectPage(PageOption option) {
 		return dao.noticeSelectPaging(option);
 	}
-	
-    public boolean noticeWrite(Notice notice) {
-        try {
-            dao.noticeInsert(notice);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
-    public boolean noticeRead(int noticeId) {
-        try {
-            dao.noticeSelect(noticeId);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
-    public boolean noticeUpdate(int noticeId) {
-        try {
-            dao.updateNotice(noticeId);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    public boolean noticeDelete(int noticeId) {
-        try {
-            dao.deleteNotice(noticeId);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+
+	public boolean noticeWrite(Notice notice) {
+		try {
+			dao.noticeInsert(notice);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean noticeRead(int noticeId) {
+		try {
+			dao.noticeSelect(noticeId);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean noticeUpdate(int noticeId) {
+		try {
+			dao.updateNotice(noticeId);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean noticeDelete(int noticeId) {
+		try {
+			dao.deleteNotice(noticeId);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 	@Override
 	public List<Content> contentSelectPage(PageOption option) {
@@ -73,16 +75,16 @@ public class AdminServiceImpl implements AdminService {
 
 	}
 
-	// 회원 삭제 
+	// 회원 삭제
 	@Override
 	public boolean memberDelete(String memberId) {
-        try {
-            dao.memberDelete(memberId);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+		try {
+			dao.memberDelete(memberId);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 
 	}
 
@@ -114,11 +116,19 @@ public class AdminServiceImpl implements AdminService {
 			e.printStackTrace();
 		}
 		return main;
-		}
+	}
 
 	@Override
 	public List<ContentDetail> recordRead(int recordId) {
-           return dao.recordSelectList(recordId);
+		return dao.recordSelectList(recordId);
 	}
 
+//	// 페이징 처리를 위한 전체 게시글 리스트 조회
+//	@Override
+//	public TotalAndListPayload getMemberList(PageOption option) {
+//		TotalAndListPayload payload = new TotalAndListPayload();
+//		payload.setList(dao.selectMemberList(option)); // 전체 회원 리스트 조회
+//		payload.setTotal(dao.selectMemberListTotal(option)); // 페이징 처리를 위한 전체회원 수 구하기
+//		return payload;
+//	}
 }

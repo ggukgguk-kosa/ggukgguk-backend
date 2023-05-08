@@ -58,7 +58,6 @@ public class MemberDaoImpl implements MemberDao {
 		}
 	}
 
-	
 	@Override // 전체 회원 리스트 
 	public List<?> selectMemberList(PageOption option) {
 		return session.selectList("com.ggukgguk.api.Member.totalMemberList",option);

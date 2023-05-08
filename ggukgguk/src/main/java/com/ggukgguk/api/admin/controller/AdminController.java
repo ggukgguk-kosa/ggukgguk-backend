@@ -51,9 +51,9 @@ public class AdminController {
 	@Autowired
 	RecordService recordService;
 	
-	// 전체 회원수 조회
+	// admin main페이지
 	@GetMapping("")
-	public ResponseEntity<?> noticeeadHandler() {
+	public ResponseEntity<?> noticeaddHandler() {
 		BasicResp<Object> respBody;
 		Main result = adminService.mainAdmin();
 		log.debug(result);

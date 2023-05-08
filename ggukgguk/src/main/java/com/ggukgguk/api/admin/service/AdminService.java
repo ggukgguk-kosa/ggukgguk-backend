@@ -8,6 +8,7 @@ import com.ggukgguk.api.admin.vo.Main;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
+import com.ggukgguk.api.common.vo.TotalAndListPayload;
 
 public interface AdminService {
 
@@ -36,5 +37,7 @@ public interface AdminService {
 
 	Main mainAdmin();
 
-	public List<ContentDetail> recordRead(int recordId);	
+	public List<ContentDetail> recordRead(int recordId);
+
+//	public TotalAndListPayload getMemberList(PageOption option);
 }

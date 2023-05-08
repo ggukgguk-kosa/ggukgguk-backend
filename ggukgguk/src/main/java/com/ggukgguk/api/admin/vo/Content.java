@@ -2,6 +2,8 @@ package com.ggukgguk.api.admin.vo;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,7 @@ import lombok.NoArgsConstructor;
 public class Content {
 	private int recordId;
 	private String memberId;	
+	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")
 	private Date recordCreatedAt;
 	private int mediaFileBlocked; // block된 파일 확인 (0=non-blocked, 1=blocked)
 	private int mediaFileChecked; // 미디어 업로드 유무 
