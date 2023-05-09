@@ -124,6 +124,26 @@ public class NotificationSeriviceImpl implements NotificationService {
 			return -1;
 		}
 	}
+
+	@Override
+	public boolean setReadNotify(Notification notification) {
+		try {
+			dao.updateNotificationIsReadColumn(notification);	
+		}catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public Notification getOriginalNoti(int notificationId) {
+		try {
+			Notification result = dao.selectNotification(notificationId);
+			return result;
+		}catch (Exception e) {
+			return null;
+		}
+	}
 	
 	
 }

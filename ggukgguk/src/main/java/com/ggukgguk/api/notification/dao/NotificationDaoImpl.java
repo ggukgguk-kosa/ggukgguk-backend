@@ -25,6 +25,12 @@ public class NotificationDaoImpl implements NotificationDao {
 	}
 
 	
+	@Override
+	public Notification selectNotification(int notificationId) {
+		return session.selectOne("com.ggukgguk.api.Notification.selectNotification", notificationId);
+	}
+
+
 	@Override // 알림 생성
 	public void createNotification(Notification noiNotification) throws Exception{
 		int result = session.insert("com.ggukgguk.api.Notification.createNotification", noiNotification);
@@ -47,6 +53,17 @@ public class NotificationDaoImpl implements NotificationDao {
 	@Override
 	public int selectUnreadNotiCount(String receiverId) {
 		return session.selectOne("com.ggukgguk.api.Notification.selectUnreadNotiCount", receiverId);
+	}
+
+
+	@Override
+	public void updateNotificationIsReadColumn(Notification notification) throws Exception {
+		int result = session.insert("com.ggukgguk.api.Notification.updateNotificationIsReadColumn",
+				notification);
+		
+		if(result != 1) {
+			throw new Exception();
+		}
 	}
 
 }

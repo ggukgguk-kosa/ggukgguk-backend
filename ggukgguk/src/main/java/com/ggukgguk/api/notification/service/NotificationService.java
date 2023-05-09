@@ -15,4 +15,8 @@ public interface NotificationService {
 
 	int fetchUnreadNotiCount(String receiverId);
 
+	boolean setReadNotify(Notification notification);
+
+	Notification getOriginalNoti(int notificationId);
+
 }
