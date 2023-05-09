@@ -17,6 +17,15 @@
  		 WHERE receiver_id = #{receiverId}
      	 ]]>
 	</select>
+	
+	<select id="selectUnreadNotiCount"
+		parameterType="java.lang.String" resultType="int">
+	 <![CDATA[   
+        SELECT COUNT(*)
+        FROM notification
+		WHERE receiver_id = #{receiverId}
+   	 ]]>
+	</select>
 
 	<!-- 알림 생성 -->
 	<insert id="createNotification" parameterType="Notification"> 

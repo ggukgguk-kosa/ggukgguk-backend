@@ -70,6 +70,23 @@ public class NotificationController {
 
 	}
 	
+	@GetMapping(value = "/unreadCount")
+	public ResponseEntity<?> unreadNotifyCountHandler(Authentication authentication) {
+		BasicResp<Object> respBody;
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String receiverId = userDetails.getUsername();
+		
+		int result = service.fetchUnreadNotiCount(receiverId);
+		
+		if (result >= 0) {
+			respBody = new BasicResp<Object>("success", "읽지 않은 알림 개수 조회에 성공하였습니다.", result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			respBody = new BasicResp<Object>("error", "읽지 않은 알림 개수 조회에 실패하였습니다.", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
 	// 알림 삭제
 	@DeleteMapping(value = "{notificationId}")
 	public ResponseEntity<?> notifyDeleteHandler(@PathVariable int notificationId, Authentication authentication){

@@ -43,4 +43,10 @@ public class NotificationDaoImpl implements NotificationDao {
 		}
 	}
 
+
+	@Override
+	public int selectUnreadNotiCount(String receiverId) {
+		return session.selectOne("com.ggukgguk.api.Notification.selectUnreadNotiCount", receiverId);
+	}
+
 }

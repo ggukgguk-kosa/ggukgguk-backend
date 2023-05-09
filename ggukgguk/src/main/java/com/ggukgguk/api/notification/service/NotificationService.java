@@ -13,4 +13,6 @@ public interface NotificationService {
 
 	boolean deleteNotify(int notificationId);
 
+	int fetchUnreadNotiCount(String receiverId);
+
 }
