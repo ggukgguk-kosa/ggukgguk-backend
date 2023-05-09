@@ -127,6 +127,7 @@ public class MemberServiceImpl implements MemberService {
 			// 아이디", 수신 여부 = 0, 전달 메시지
 			notificationDao.createNotification(noti);
 
+			
 		} catch (Exception e) {
 			transactionManager.rollback(txStatus);
 			e.printStackTrace();
