@@ -29,6 +29,7 @@ import com.ggukgguk.api.common.vo.PageOption;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.service.MemberService;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.member.vo.Verify;
 import com.nimbusds.jose.shaded.json.JSONArray;
 
 @RestController
@@ -241,9 +242,9 @@ public class AuthController {
 	// 메모리의 캐시 형태로 하여 이메일 인증코드와 사용자(받는 사람이메일)랑 같이 저장.
 	private ConcurrentHashMap<String, String> authCodeCache = new ConcurrentHashMap<>();
 	
-	// 인증번호 메일 전송
+	// 회원 가입 및 비밀번호 찾기 시 인증번호 메일 전송
 	@GetMapping(value = "/mailCertification", produces = "application/json; charset=UTF-8")
-	public ResponseEntity<?> cetificationPostMail(@RequestParam String sendTo) throws Exception {
+	public ResponseEntity<?> cetificationPostMail(@RequestParam String sendTo, @ModelAttribute Verify verify) throws Exception {
 		
 		String authenticationCode = generateCertCharacter.excuteGenerate();
 		authCodeCache.put(sendTo, authenticationCode); // 회원 이메일과 인증 코드를 key,value쌍으로 저장.
@@ -256,10 +257,14 @@ public class AuthController {
 		
 		boolean result = emailService.sendEmail(sendTo,
 				"꾹꾹 가입 인증 메일입니다.",
-				"<div>아래의 인증 번호를 입력하여 가입하시면 가입이 완료됩니다..<br> 인증 번호는 : "+authenticationCode+" 입니다 확인 후 페이제 입력해 주세요.</div>");
+				"<div>아래의 인증 번호를 입력하여 가입하시면 가입이 완료됩니다..<br> 인증 번호는 : "+authenticationCode+" 입니다 확인 후 페이지 입력해 주세요.</div>");
 		
-		if (result) {
-			resp = new BasicResp<Object>("success", null, authenticationCode);
+		// 회원 가입 or 비밀전호 찾기 시 메일 주소 확인 및 인증번호 db 테이블에 저장.
+		boolean verifyInsert = memberSerivce.postAuthenticationCode(verify,authenticationCode,sendTo);
+		
+		
+		if (verifyInsert) {
+			resp = new BasicResp<Object>("success", null, verifyInsert);
 			return ResponseEntity.ok(resp);
 		} else {
 			resp = new BasicResp<Object>("success", "메일 전송에 실패했습니다.", null);
@@ -267,14 +272,20 @@ public class AuthController {
 		}
 	}
 	
-	// 이메일 인증 코드 확인
+	//비밀번호 찾기 및 회원가입시 이메일 인증 코드 확인
 	@GetMapping(value = "/mailCertificationNumberCheck", produces = "application/json; charset=UTF-8")
-	public ResponseEntity<?> checkCertification(@RequestParam String sendTo, @RequestParam String certificationNumber) throws Exception {
+	public ResponseEntity<?> checkCertification(@ModelAttribute Verify verify, @RequestParam String sendTo, @RequestParam String certificationNumber) throws Exception {
 		BasicResp<Object> resp = null;
 		
 		String storedAuthCode = authCodeCache.get(sendTo); // 이메일 인증코드로 보낸 코드를 가져오기
 		
-		boolean result = memberSerivce.getCheckAuthenticationCode(certificationNumber,storedAuthCode);
+		// 1안.  메모리의 캐시 형태로 하여 이메일 인증코드와 사용자(받는 사람이메일)랑 같이 저장.
+		//boolean result = memberSerivce.getCheckAuthenticationCode(certificationNumber,storedAuthCode);
+		
+		// 2안. DB에 저장하여 조회하는 방식.
+		boolean result = memberSerivce.getCheckTableAuthenticationCode(verify,sendTo,certificationNumber);
+		
+		
 		if (result) {
 			resp = new BasicResp<Object>("success", null, result);
 			return ResponseEntity.ok(resp);
