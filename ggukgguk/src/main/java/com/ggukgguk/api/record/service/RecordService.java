@@ -25,4 +25,6 @@ public interface RecordService {
 
 	public boolean updateUnaccepted(int recordId);
 
+	public MediaFile getMediaMetadata(String fileId);
+
 }

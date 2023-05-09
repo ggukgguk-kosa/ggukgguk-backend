@@ -34,4 +34,6 @@ public interface RecordDao {
 
 	void updateUnaccepted(int recordId) throws Exception;
 
+	MediaFile selectMedia(String mediaFileId);
+
 }

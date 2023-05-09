@@ -127,4 +127,10 @@ public class RecordDaoImpl implements RecordDao{
 			throw new Exception();
 		}
 	}
+
+	@Override
+	public MediaFile selectMedia(String mediaFileId) {
+
+		return session.selectOne("com.ggukgguk.api.Record.selectMedia", mediaFileId);
+	}
 }
