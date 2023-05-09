@@ -191,4 +191,9 @@ public class RecordServiceImpl implements RecordService{
 		transactionManager.commit(txStatus);
 		return true;
 	}
+
+	@Override
+	public MediaFile getMediaMetadata(String mediaFileId) {
+		return dao.selectMedia(mediaFileId);
+	}
 }
