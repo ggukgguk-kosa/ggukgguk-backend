@@ -20,6 +20,7 @@ import com.ggukgguk.api.member.dao.MemberDao;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.member.vo.Verify;
 import com.ggukgguk.api.notification.dao.NotificationDao;
 import com.ggukgguk.api.notification.vo.Notification;
 import com.ggukgguk.api.record.vo.RecordSearch;
@@ -73,14 +74,14 @@ public class MemberServiceImpl implements MemberService {
 	public boolean getMemberByEmailandId(Member member) {
 
 		try {
-	        Member user = dao.selectMemberByEmailandId(member);
-	        if (user != null && user.getMemberId() != null) {
-	            return true;
-	        }
-	    } catch (NullPointerException e) {
-	        // You can log the exception here if needed
-	    }
-	    return false;
+			Member user = dao.selectMemberByEmailandId(member);
+			if (user != null && user.getMemberId() != null) {
+				return true;
+			}
+		} catch (NullPointerException e) {
+			// You can log the exception here if needed
+		}
+		return false;
 	}
 
 	// 회원정보 수정
@@ -225,8 +226,9 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public boolean getFriendship(RecordSearch recordSearch) {
-		
-		if (dao.selectFriendship(recordSearch) == 1) return true;
+
+		if (dao.selectFriendship(recordSearch) == 1)
+			return true;
 		return false;
 	}
 
@@ -235,17 +237,55 @@ public class MemberServiceImpl implements MemberService {
 		RecordSearch recordSearch = new RecordSearch(member1, null, null, member2);
 		recordSearch.setMemberId(member1);
 		recordSearch.setFriendId(member2);
-		
-		if (dao.selectFriendship(recordSearch) == 1) return true;
+
+		if (dao.selectFriendship(recordSearch) == 1)
+			return true;
 		return false;
 	}
 
-	// 비밀번호 이메일 인증코드 확인
+	// 메일 인증코드 전송
+	@Override
+	public boolean postAuthenticationCode(Verify verify, String authenticationCode, String sendTo) {
+
+		Member result = dao.selectMemberByEmail(sendTo);
+		if (result == null) {
+			verify.setVerifyCode(authenticationCode);
+			verify.setVerifyEmail(sendTo);
+			try {
+				dao.insertEmailAuthenticationCode(verify);
+
+				return true;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+		}else {
+			return false;
+		}
+	}
+	
+	// 캐시를 이용한 인증코드 확인.
 	@Override
 	public boolean getCheckAuthenticationCode(String certificationNumber, String storedAuthCode) {
-		if(certificationNumber.equals(storedAuthCode)) {
+		if (certificationNumber.equals(storedAuthCode)) {
 			return true;
 		}
 		return false;
+	}
+	
+
+	// DB를 이용한 인증코드 확인 방식.
+	@Override
+	public boolean getCheckTableAuthenticationCode(Verify verify, String sendTo, String certificationNumber) {
+		verify.setVerifyEmail(sendTo);
+		verify.setVerifyCode(certificationNumber);
+		
+		try {
+			Verify certification = dao.authenticationMatch(verify);
+			return certification != null;
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 }

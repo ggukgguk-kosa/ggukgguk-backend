@@ -31,5 +31,7 @@
 	 	<typeAlias type="com.ggukgguk.api.member.vo.FriendRequest" alias="FriendRequest"/>
 	 	<typeAlias type="com.ggukgguk.api.member.vo.Friend" alias="Friend"/>
 	 	<typeAlias type="com.ggukgguk.api.notification.vo.Notification" alias="Notification"/>
+	 	<typeAlias type="com.ggukgguk.api.member.vo.Verify" alias="Verify"/>
+	 	
 	 </typeAliases>
 </configuration>
