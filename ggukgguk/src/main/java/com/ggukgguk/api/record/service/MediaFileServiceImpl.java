@@ -3,11 +3,23 @@ package com.ggukgguk.api.record.service;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.ImageWriteException;
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.common.ImageMetadata;
+import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
+import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
+import org.apache.commons.imaging.formats.tiff.TiffImageMetadata;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,8 +74,9 @@ public class MediaFileServiceImpl implements MediaFileService {
 	 * @param file
 	 * @param contentType
 	 * @return
+	 * @throws IOException 
 	 */
-	private boolean prcessMedia(File file, String contentType) {
+	private boolean prcessMedia(File file, String contentType) throws IOException {
 		String format = contentType.split("/")[0];
 		boolean result = false;
 		
@@ -94,15 +107,30 @@ public class MediaFileServiceImpl implements MediaFileService {
 	/*
 	 * 이미지의 너비가 특정 수준을 넘어서면, 해당 수준에 맞게 리사이징한다.
 	 */
-	private boolean resizeImage(File imgFile) {
+	private boolean resizeImage(File imgFile) throws IOException {
+		boolean result = false;
+		
 		// 원본 이미지 로드
 		BufferedImage originalImage = null;
+		byte[] imageData = null;
+		
 		try {
 			originalImage = ImageIO.read(imgFile);
+			imageData  = Files.readAllBytes(imgFile.toPath());
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
+		
+		// 원본 이미지에서 EXIF 추출
+		TiffImageMetadata metadata;
+		try {
+			metadata = readExifMetadata(imageData);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+        imageData = null; // GC될 수 있도록 NULL 처리
 		
 		// 원본 이미지 사이즈 불러오기
 		int originalWidth = originalImage.getWidth();
@@ -125,12 +153,42 @@ public class MediaFileServiceImpl implements MediaFileService {
 	    
 	    try {
 			ImageIO.write(newImage, "jpg", imgFile);
-			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
+	    
+	    // 기존 메타데이터 쓰기
+	    FileOutputStream fos = new FileOutputStream(imgFile);
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    try {
+		    ImageIO.write(newImage, "jpg", baos);
+		    byte[] resizedImgData = baos.toByteArray();
+	    	new ExifRewriter().updateExifMetadataLossless(resizedImgData, fos, metadata.getOutputSet());
+	    	result = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = false;
+		} finally {
+	    	fos.close();
+	    	baos.close();
+		}
+	    
+	    return result;
 	}
+	
+    private TiffImageMetadata readExifMetadata(byte[] jpegData) throws ImageReadException, IOException {
+        ImageMetadata imageMetadata = Imaging.getMetadata(jpegData);
+        if (imageMetadata == null) {
+            return null;
+        }
+        JpegImageMetadata jpegMetadata = (JpegImageMetadata)imageMetadata;
+        TiffImageMetadata exif = jpegMetadata.getExif();
+        if (exif == null) {
+            return null;
+        }
+        return exif;
+    }
 	
 	private boolean encodeVideo(File videoFile) {
 		try {
