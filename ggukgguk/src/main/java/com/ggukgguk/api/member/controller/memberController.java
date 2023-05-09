@@ -46,6 +46,7 @@ public class memberController {
 	// 회원 정보 수정
 	@PutMapping(value= "/{memberId}")
 	public ResponseEntity<?> updateMemberInfo(@RequestBody Member member,@PathVariable String memberId){
+		log.debug("asdf");
 		BasicResp<Object> respBody;
 		member.setMemberId(memberId);
 		boolean result = Memberservice.modifyMember(member);
@@ -74,8 +75,6 @@ public class memberController {
 			log.debug("회원 리스트 조회 실패");
 			respBody = new BasicResp<Object>("error", "전체 회원 조회에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
-		}
-		
-	}
-	
+		}	
+	}	
 }

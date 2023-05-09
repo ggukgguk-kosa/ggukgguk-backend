@@ -69,7 +69,6 @@ public class DiaryController {
 			respBody = new BasicResp<Object>("error", "다이어리 조회에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
-		
 	}
 	
 	// 추천 컬러 조회

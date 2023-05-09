@@ -5,8 +5,9 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ggukgguk.api.Admin">
- 	<!-- 공지사항  관련 mapper-->
- 	
+
+
+	<!-- 공지사항 관련 mapper -->
 	<select id="noticeSelect" parameterType="int" resultType="int">
 		SELECT
 		notice_id, notice_title, notice_content, notice_created_at,
@@ -24,9 +25,11 @@
 
 	<update id="noticeUpdate" parameterType="int">
 		UPDATE notice
-		SET notice_title= #{noticeTitle},
+		SET
+		notice_title= #{noticeTitle},
 		notice_content = #{noticeContent}
-		WHERE notice_id =#{noticeId}
+		WHERE
+		notice_id =#{noticeId}
 	</update>
 
 	<delete id="noticeDelete">
@@ -42,39 +45,151 @@
 		notice_created_at DESC
 	</select>
 
-	<select id="noticeSelectPage" parameterType="PageOption" resultType="Notice">
+	<select id="noticeSelectPage" parameterType="PageOption"
+		resultType="Notice">
 		SELECT
-		notice_id, notice_title, notice_content, notice_created_at
+		notice_id, notice_title, notice_content,
+		notice_created_at
 		FROM notice
 		ORDER BY notice_created_at DESC
-		LIMIT #{skip}, #{size}
+		LIMIT
+		#{skip}, #{size}
 	</select>
 
 	<!-- 컨텐츠관리 관련 mapper -->
-    <select id="contentSelectList" parameterType="PageOption" resultType="Content">
-		SELECT record_id, member_id, record_created_at, record_comment,
+	<select id="contentSelectList" parameterType="PageOption"
+		resultType="Content">
+		SELECT record_id, member_id, record_created_at,
 		media_file_blocked, media_file_checked
 		FROM record r
-		LEFT JOIN media_file m
+		LEFT JOIN
+		media_file m
 		ON r.media_file_id = m.media_file_id
-		ORDER BY record_created_at DESC
+		ORDER BY
+		record_created_at DESC
 		LIMIT #{skip}, #{size};
 	</select>
-	
-	<!-- 회원관리 관련 mapper -->		
-  	<select id="memberSelectList" parameterType="PageOption" resultType="Content">
-  		SELECT member_id, member_name, member_email, member_phone, member_birth
-		FROM member
-		
-  	</select> 
-  		<update id="memberDelete" parameterType="java.lang.String">
+	<!-- 페이징 처리를 하기 위한 전체 게시글 수 -->
+	<select id="selectContentTotal" parameterType="PageOption"
+		resultType="int">
+		<![CDATA[   
+			SELECT COUNT(*) FROM record
+		]]>
+	</select>
+
+	<!-- 회원관리 관련 mapper -->
+	<select id="memberSelectList" parameterType="PageOption"
+		resultType="Content">
+		SELECT member_id, member_name, member_email, member_phone,
+		member_birth
+		FROM
+		member
+
+	</select>
+	<update id="memberDelete" parameterType="java.lang.String">
 		UPDATE member
-		SET member_pw = '',
-		    member_name = '',
-		    member_nickname = '',
-		    member_email = NULL,
-		    member_phone = '',
-		    member_activated = 0
-		WHERE member_id = #{memberId};	
-		</update>
+		SET
+		member_pw = '',
+		member_name = '',
+		member_nickname = '',
+		member_email =
+		NULL,
+		member_phone = '',
+		member_activated = 0
+		WHERE member_id =
+		#{memberId};
+	</update>
+
+	<!-- 관리자 메인 페이지 통계 -->
+	<select id="totalMemberSelect" resultType="int">
+		SELECT COUNT(*) AS
+		member_count FROM member;
+	</select>
+
+	<select id="todayMemberSelect" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*) AS num_members FROM member
+			WHERE member_created_at >= CONCAT(CURDATE(), ' 00:00:00') AND member_created_at <= CONCAT(CURDATE(), ' ', TIME(NOW()));
+		]]>
+	</select>
+	<select id="totalContentSelect" resultType="int">
+		SELECT
+		COUNT(record_id) AS total_content FROM record
+	</select>
+
+	<select id="todayContentSelect" resultType="int">
+		SELECT
+		COUNT(record_id) as today_content FROM record
+		WHERE
+		DATE(record_created_at) = CURDATE();
+	</select>
+
+	<select id="recordSelectList" parameterType="int"
+		resultType="ContentDetail">
+		SELECT record.record_id, member.member_id,
+		record.record_comment, record.record_created_at,
+		record.media_file_id,
+		record.record_is_open, record.record_share_to,
+		reply.reply_id,
+		reply.member_id AS reply_member_id, reply.reply_content,
+		reply.reply_date
+		FROM record
+		LEFT JOIN reply ON record.record_id =
+		reply.record_id
+		LEFT JOIN member ON reply.member_id = member.member_id
+		WHERE record.record_id = #{recordId}
+		ORDER BY record.record_created_at
+		DESC, reply.reply_date;
+	</select>
+
+	<select id="selectRecentBatchJobExecution"
+		parameterType="String" resultType="BatchJobExecution">
+		SELECT JOB_EXECUTION_ID, VERSION,
+		JOB_INSTANCE_ID, CREATE_TIME,
+		START_TIME, END_TIME, STATUS, EXIT_CODE,
+		EXIT_MESSAGE, LAST_UPDATED, JOB_CONFIGURATION_LOCATION
+		FROM
+		BATCH_JOB_EXECUTION
+		WHERE JOB_INSTANCE_ID = (
+		SELECT JOB_INSTANCE_ID AS
+		jid
+		FROM BATCH_JOB_INSTANCE
+		WHERE JOB_NAME = #{jobName}
+		ORDER BY
+		JOB_INSTANCE_ID DESC LIMIT 1
+		);
+	</select>
+
+	<select id="selectBatchJobExecution"
+		parameterType="BatchPageOption" resultType="BatchJobExecution">
+		SELECT bji.JOB_NAME,
+		bje.JOB_EXECUTION_ID, bje.VERSION, bje.JOB_INSTANCE_ID,
+		bje.CREATE_TIME,
+		bje.START_TIME, bje.END_TIME, bje.STATUS,
+		bje.EXIT_CODE,
+		bje.EXIT_MESSAGE, bje.LAST_UPDATED,
+		bje.JOB_CONFIGURATION_LOCATION
+		FROM
+		BATCH_JOB_EXECUTION bje
+		LEFT JOIN
+		BATCH_JOB_INSTANCE bji
+		ON bje.JOB_EXECUTION_ID = bji.JOB_INSTANCE_ID
+		WHERE bji.JOB_NAME =
+		#{jobName}
+		ORDER BY bje.JOB_EXECUTION_ID DESC
+		LIMIT
+		#{skip}, #{size};
+	</select>
+
+	<select id="selectBatchJobExecutionCount"
+		parameterType="BatchPageOption" resultType="int">
+		SELECT COUNT(*)
+		FROM
+		BATCH_JOB_EXECUTION bje
+		LEFT JOIN BATCH_JOB_INSTANCE bji
+		ON
+		bje.JOB_EXECUTION_ID = bji.JOB_INSTANCE_ID
+		WHERE bji.JOB_NAME =
+		'extractKeywordJob';
+	</select>
 </mapper>

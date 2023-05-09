@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -112,7 +114,6 @@ public class RecordController {
 			respBody = new BasicResp<Object>("error", "게시글 조회에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
-		
 	}
 	
 	@PostMapping
@@ -130,12 +131,14 @@ public class RecordController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 		
-		
-//		if(!mservice.getFriendship(record.getMemberId(), record.getRecordShareTo())) {
-//			log.debug("조각 INSERT 실패 2");
-//			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다. (SHARED_TO_SOMEONE_NOT_FRIEND)", null);		
-//			return ResponseEntity.badRequest().body(respBody);
-//		}
+
+		// recordShareTo가 지정되어 있고, 친구 관계인 경우인지 확인
+		// recordShareTo가 null이면 검증 패스
+		if(record.getRecordShareTo() != null && !mservice.getFriendship(record.getMemberId(), record.getRecordShareTo())) {
+			log.debug("조각 INSERT 실패 2");
+			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다. (SHARED_TO_SOMEONE_NOT_FRIEND)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
 		
 		boolean result = service.saveMediaAndRecord(media, record);
 		
@@ -151,7 +154,12 @@ public class RecordController {
 	}
 	
 	@GetMapping(value="/media/{fileId}")
-	public ResponseEntity<InputStreamResource> getImageMedia(@PathVariable("fileId") String fileId, @RequestParam("mediaType") String mediaType) throws IOException {	
+	public ResponseEntity<FileSystemResource> getMedia(@PathVariable("fileId") String fileId,
+			@RequestParam("mediaType") String mediaType) throws IOException {	
+		log.debug("미디어 파일 요청");
+		log.debug("  파일 아이디: " + fileId);
+		log.debug("  파일 타입: " + mediaType);
+		
 		MediaType contentsType;
 		String subDir;
 		switch (mediaType) {
@@ -175,19 +183,16 @@ public class RecordController {
 		
 		File mediaFile = new File(baseDir + "/" + subDir + "/" + fileId);
 		File defaultFile = new File(baseDir + "/" + subDir + "/default");
-		InputStream in;
-		try {
-			in = new FileInputStream(mediaFile);
+
+		if (mediaFile.exists()) {
 		    return ResponseEntity.ok()
 		    	      .contentType(contentsType)
-		    	      .body(new InputStreamResource(in));
-		} catch (FileNotFoundException e) {
-			log.debug("미디어 파일을 찾을 수 없습니다.");
-			e.printStackTrace();
-			in = new FileInputStream(defaultFile);
+		    	      .body(new FileSystemResource(mediaFile));
+		} else {
+			log.debug("미디어 파일을 찾을 수 없어 디폴트 파일을 제공하였습니다.");
 		    return ResponseEntity.ok()
 		    	      .contentType(contentsType)
-		    	      .body(new InputStreamResource(in));
+		    	      .body(new FileSystemResource(defaultFile));
 		}
 	}
 

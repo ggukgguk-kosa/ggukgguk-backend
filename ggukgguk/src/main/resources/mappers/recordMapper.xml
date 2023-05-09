@@ -149,6 +149,9 @@
          	#{mediaFileId}, #{recordLocationY}, #{recordLocationX},
          	#{recordIsOpen}, #{recordShareTo}, #{recordShareAccepted})
       ]]>
+	<selectKey resultType="int" keyProperty="recordId" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
    </insert>
 
    <select id="selectUnaccepted" parameterType="String" resultMap="RecordResultSet">  

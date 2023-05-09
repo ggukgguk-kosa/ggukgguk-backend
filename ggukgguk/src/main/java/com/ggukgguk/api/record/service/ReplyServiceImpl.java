@@ -41,7 +41,7 @@ public class ReplyServiceImpl implements ReplyService {
 			// 방금 생성한 댓글 테이블의 아이디 값을 가져오기
 			int replyId = (int)reply.getReplyId();	
 			// 이후 새로운 댓글 알림 생성 
-			Notification noti = new Notification(0, "NEW_REPLY", new Date(), replyId, record.get(0).getMemberId(),0, "댓글을 남겼습니다.");
+			Notification noti = new Notification(0, "NEW_REPLY", new Date(), replyId, record.get(0).getMemberId(),0, reply.getMemberId() + "님이 댓글을 남겼습니다.");
 											    //알림 순번, 알림 타입 = "새로운 댓글". 알림 날짜 , 참조 아이디 = "방금 등록한 댓글 테이블 아이디", 수신자  = "해당 조각 작성자아이디 ", 수신 여부 = 0, 전달 메시지                
 			notificationDao.createNotification(noti);
 			

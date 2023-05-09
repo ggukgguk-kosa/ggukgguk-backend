@@ -1,11 +1,17 @@
 package com.ggukgguk.api.admin.service;
 
 import java.util.List;
+import java.util.Map;
 
+import com.ggukgguk.api.admin.vo.BatchJobExecution;
+import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.Content;
+import com.ggukgguk.api.admin.vo.ContentDetail;
+import com.ggukgguk.api.admin.vo.Main;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
+import com.ggukgguk.api.common.vo.TotalAndListPayload;
 
 public interface AdminService {
 
@@ -25,12 +31,21 @@ public interface AdminService {
 	public boolean noticeDelete(int noticeId);
 
 	// 컨텐츠 리스트 출력
-	public List<Content> contentSelectPage(PageOption option);
+	public TotalAndListPayload contentSelectPage(PageOption option);
 
 	public List<Member> memberSelectPage(PageOption option);
 
 	// 회원삭제
 	public boolean memberDelete(String memberId);
-	
+
+	Main mainAdmin();
+
+	public List<ContentDetail> recordRead(int recordId);
+
+//	public TotalAndListPayload getMemberList(PageOption option);
+	// 최근 배치 현황 조회
+	public Map<String, List<BatchJobExecution>> fetchBatchStatus();
+
+	public TotalAndListPayload fetchBatchStatusByJobName(BatchPageOption option);
 	
 }

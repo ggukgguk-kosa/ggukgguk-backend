@@ -41,7 +41,6 @@ public class RecordDaoImpl implements RecordDao{
 	
 	@Override
 	public void deleteReplyList(int recordId) throws Exception {
-		// TODO Auto-generated method stub
 
 		int affectedRow = session.delete("com.ggukgguk.api.Record.deleteReplyList", recordId);
 		
@@ -52,7 +51,7 @@ public class RecordDaoImpl implements RecordDao{
 	
 	@Override
 	public int selectKeyword(int recordId) {
-		// TODO Auto-generated method stub
+		
 		return session.selectOne("com.ggukgguk.api.Record.selectKeywordCount", recordId);
 	}
 	

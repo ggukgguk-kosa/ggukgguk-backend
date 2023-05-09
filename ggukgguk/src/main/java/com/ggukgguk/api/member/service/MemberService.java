@@ -7,6 +7,7 @@ import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.member.vo.Verify;
 import com.ggukgguk.api.record.vo.RecordSearch;
 
 public interface MemberService {
@@ -38,5 +39,11 @@ public interface MemberService {
 	public boolean getFriendship(RecordSearch recordSearch);
 	
 	public boolean getFriendship(String member1, String member2);
+
+	public boolean getCheckAuthenticationCode(String certificationNumber, String storedAuthCode);
+
+	public boolean getCheckTableAuthenticationCode(Verify verify, String sendTo, String certificationNumber);
+	
+	public boolean postAuthenticationCode(Verify verify, String authenticationCode, String sendTo);
 
 }
