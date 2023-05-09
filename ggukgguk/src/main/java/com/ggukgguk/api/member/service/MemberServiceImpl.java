@@ -121,7 +121,7 @@ public class MemberServiceImpl implements MemberService {
 
 			// 친구 요청 알림 생성.
 			Notification noti = new Notification(0, "FRIEND_REQUEST", new Date(), friendRequestId,
-					request.getToMemberId(), 0, "친구 요청을 하였습니다.");
+					request.getToMemberId(), 0, request.getFromMemberId() + "님이 친구 요청을 하였습니다. 수락하시겠습니까?");
 			// 알림 순번, 알림 타입 = "친구 요청". 알림 날짜 , 참조 아이디 = "방금 친구 요청 테이블 아이디", 수신자 = "전달받는
 			// 아이디", 수신 여부 = 0, 전달 메시지
 			notificationDao.createNotification(noti);

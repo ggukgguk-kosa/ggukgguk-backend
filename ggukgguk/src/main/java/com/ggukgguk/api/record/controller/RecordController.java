@@ -154,7 +154,7 @@ public class RecordController {
 	}
 	
 	@GetMapping(value="/media/{fileId}")
-	public ResponseEntity<FileSystemResource> getImageMedia(@PathVariable("fileId") String fileId,
+	public ResponseEntity<FileSystemResource> getMedia(@PathVariable("fileId") String fileId,
 			@RequestParam("mediaType") String mediaType) throws IOException {	
 		log.debug("미디어 파일 요청");
 		log.debug("  파일 아이디: " + fileId);
