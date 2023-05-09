@@ -47,5 +47,9 @@ public interface AdminService {
 	public Map<String, List<BatchJobExecution>> fetchBatchStatus();
 
 	public TotalAndListPayload fetchBatchStatusByJobName(BatchPageOption option);
+
+	public Map<String, Object> getDailyReportAll(String startDate, String endDate);
+
+	public List<Map<String, Integer>> getDailyReport(String startDate, String endDate, String reportSubject);
 	
 }

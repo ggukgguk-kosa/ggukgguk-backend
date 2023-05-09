@@ -39,6 +39,9 @@
             <AppenderRef ref="File_1" />
         </Logger>
         
+        <Logger name="com.ggukgguk.api.Admin" level="trace">
+        </Logger>
+        
         <Logger name="com.ggukgguk.api.Member" level="trace">
         </Logger>
         
