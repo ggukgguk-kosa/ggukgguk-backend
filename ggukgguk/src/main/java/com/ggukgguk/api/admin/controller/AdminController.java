@@ -304,7 +304,7 @@ public class AdminController {
 	}
 	
 	/**
-	 * 
+	 * 잡별 실행 이력을 조회한다.
 	 * @return
 	 */
 	@GetMapping("/batch/{jobName}")
@@ -319,6 +319,51 @@ public class AdminController {
 		} else {
 			log.debug("배치 세부 현황 조회 실패");
 			respBody = new BasicResp<Object>("error", "배치 세부 현황 조회 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	@GetMapping("/report/daily")
+	public ResponseEntity<?> getDailyAllHandler(@RequestParam(value="startDate", required = false) String startDate,
+			@RequestParam(value="endDate", required = false) String endDate) {
+		BasicResp<Object> respBody;
+
+		Map<String, Object> result = adminService.getDailyReportAll(startDate, endDate);
+
+		if (result != null) {
+			log.debug("일자별 데이터 조회 성공");
+			respBody = new BasicResp<Object>("success", null, result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("일자별 데이터 조회 실패");
+			respBody = new BasicResp<Object>("error", "일자별 데이터 조회 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	@GetMapping("/report/daily/{reportSubject}")
+	public ResponseEntity<?> getDailyHandler(@RequestParam(value="startDate", required = false) String startDate,
+			@RequestParam(value="endDate", required = false) String endDate,
+			@PathVariable String reportSubject) {
+		BasicResp<Object> respBody;
+		
+		if (!reportSubject.equals("member")
+				&& !reportSubject.equals("record")
+				&& !reportSubject.equals("reply")) {
+			log.debug("일자별 데이터 조회 실패");
+			respBody = new BasicResp<Object>("error", "일자별 데이터 조회 실패 (NO_SUCH_ITEM)", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+
+		List<Map<String, Integer>> result = adminService.getDailyReport(startDate, endDate, reportSubject);
+
+		if (result != null) {
+			log.debug("일자별 데이터 조회 성공 " + reportSubject);
+			respBody = new BasicResp<Object>("success", null, result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("일자별 데이터 조회 실패 " + reportSubject);
+			respBody = new BasicResp<Object>("error", "일자별 데이터 조회 실패", null);
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}

@@ -192,4 +192,67 @@
 		WHERE bji.JOB_NAME =
 		'extractKeywordJob';
 	</select>
+	
+	<select id="selectMemberIncreaseDaily"
+		parameterType="HashMap" resultType="HashMap">
+		SELECT SUBSTRING(member_created_at, 1, 10) AS `date`,
+			COUNT(member_id) AS `count`
+		FROM `member`
+		WHERE member_created_at
+		<if test="startDate == null and endDate == null">
+			BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()
+		</if>
+		<if test="startDate == null and endDate != null">
+			BETWEEN DATE_SUB(CONCAT(#{endDate}, ' 11:59:59'), INTERVAL 7 DAY) AND CONCAT(#{endDate}, ' 11:59:59')
+		</if>
+		<if test="startDate != null and endDate == null">
+			BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND DATE_ADD(CONCAT(#{startDate}, ' 00:00:00'), INTERVAL 7 DAY)
+		</if>
+		<if test="startDate != null and endDate != null">
+			BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 11:59:59')
+		</if>
+		GROUP BY SUBSTRING(member_created_at, 1, 10);
+	</select>
+	
+	<select id="selectRecordIncreaseDaily"
+		parameterType="HashMap" resultType="HashMap">
+		SELECT SUBSTRING(record_created_at, 1, 10) AS `date`,
+			COUNT(member_id) AS `count`
+		FROM `record`
+		WHERE record_created_at
+		<if test="startDate == null and endDate == null">
+			BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()
+		</if>
+		<if test="startDate == null and endDate != null">
+			BETWEEN DATE_SUB(CONCAT(#{endDate}, ' 11:59:59'), INTERVAL 7 DAY) AND CONCAT(#{endDate}, ' 11:59:59')
+		</if>
+		<if test="startDate != null and endDate == null">
+			BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND DATE_ADD(CONCAT(#{startDate}, ' 00:00:00'), INTERVAL 7 DAY)
+		</if>
+		<if test="startDate != null and endDate != null">
+			BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 11:59:59')
+		</if>
+		GROUP BY SUBSTRING(record_created_at, 1, 10);
+	</select>
+	
+	<select id="selectReplyIncreaseDaily"
+		parameterType="HashMap" resultType="HashMap">
+		SELECT SUBSTRING(reply_date, 1, 10) AS `date`,
+			COUNT(member_id) AS `count`
+		FROM `reply`
+		WHERE reply_date
+		<if test="startDate == null and endDate == null">
+			BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()
+		</if>
+		<if test="startDate == null and endDate != null">
+			BETWEEN DATE_SUB(CONCAT(#{endDate}, ' 11:59:59'), INTERVAL 7 DAY) AND CONCAT(#{endDate}, ' 11:59:59')
+		</if>
+		<if test="startDate != null and endDate == null">
+			BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND DATE_ADD(CONCAT(#{startDate}, ' 00:00:00'), INTERVAL 7 DAY)
+		</if>
+		<if test="startDate != null and endDate != null">
+			BETWEEN CONCAT(#{startDate}, ' 00:00:00') AND CONCAT(#{endDate}, ' 11:59:59')
+		</if>
+		GROUP BY SUBSTRING(reply_date, 1, 10);
+	</select>
 </mapper>
