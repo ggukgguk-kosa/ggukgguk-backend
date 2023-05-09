@@ -17,6 +17,27 @@
  		 WHERE receiver_id = #{receiverId}
      	 ]]>
 	</select>
+	
+	<!-- 특정 알림 조회 -->
+	<select id="selectNotification" parameterType="int"
+		resultType="Notification">
+		 <![CDATA[   
+       		SELECT notification_id, receiver_id, notification_type_id, 
+		       notification_created_at, reference_id,notification_is_read, 
+		       notification_message
+		    FROM notification
+		 	WHERE notification_id = #{notificationId}
+	  	 ]]>
+	</select>
+	
+	<select id="selectUnreadNotiCount"
+		parameterType="java.lang.String" resultType="int">
+	 <![CDATA[   
+        SELECT COUNT(*)
+        FROM notification
+		WHERE receiver_id = #{receiverId}
+   	 ]]>
+	</select>
 
 	<!-- 알림 생성 -->
 	<insert id="createNotification" parameterType="Notification"> 
@@ -33,4 +54,12 @@
 		DELETE FROM notification WHERE notification_id = #{notificationId}
 		]]>
 	</delete>
+	
+	<update id="updateNotificationIsReadColumn" parameterType="Notification">
+		<![CDATA[ 
+			UPDATE notification
+			SET notification_is_read = #{notificationIsRead}
+			WHERE notification_id = #{notificationId}
+		]]>
+	</update>
 </mapper>

@@ -26,7 +26,7 @@ public class Member {
 	private boolean memberActivated;
 	private String memberAuthority;
 	private String memberSocial;
-	
+	private boolean memberAllowEmail;
 	
 	public String getRole() {
 		return MemberRoleEnum.valueOfLabel(memberAuthority).label();

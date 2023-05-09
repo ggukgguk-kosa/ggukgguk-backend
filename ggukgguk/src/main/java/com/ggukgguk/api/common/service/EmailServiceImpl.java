@@ -21,6 +21,7 @@ public class EmailServiceImpl implements EmailService {
 	@Value("${mail.mailFrom}")
 	private String MAIL_FROM;
 	
+	
 	@Value("${mail.mailFromName}")
 	private String MAIL_FROM_NAME;
 
@@ -80,7 +81,6 @@ public class EmailServiceImpl implements EmailService {
             transport.sendMessage(msg, msg.getAllRecipients());
             log.debug("Email sent!");
             
-            return true;
         } catch (Exception ex) {
         	log.debug("The email was not sent.");
         	log.debug("Error message: " + ex.getMessage());
@@ -88,7 +88,9 @@ public class EmailServiceImpl implements EmailService {
         } finally {
             // Close and terminate the connection.
             transport.close();
+         
         }
+        return true;
 	}
 
 }

@@ -16,8 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ws.schild.jave.Encoder;
 import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.encode.AudioAttributes;
 import ws.schild.jave.encode.EncodingAttributes;
 import ws.schild.jave.encode.VideoAttributes;
+import ws.schild.jave.encode.enums.X264_PROFILE;
 
 @Service
 public class MediaFileServiceImpl implements MediaFileService {
@@ -143,16 +145,21 @@ public class MediaFileServiceImpl implements MediaFileService {
 		 	VideoAttributes vAttr = new VideoAttributes();
 		 	vAttr.setCodec("libx264");
 		 	vAttr.setBitRate(2500000);
+		 	vAttr.setX264Profile(X264_PROFILE.BASELINE);
+		 	
+		 	AudioAttributes aAttr = new AudioAttributes();
+		 	aAttr.setCodec("aac");
 		 	
 		 	EncodingAttributes attrs = new EncodingAttributes();                                  
 		 	attrs.setVideoAttributes(vAttr);
+		 	attrs.setAudioAttributes(aAttr);
 		 	attrs.setOutputFormat("mp4");
 		 	
 		 	Encoder encoder = new Encoder();
 		 	encoder.encode(new MultimediaObject(source), target, attrs);
 		 	log.debug("비디오 인코딩 성공");
 		 	
-		 	tmp.delete();
+//		 	tmp.delete();
 		} catch (Exception e) {
 			log.debug("비디오 인코딩 실패");
 			e.printStackTrace();

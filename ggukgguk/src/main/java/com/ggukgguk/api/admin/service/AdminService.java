@@ -1,7 +1,10 @@
 package com.ggukgguk.api.admin.service;
 
 import java.util.List;
+import java.util.Map;
 
+import com.ggukgguk.api.admin.vo.BatchJobExecution;
+import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
@@ -40,4 +43,9 @@ public interface AdminService {
 	public List<ContentDetail> recordRead(int recordId);
 
 //	public TotalAndListPayload getMemberList(PageOption option);
+	// 최근 배치 현황 조회
+	public Map<String, List<BatchJobExecution>> fetchBatchStatus();
+
+	public TotalAndListPayload fetchBatchStatusByJobName(BatchPageOption option);
+	
 }

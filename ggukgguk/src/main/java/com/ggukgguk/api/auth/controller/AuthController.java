@@ -1,6 +1,7 @@
 package com.ggukgguk.api.auth.controller;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,11 +22,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.ggukgguk.api.auth.service.AuthService;
 import com.ggukgguk.api.auth.service.OAuthService;
 import com.ggukgguk.api.auth.vo.AuthTokenPayload;
+import com.ggukgguk.api.common.service.EmailService;
 import com.ggukgguk.api.common.vo.BasicResp;
+import com.ggukgguk.api.common.vo.GenerateCertCharacter;
 import com.ggukgguk.api.common.vo.PageOption;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
 import com.ggukgguk.api.member.service.MemberService;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.member.vo.Verify;
 import com.nimbusds.jose.shaded.json.JSONArray;
 
 @RestController
@@ -37,7 +41,8 @@ public class AuthController {
 	private AuthService service;
 	@Autowired
 	private MemberService memberSerivce;
-
+	@Autowired
+	private EmailService emailService;
 	
 	@Autowired
 	private OAuthService oauth;
@@ -101,10 +106,12 @@ public class AuthController {
 	public ResponseEntity<?> kakaoCallback(@RequestParam String AccessToken) throws Exception {
 		BasicResp<Object> respBody;
 		Member result = oauth.kakaoLogin(AccessToken);
+		result.setMemberPw("kakao");
+		AuthTokenPayload tknPayload = service.login(result);
 		
 		if (result != null) {
 			log.debug("카카오  성공");
-			respBody = new BasicResp<Object>("success", "카카오 로그인 성공하였습니다.", result);
+			respBody = new BasicResp<Object>("success", "카카오 로그인 성공하였습니다.", tknPayload);
 			return ResponseEntity.ok(respBody);
 		} else {
 			log.debug("카카오 실패");
@@ -210,22 +217,81 @@ public class AuthController {
 	
 	// 비밀번호 찾기 
 	@GetMapping("")
-	public ResponseEntity<?> getMemberIdHandler(@RequestParam String memberEmail, @RequestParam String memberId, @RequestBody Member member){
+	public ResponseEntity<?> getMemberIdHandler(@RequestParam String memberEmail, @RequestParam String memberId, @ModelAttribute Member member){
 		BasicResp<Object> respBody;
 		member.setMemberEmail(memberEmail);
 		member.setMemberId(memberId);
 		log.debug(member);
 		Boolean result = memberSerivce.getMemberByEmailandId(member);
 		
-		if(!result.equals(null)) {
+		if(result) {
 			log.debug("아이디 찾기 완료");
 			respBody = new BasicResp<Object>("success", "가입된 회원 입니다.", result);
 			return ResponseEntity.ok(respBody);
 		}else {
 			log.debug("아이디 찾기 실패");
-			respBody = new BasicResp<Object>("error", "가입된 회원이 아닙니다.", null);
+			respBody = new BasicResp<Object>("error", "가입된 회원이 아닙니다.", result);
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}
 	
+	// 임의의 문자와 숫자 8자리로 생성하도록 클래스를 따로 만듬.
+	@Autowired
+    private GenerateCertCharacter generateCertCharacter;
+
+	// 메모리의 캐시 형태로 하여 이메일 인증코드와 사용자(받는 사람이메일)랑 같이 저장.
+	private ConcurrentHashMap<String, String> authCodeCache = new ConcurrentHashMap<>();
+	
+	// 회원 가입 및 비밀번호 찾기 시 인증번호 메일 전송
+	@GetMapping(value = "/mailCertification", produces = "application/json; charset=UTF-8")
+	public ResponseEntity<?> cetificationPostMail(@RequestParam String sendTo, @ModelAttribute Verify verify) throws Exception {
+		
+		String authenticationCode = generateCertCharacter.excuteGenerate();
+		authCodeCache.put(sendTo, authenticationCode); // 회원 이메일과 인증 코드를 key,value쌍으로 저장.
+		
+		BasicResp<Object> resp = null;
+		if (sendTo == null || sendTo.equals("")) {
+			resp = new BasicResp<Object>("success", "수신자 메일이 잘못되었습니다.", null);
+			return ResponseEntity.badRequest().body(resp);
+		}
+		
+		boolean result = emailService.sendEmail(sendTo,
+				"꾹꾹 가입 인증 메일입니다.",
+				"<div>아래의 인증 번호를 입력하여 가입하시면 가입이 완료됩니다..<br> 인증 번호는 : "+authenticationCode+" 입니다 확인 후 페이지 입력해 주세요.</div>");
+		
+		// 회원 가입 or 비밀전호 찾기 시 메일 주소 확인 및 인증번호 db 테이블에 저장.
+		boolean verifyInsert = memberSerivce.postAuthenticationCode(verify,authenticationCode,sendTo);
+		
+		
+		if (verifyInsert) {
+			resp = new BasicResp<Object>("success", null, verifyInsert);
+			return ResponseEntity.ok(resp);
+		} else {
+			resp = new BasicResp<Object>("success", "메일 전송에 실패했습니다.", null);
+			return ResponseEntity.badRequest().body(resp);
+		}
+	}
+	
+	//비밀번호 찾기 및 회원가입시 이메일 인증 코드 확인
+	@GetMapping(value = "/mailCertificationNumberCheck", produces = "application/json; charset=UTF-8")
+	public ResponseEntity<?> checkCertification(@ModelAttribute Verify verify, @RequestParam String sendTo, @RequestParam String certificationNumber) throws Exception {
+		BasicResp<Object> resp = null;
+		
+		String storedAuthCode = authCodeCache.get(sendTo); // 이메일 인증코드로 보낸 코드를 가져오기
+		
+		// 1안.  메모리의 캐시 형태로 하여 이메일 인증코드와 사용자(받는 사람이메일)랑 같이 저장.
+		//boolean result = memberSerivce.getCheckAuthenticationCode(certificationNumber,storedAuthCode);
+		
+		// 2안. DB에 저장하여 조회하는 방식.
+		boolean result = memberSerivce.getCheckTableAuthenticationCode(verify,sendTo,certificationNumber);
+		
+		
+		if (result) {
+			resp = new BasicResp<Object>("success", null, result);
+			return ResponseEntity.ok(resp);
+		} else {
+			resp = new BasicResp<Object>("success", "코드 인증을 실패했습니다.", result);
+			return ResponseEntity.badRequest().body(resp);
+		}
+	}
 }

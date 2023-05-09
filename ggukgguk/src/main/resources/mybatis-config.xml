@@ -15,6 +15,8 @@
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.Notice" alias="Notice"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.Main" alias="Main"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.ContentDetail" alias="ContentDetail"/>
+	 	<typeAlias type="com.ggukgguk.api.admin.vo.BatchJobExecution" alias="BatchJobExecution"/>
+	 	<typeAlias type="com.ggukgguk.api.admin.vo.BatchPageOption" alias="BatchPageOption"/>
 	 	<typeAlias type="com.ggukgguk.api.common.vo.PageOption" alias="PageOption"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.Record" alias="Record"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.MediaFile" alias="MediaFile"/>
@@ -31,5 +33,7 @@
 	 	<typeAlias type="com.ggukgguk.api.member.vo.Friend" alias="Friend"/>
 	 	<typeAlias type="com.ggukgguk.api.member.vo.Member" alias="Member"/>
 	 	<typeAlias type="com.ggukgguk.api.notification.vo.Notification" alias="Notification"/>
+	 	<typeAlias type="com.ggukgguk.api.member.vo.Verify" alias="Verify"/>
+	 	
 	 </typeAliases>
 </configuration>

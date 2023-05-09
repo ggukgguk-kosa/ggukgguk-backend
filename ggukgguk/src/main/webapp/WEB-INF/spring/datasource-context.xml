@@ -26,6 +26,7 @@
             <value>classpath:mappers/recordMapper.xml</value>
             <value>classpath:mappers/memberMapper.xml</value>
             <value>classpath:mappers/notificationMapper.xml</value>
+            <value>classpath:mappers/verifyMapper.xml</value>
          </list>
       </property>
    </bean>

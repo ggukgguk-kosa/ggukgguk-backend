@@ -2,6 +2,8 @@ package com.ggukgguk.api.admin.dao;
 
 import java.util.List;
 
+import com.ggukgguk.api.admin.vo.BatchJobExecution;
+import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Member;
@@ -40,5 +42,10 @@ public interface AdminDao {
 
 //	public int selectMemberListTotal(PageOption option);
 
+	public List<BatchJobExecution> selectRecentBatchJobExecution(String jobName);
+
+	public List<BatchJobExecution> selectBatchJobExecution(BatchPageOption option);
+
+	public int selectBatchJobExecutionCount(BatchPageOption option);
 }
 

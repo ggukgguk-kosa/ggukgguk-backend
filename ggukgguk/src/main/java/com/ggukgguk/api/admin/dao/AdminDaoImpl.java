@@ -6,6 +6,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.ggukgguk.api.admin.vo.BatchJobExecution;
+import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Member;
@@ -76,8 +78,6 @@ public class AdminDaoImpl implements AdminDao {
             throw new Exception();
         }
 	}
-
-	
 	
 	@Override
 	public int totalMember() {
@@ -118,5 +118,19 @@ public class AdminDaoImpl implements AdminDao {
 //	}
 
 	
+	@Override
+	public List<BatchJobExecution> selectRecentBatchJobExecution(String jobName) {
+		return session.selectList("com.ggukgguk.api.Admin.selectRecentBatchJobExecution", jobName);
+	}
+
+	@Override
+	public List<BatchJobExecution> selectBatchJobExecution(BatchPageOption option) {
+		return session.selectList("com.ggukgguk.api.Admin.selectBatchJobExecution", option);
+	}
+
+	@Override
+	public int selectBatchJobExecutionCount(BatchPageOption option) {
+		return session.selectOne("com.ggukgguk.api.Admin.selectBatchJobExecutionCount", option);
+	}
 }
 

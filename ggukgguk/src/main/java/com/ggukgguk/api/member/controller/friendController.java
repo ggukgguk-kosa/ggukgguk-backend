@@ -106,7 +106,7 @@ public class friendController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}
-
+	
 	// 친구 차단
 	@DeleteMapping(value = "/{toMemberId}")
 	public ResponseEntity<?> breakFriends(Authentication authentication, @PathVariable String toMemberId,

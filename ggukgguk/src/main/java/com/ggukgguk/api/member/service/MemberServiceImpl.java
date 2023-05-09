@@ -20,6 +20,7 @@ import com.ggukgguk.api.member.dao.MemberDao;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.member.vo.Verify;
 import com.ggukgguk.api.notification.dao.NotificationDao;
 import com.ggukgguk.api.notification.vo.Notification;
 import com.ggukgguk.api.record.vo.RecordSearch;
@@ -72,9 +73,14 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public boolean getMemberByEmailandId(Member member) {
 
-		Member user = dao.selectMemberByEmailandId(member);
-		if (!user.equals(null))
-			return true;
+		try {
+			Member user = dao.selectMemberByEmailandId(member);
+			if (user != null && user.getMemberId() != null) {
+				return true;
+			}
+		} catch (NullPointerException e) {
+			// You can log the exception here if needed
+		}
 		return false;
 	}
 
@@ -82,10 +88,13 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public boolean modifyMember(Member member) {
 		try {
-			member.setMemberPw(passwordEncorder.encode(member.getMemberPw()));
+			if (member.getMemberPw() != null) {
+				member.setMemberPw(passwordEncorder.encode(member.getMemberPw()));
+			}
 			dao.updateMemberInfo(member);
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -113,11 +122,12 @@ public class MemberServiceImpl implements MemberService {
 
 			// 친구 요청 알림 생성.
 			Notification noti = new Notification(0, "FRIEND_REQUEST", new Date(), friendRequestId,
-					request.getToMemberId(), 0, "친구 요청을 하였습니다.");
+					request.getToMemberId(), 0, request.getFromMemberId() + "님이 친구 요청을 하였습니다. 수락하시겠습니까?");
 			// 알림 순번, 알림 타입 = "친구 요청". 알림 날짜 , 참조 아이디 = "방금 친구 요청 테이블 아이디", 수신자 = "전달받는
 			// 아이디", 수신 여부 = 0, 전달 메시지
 			notificationDao.createNotification(noti);
 
+			
 		} catch (Exception e) {
 			transactionManager.rollback(txStatus);
 			e.printStackTrace();
@@ -217,8 +227,9 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public boolean getFriendship(RecordSearch recordSearch) {
-		
-		if (dao.selectFriendship(recordSearch) == 1) return true;
+
+		if (dao.selectFriendship(recordSearch) == 1)
+			return true;
 		return false;
 	}
 
@@ -227,8 +238,55 @@ public class MemberServiceImpl implements MemberService {
 		RecordSearch recordSearch = new RecordSearch(member1, null, null, member2);
 		recordSearch.setMemberId(member1);
 		recordSearch.setFriendId(member2);
-		
-		if (dao.selectFriendship(recordSearch) == 1) return true;
+
+		if (dao.selectFriendship(recordSearch) == 1)
+			return true;
 		return false;
+	}
+
+	// 메일 인증코드 전송
+	@Override
+	public boolean postAuthenticationCode(Verify verify, String authenticationCode, String sendTo) {
+
+		Member result = dao.selectMemberByEmail(sendTo);
+		if (result == null) {
+			verify.setVerifyCode(authenticationCode);
+			verify.setVerifyEmail(sendTo);
+			try {
+				dao.insertEmailAuthenticationCode(verify);
+
+				return true;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+		}else {
+			return false;
+		}
+	}
+	
+	// 캐시를 이용한 인증코드 확인.
+	@Override
+	public boolean getCheckAuthenticationCode(String certificationNumber, String storedAuthCode) {
+		if (certificationNumber.equals(storedAuthCode)) {
+			return true;
+		}
+		return false;
+	}
+	
+
+	// DB를 이용한 인증코드 확인 방식.
+	@Override
+	public boolean getCheckTableAuthenticationCode(Verify verify, String sendTo, String certificationNumber) {
+		verify.setVerifyEmail(sendTo);
+		verify.setVerifyCode(certificationNumber);
+		
+		try {
+			Verify certification = dao.authenticationMatch(verify);
+			return certification != null;
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 }

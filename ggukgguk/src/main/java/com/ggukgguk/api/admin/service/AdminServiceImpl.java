@@ -1,11 +1,15 @@
 package com.ggukgguk.api.admin.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ggukgguk.api.admin.dao.AdminDao;
+import com.ggukgguk.api.admin.vo.BatchJobExecution;
+import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
@@ -136,4 +140,24 @@ public class AdminServiceImpl implements AdminService {
 //		payload.setTotal(dao.selectMemberListTotal(option)); // 페이징 처리를 위한 전체회원 수 구하기
 //		return payload;
 //	}
+	public Map<String, List<BatchJobExecution>> fetchBatchStatus() {
+		Map<String, List<BatchJobExecution>> resultMap =
+				new HashMap<String, List<BatchJobExecution>>();
+		
+		resultMap.put("extractKeywordJob", dao.selectRecentBatchJobExecution("extractKeywordJob"));
+		resultMap.put("checkModContentJob", dao.selectRecentBatchJobExecution("checkModContentJob"));
+
+		return resultMap;
+	}
+
+	@Override
+	public TotalAndListPayload fetchBatchStatusByJobName(BatchPageOption option) {
+		TotalAndListPayload payload = new TotalAndListPayload();
+		
+		payload.setTotal(dao.selectBatchJobExecutionCount(option));
+		payload.setList(dao.selectBatchJobExecution(option));
+		
+		return payload;
+	}
+
 }

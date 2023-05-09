@@ -23,6 +23,7 @@ CREATE TABLE `member` (
     `member_activated`    BOOLEAN    NOT NULL    DEFAULT TRUE    COMMENT '탈퇴처리 시 아이디를 제외하고 공백 지정 후 본 컬럼 true 업데이트',
 	`member_authority`    ENUM('GUEST', 'NORMAL', 'SERVICE_ADMIN', 'SYSTEM_ADMIN')    NOT NULL,
     `member_social`    VARCHAR(16)    NULL,
+    `member_allow_email`    BOOLEAN    NOT NULL    DEFAULT TRUE
 	FOREIGN KEY (`member_social`) REFERENCES `member_social_type` (`member_social_id`)
 );
 
@@ -108,7 +109,7 @@ CREATE TABLE `diary` (
     `member_id`    VARCHAR(16)    NOT NULL,
     `diary_year`    CHAR(4)    NOT NULL,
     `diary_month`    CHAR(2)    NOT NULL,
-    `main_color`    CHAR(8)    NOT NULL,
+    `main_color`    CHAR(10)    NOT NULL,
     `main_keyword`    VARCHAR(16)    NOT NULL,
     FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`)
 );
@@ -168,5 +169,7 @@ CREATE TABLE `notice` (
     `notice_created_at`    DATETIME    NOT NULL    DEFAULT NOW(),
     `notice_is_emergency`    BOOLEAN    NOT NULL    DEFAULT FALSE
 );
+
+
 
 
