@@ -10,6 +10,11 @@ public interface NotificationDao {
 
 	void createNotification(Notification noiNotification) throws Exception;
 
-	void deleteNotification(int notificationId) throws Exception;;
+	void deleteNotification(int notificationId) throws Exception;
 
+	int selectUnreadNotiCount(String receiverId);
+	
+	void updateNotificationIsReadColumn(Notification notification) throws Exception;
+
+	Notification selectNotification(int notificationId);
 }
