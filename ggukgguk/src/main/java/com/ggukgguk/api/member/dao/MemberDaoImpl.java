@@ -12,6 +12,7 @@ import com.ggukgguk.api.common.vo.PageOption;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.member.vo.Verify;
 import com.ggukgguk.api.record.vo.RecordSearch;
 
 @Repository
@@ -127,5 +128,20 @@ public class MemberDaoImpl implements MemberDao {
 	public int selectFriendship(RecordSearch recordSearch) {
 		
 		return session.selectOne("com.ggukgguk.api.Member.selectFriendship", recordSearch);
+	}
+
+	// 이메일 인증코드 넣기
+	@Override
+	public void insertEmailAuthenticationCode(Verify verify) throws Exception {
+		int result = session.insert("com.ggukgguk.api.Verify.insertAuthenticationCode", verify);
+		if(result != 1) {
+			throw new Exception();
+		}
+	}
+	
+	// DB에서 인증코드 확인하기
+	@Override
+	public Verify authenticationMatch(Verify verify) {
+		return session.selectOne("com.ggukgguk.api.Verify.selectAuthenticationCode", verify);
 	}
 }
