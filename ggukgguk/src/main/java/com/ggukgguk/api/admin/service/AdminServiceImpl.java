@@ -79,9 +79,12 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<Member> memberSelectPage(PageOption option) {
-		return dao.memberSelectPaging(option);
-
+	public TotalAndListPayload memberSelectPage(PageOption option) {
+		TotalAndListPayload payload = new TotalAndListPayload(
+				dao.memberSelectCount(option),
+				dao.memberSelectPaging(option)
+			);
+			return payload;
 	}
 
 	// 회원 삭제

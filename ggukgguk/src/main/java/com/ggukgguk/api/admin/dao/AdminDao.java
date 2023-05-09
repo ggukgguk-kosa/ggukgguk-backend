@@ -38,6 +38,8 @@ public interface AdminDao {
 	public List<ContentDetail> recordSelectList(int recordId);
 
 	public int contentSelectCount(PageOption option);
+	
+	public int memberSelectCount(PageOption option);
 
 //	public List<?> selectMemberList(PageOption option);
 
@@ -54,5 +56,6 @@ public interface AdminDao {
 	public List<Map<String, Integer>> selectRecordDailyReport(Map<String, String> option);
 
 	public List<Map<String, Integer>> selectReplyDailyReport(Map<String, String> option);
+
 }
 
