@@ -107,7 +107,11 @@ public class AdminDaoImpl implements AdminDao {
 		return session.selectOne("com.ggukgguk.api.Admin.selectContentTotal",option);
 	}
 	
-	
+	@Override
+	public int memberSelectCount(PageOption option) {
+		return session.selectOne("com.ggukgguk.api.Admin.totalMemberSelect",option);
+	}
+
 //	@Override // 전체 컨텐츠 리스트 
 //	public List<?> selectMemberList(PageOption option) {
 //		return session.selectList("com.ggukgguk.api.Member.totalMemberList",option);

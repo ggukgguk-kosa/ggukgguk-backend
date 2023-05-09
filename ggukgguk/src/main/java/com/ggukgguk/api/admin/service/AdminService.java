@@ -33,7 +33,7 @@ public interface AdminService {
 	// 컨텐츠 리스트 출력
 	public TotalAndListPayload contentSelectPage(PageOption option);
 
-	public List<Member> memberSelectPage(PageOption option);
+	public TotalAndListPayload memberSelectPage(PageOption option);
 
 	// 회원삭제
 	public boolean memberDelete(String memberId);
