@@ -26,14 +26,12 @@
 	        <id property="replyId" column="reply_id" />
 	        <result property="replyContent" column="reply_content" />
 	        <result property="replyDate" column="reply_date" />
-	        <result property="recordId" column="record_id" />
-	        <result property="memberId" column="member_id" />
 	        <result property="memberNickname" column="member3_nickname" />
 	    </collection>
 	</resultMap>
 
    <select id="selectList" parameterType="RecordSearch" resultMap="RecordResultSet">  
-			SELECT record.*, reply.*, m1.member_nickname as member1_nickname, 
+			SELECT record.*, reply.reply_id, reply.reply_content, reply.reply_date, m1.member_nickname as member1_nickname, 
 			m2.member_nickname as member2_nickname, m3.member_nickname as member3_nickname, 
 			media_file.media_type_id, diary.main_color
 			FROM record
@@ -45,8 +43,8 @@
 			LEFT JOIN diary ON YEAR(record.record_created_at) = diary.diary_year AND MONTH(record.record_created_at) = diary.diary_month
  			<where>
  				((record.member_id=#{memberId} and record.record_share_to IS NULL) OR 
-	  			(record.member_id=#{memberId} and record.record_share_to IS NOT NULL AND record.record_share_accepted = 'Y') OR
-	  			(record.record_share_to=#{memberId} AND record.record_share_accepted='Y'))
+	  			(record.member_id=#{memberId} and record.record_share_to IS NOT NULL AND record.record_share_accepted = 1) OR
+	  			(record.record_share_to=#{memberId} AND record.record_share_accepted=1))
  				<if test="startDate != null">
  					AND record.record_created_at BETWEEN DATE_SUB(#{startDate}, INTERVAL 4 DAY) AND DATE_ADD(#{startDate}, INTERVAL 1 DAY)
  				</if>
@@ -58,7 +56,7 @@
    </select>
    
       <select id="selectFriendRecordList" parameterType="RecordSearch" resultMap="RecordResultSet">  
-			SELECT record.*, reply.*, m1.member_nickname as member1_nickname, 
+			SELECT record.*, reply.reply_id, reply.reply_content, reply.reply_date, m1.member_nickname as member1_nickname, 
 			m2.member_nickname as member2_nickname, m3.member_nickname as member3_nickname, 
 			media_file.media_type_id, diary.main_color
 			FROM record
@@ -69,10 +67,10 @@
 			LEFT JOIN member m3 ON reply.member_id = m3.member_id
 			LEFT JOIN diary ON YEAR(record.record_created_at) = diary.diary_year AND MONTH(record.record_created_at) = diary.diary_month
  			<where>
- 				((record.member_id=#{friendId} and record.record_is_open='Y' and record.record_share_to is null) OR 
-	  			(record.member_id=#{friendId} and record.record_is_open='Y' and record.record_share_to IS NOT NULL AND record.record_share_accepted = 'Y') OR
-      			(record.record_share_to=#{friendId} and record.record_is_open='Y' and record.record_share_accepted='Y') OR
-	  			(record.member_id=#{memberId} and record.record_share_to=#{friendId} AND record.record_share_accepted='Y'))
+ 				((record.member_id=#{friendId} and record.record_is_open=1 and record.record_share_to is null) OR 
+	  			(record.member_id=#{friendId} and record.record_is_open=1 and record.record_share_to IS NOT NULL AND record.record_share_accepted = 1) OR
+      			(record.record_share_to=#{friendId} and record.record_is_open=1 and record.record_share_accepted=1) OR
+	  			(record.member_id=#{memberId} and record.record_share_to=#{friendId} AND record.record_share_accepted=1))
  				<if test="startDate != null">
  					AND record.record_created_at BETWEEN DATE_SUB(#{startDate}, INTERVAL 4 DAY) AND DATE_ADD(#{startDate}, INTERVAL 1 DAY)
  				</if>
@@ -82,6 +80,49 @@
  			</where>
  			ORDER BY record.record_created_at DESC
    </select>
+
+	<select id="selectOne" parameterType="Integer" resultMap="RecordResultSet">  
+			SELECT record.*, reply.*
+			FROM record
+			LEFT JOIN reply ON record.record_id = reply.record_id
+			WHERE record.record_id=#{recordId}
+   </select>
+
+
+   <update id="update" parameterType="Record">  
+	  <![CDATA[   
+         UPDATE record
+         SET record_comment=#{recordComment}
+         WHERE record_id=#{recordId}
+      ]]>
+   </update>
+
+   <delete id="deleteReplyList" parameterType="Integer">
+      <![CDATA[   
+        DELETE FROM reply
+        WHERE record_id=#{recordId}
+     ]]>
+   </delete>
+
+	<select id="selectKeywordCount" parameterType="Integer" resultType="Integer">  
+		SELECT count(*)
+		FROM record_keyword
+		WHERE record_id=#{recordId}
+   </select>
+
+   <delete id="deleteKeyword" parameterType="Integer">
+      <![CDATA[   
+        DELETE FROM record_keyword
+        WHERE record_id=#{recordId}
+     ]]>
+   </delete>
+
+   <delete id="deleteMediaFile" parameterType="String">
+      <![CDATA[   
+        DELETE FROM media_file
+        WHERE media_file_id=#{mediaFileId}
+     ]]>
+   </delete>
    
    <delete id="delete" parameterType="Integer">
        <![CDATA[   
@@ -112,5 +153,22 @@
 		SELECT LAST_INSERT_ID()
 	</selectKey>
    </insert>
+
+   <select id="selectUnaccepted" parameterType="String" resultMap="RecordResultSet">  
+		SELECT record.*, member.member_nickname as member1_nickname, media_file.media_type_id
+		FROM record
+		LEFT JOIN member ON record.member_id = member.member_id
+		LEFT JOIN media_file ON record.media_file_id = media_file.media_file_id
+		WHERE record.record_share_to=#{memberId} AND record.record_share_accepted=0
+		ORDER BY record.record_created_at DESC
+   </select>
+   
+   <update id="updateUnaccepted" parameterType="Integer">  
+	  <![CDATA[   
+         UPDATE record
+         SET record_share_accepted=1
+         WHERE record_id=#{recordId}
+      ]]>
+   </update>
   
 </mapper>

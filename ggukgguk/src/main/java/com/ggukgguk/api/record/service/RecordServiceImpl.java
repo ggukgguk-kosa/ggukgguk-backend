@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -21,6 +23,8 @@ import com.ggukgguk.api.record.vo.RecordSearch;
 @Service
 public class RecordServiceImpl implements RecordService{
 
+	private Logger log = LogManager.getLogger("base");
+	
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 	
@@ -39,15 +43,78 @@ public class RecordServiceImpl implements RecordService{
 		return dao.selectRecordList(recordSearch);
 	}
 
-	public boolean removeRecord(int recordId) {
+	@Override
+	public boolean updateRecord(Record record) {
+		
+		
+        TransactionStatus txStatus =
+                transactionManager.getTransaction(new DefaultTransactionDefinition());
 		
 		try {
-			dao.deleteRecord(recordId);
-			return true;
+			dao.updateRecord(record);
 		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
 			e.printStackTrace();
 			return false;
 		}
+		
+		transactionManager.commit(txStatus);
+		return true;
+	}
+	
+	public boolean removeRecord(int recordId) {
+		
+		Record record = dao.selectRecord(recordId);
+		
+		log.debug(record);
+		
+        TransactionStatus txStatus =
+                transactionManager.getTransaction(new DefaultTransactionDefinition());
+		
+        
+		if(!record.getReplyList().isEmpty()) {
+			try {
+				dao.deleteReplyList(record.getRecordId());
+			} catch (Exception e) {
+				transactionManager.rollback(txStatus);
+				e.printStackTrace();
+				return false;
+			}
+		}
+		
+		int keywordCount = dao.selectKeyword(record.getRecordId());
+		
+		if(keywordCount > 0) {
+			try {
+				dao.deleteKeyword(recordId);		
+			} catch (Exception e) {
+				transactionManager.rollback(txStatus);
+				e.printStackTrace();
+				return false;
+			}		
+		}
+		
+		try {
+			dao.deleteRecord(recordId);
+			
+		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
+			e.printStackTrace();
+			return false;
+		}
+		
+		if(record.getMediaFileId()!=null) {
+			try {
+				dao.deleteMediaFile(record.getMediaFileId());
+			} catch (Exception e) {
+				transactionManager.rollback(txStatus);
+				e.printStackTrace();
+				return false;
+			}
+		}
+	
+		transactionManager.commit(txStatus);
+		return true;
 	}
 
 	@Override
@@ -100,5 +167,28 @@ public class RecordServiceImpl implements RecordService{
 	public List<Record> getFreindRecordList(RecordSearch recordSearch) {
 		
 		return dao.selectFriendRecordList(recordSearch);
+	}
+	
+	@Override
+	public List<Record> getUnaccepted(String memberId) {
+		
+		return dao.selectUnaccepted(memberId);
+	}
+	
+	@Override
+	public boolean updateUnaccepted(int recordId) {
+        TransactionStatus txStatus =
+                transactionManager.getTransaction(new DefaultTransactionDefinition());
+		
+		try {
+			dao.updateUnaccepted(recordId);
+		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
+			e.printStackTrace();
+			return false;
+		}
+		
+		transactionManager.commit(txStatus);
+		return true;
 	}
 }
