@@ -43,7 +43,9 @@ public interface MemberService {
 	public boolean getCheckAuthenticationCode(String certificationNumber, String storedAuthCode);
 
 	public boolean getCheckTableAuthenticationCode(Verify verify, String sendTo, String certificationNumber);
-	
-	public boolean postAuthenticationCode(Verify verify, String authenticationCode, String sendTo);
+
+	public boolean postMemberAuthenticationCode(Verify verify, String authenticationCode, String sendTo);
+
+	public boolean postPasswordAuthenticationCode(Verify verify, String authenticationCode, String sendTo);
 
 }

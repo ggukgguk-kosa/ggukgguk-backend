@@ -125,6 +125,7 @@ public class NotificationSeriviceImpl implements NotificationService {
 		}
 	}
 
+	// 알림 읽음 처리
 	@Override
 	public boolean setReadNotify(Notification notification) {
 		try {
