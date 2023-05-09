@@ -23,6 +23,59 @@ public class RecordDaoImpl implements RecordDao{
 	}
 	
 	@Override
+	public Record selectRecord(int recordId) {
+		
+		return session.selectOne("com.ggukgguk.api.Record.selectOne", recordId);
+	}
+	
+	@Override
+	public void updateRecord(Record record) throws Exception {
+		
+		int affectedRow = session.update("com.ggukgguk.api.Record.update", record);
+		
+		if (affectedRow != 1) {
+			throw new Exception();
+		}
+		
+	}
+	
+	@Override
+	public void deleteReplyList(int recordId) throws Exception {
+
+		int affectedRow = session.delete("com.ggukgguk.api.Record.deleteReplyList", recordId);
+		
+		if (affectedRow != 1) {
+			throw new Exception();
+		}
+	}
+	
+	@Override
+	public int selectKeyword(int recordId) {
+		
+		return session.selectOne("com.ggukgguk.api.Record.selectKeywordCount", recordId);
+	}
+	
+	@Override
+	public void deleteKeyword(int recordId) throws Exception {
+		int affectedRow = session.delete("com.ggukgguk.api.Record.deleteKeyword", recordId);
+		
+		if (affectedRow != 1) {
+			throw new Exception();
+		}
+	}
+	
+	@Override
+	public void deleteMediaFile(String mediaFileId) throws Exception {
+
+		int affectedRow = session.delete("com.ggukgguk.api.Record.deleteMediaFile", mediaFileId);
+		
+		if (affectedRow != 1) {
+			throw new Exception();
+		}
+		
+	}
+	
+	@Override
 	public void deleteRecord(int recordId) throws Exception {
 
 		int affectedRow = session.delete("com.ggukgguk.api.Record.delete", recordId);
@@ -55,7 +108,23 @@ public class RecordDaoImpl implements RecordDao{
 	
 	@Override
 	public List<Record> selectFriendRecordList(RecordSearch recordSearch) {
-		// TODO Auto-generated method stub
+		
 		return session.selectList("com.ggukgguk.api.Record.selectFriendRecordList", recordSearch);
+	}
+	
+	@Override
+	public List<Record> selectUnaccepted(String memberId) {
+		
+		return session.selectList("com.ggukgguk.api.Record.selectUnaccepted", memberId);
+	}
+	
+	@Override
+	public void updateUnaccepted(int recordId) throws Exception {
+		
+		int affectedRow = session.update("com.ggukgguk.api.Record.updateUnaccepted", recordId);
+		
+		if (affectedRow != 1) {
+			throw new Exception();
+		}
 	}
 }

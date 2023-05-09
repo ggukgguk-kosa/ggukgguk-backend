@@ -19,4 +19,10 @@ public interface RecordService {
 
 	public List<Record> getFreindRecordList(RecordSearch recordSearch);
 
+	public boolean updateRecord(Record record);
+
+	public List<Record> getUnaccepted(String memberId);
+
+	public boolean updateUnaccepted(int recordId);
+
 }

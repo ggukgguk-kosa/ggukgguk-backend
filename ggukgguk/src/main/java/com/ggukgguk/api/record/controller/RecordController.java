@@ -131,6 +131,7 @@ public class RecordController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 		
+
 		// recordShareTo가 지정되어 있고, 친구 관계인 경우인지 확인
 		// recordShareTo가 null이면 검증 패스
 		if(record.getRecordShareTo() != null && !mservice.getFriendship(record.getMemberId(), record.getRecordShareTo())) {
@@ -195,8 +196,28 @@ public class RecordController {
 		}
 	}
 
+	@PutMapping(value="/{recordId}")
+	public ResponseEntity<?> updateRecord(@PathVariable int recordId, @RequestBody Record record){
+		log.debug(record);
+		BasicResp<Object> respBody;
+		boolean result = service.updateRecord(record);
+		
+		if(result) {
+			log.debug("게시글 수정 성공");
+			respBody = new BasicResp<Object>("success", null, null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("게시글 수정 실패");
+			respBody = new BasicResp<Object>("error", "게시글 수정에 실패했습니다.", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+	}
+	
 	@DeleteMapping(value="/{recordId}")
 	public ResponseEntity<?> removeRecord(@PathVariable int recordId){
+		
+		log.debug("삭제");
 		
 		BasicResp<Object> respBody;
 		boolean result = service.removeRecord(recordId);
@@ -276,4 +297,44 @@ public class RecordController {
 		}
 	}
 	
+	@GetMapping("/unaccepted")
+	public ResponseEntity<?> getUnaccepted(@RequestParam(value = "memberId") String memberId){
+		
+		BasicResp<Object> respBody;
+		
+		List<Record> recordList = null;
+		
+		recordList = service.getUnaccepted(memberId);
+		
+		if (recordList != null) {
+			log.debug("미수락 교환일기 리스트 조회 성공");
+			
+			respBody = new BasicResp<Object>("success", null, recordList);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("미수락 교환일기 리스트 없음");
+			respBody = new BasicResp<Object>("success", null, recordList);
+			return ResponseEntity.ok(respBody);
+		}
+	}
+	
+	@PutMapping("/unaccepted/{recordId}")
+	public ResponseEntity<?> updateUnaccepted(@PathVariable(value = "recordId") int recordId){
+		
+		log.debug(recordId);
+		BasicResp<Object> respBody;
+		
+		boolean result = service.updateUnaccepted(recordId);
+		
+		if (result) {
+			log.debug("교환일기 수락 성공");
+			
+			respBody = new BasicResp<Object>("success", null, null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("교환일기 수락 실패");
+			respBody = new BasicResp<Object>("error", "교환일기 수락에 실패하였습니다.", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
 }
