@@ -49,7 +49,7 @@ public class NotificationDaoImpl implements NotificationDao {
 		}
 	}
 
-
+	// 읽지 않은 알림 수
 	@Override
 	public int selectUnreadNotiCount(String receiverId) {
 		return session.selectOne("com.ggukgguk.api.Notification.selectUnreadNotiCount", receiverId);

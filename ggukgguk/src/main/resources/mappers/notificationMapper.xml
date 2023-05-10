@@ -30,12 +30,13 @@
 	  	 ]]>
 	</select>
 	
+	<!-- 읽지 않은 알림 개수 -->
 	<select id="selectUnreadNotiCount"
 		parameterType="java.lang.String" resultType="int">
 	 <![CDATA[   
         SELECT COUNT(*)
         FROM notification
-		WHERE receiver_id = #{receiverId}
+		WHERE receiver_id = #{receiverId} and notification_is_read = false
    	 ]]>
 	</select>
 
@@ -54,7 +55,7 @@
 		DELETE FROM notification WHERE notification_id = #{notificationId}
 		]]>
 	</delete>
-	
+	<!-- 알림 읽음 -->
 	<update id="updateNotificationIsReadColumn" parameterType="Notification">
 		<![CDATA[ 
 			UPDATE notification
