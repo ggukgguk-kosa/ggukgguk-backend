@@ -286,8 +286,8 @@ public class AuthController {
 		}
 		
 		boolean result = emailService.sendEmail(sendTo,
-				"꾹꾹 가입 인증 메일입니다.",
-				"<div>아래의 인증 번호를 입력하여 가입하시면 가입이 완료됩니다..<br> 인증 번호는 : "+authenticationCode+" 입니다 확인 후 페이지 입력해 주세요.</div>");
+				"꾹꾹  비밀번호 찾기 인증 메일입니다.",
+				"<div>아래의 인증 번호를 입력하여 비밀번호를 찾으시기 바랍니다..<br> 인증 번호는 : "+authenticationCode+" 입니다 확인 후 페이지 입력해 주세요.</div>");
 		
 		// 회원 가입 or 비밀전호 찾기 시 메일 주소 확인 및 인증번호 db 테이블에 저장.
 		boolean verifyInsert = memberSerivce.postPasswordAuthenticationCode(verify,authenticationCode,sendTo);
