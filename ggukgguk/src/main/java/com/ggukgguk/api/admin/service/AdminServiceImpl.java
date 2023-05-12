@@ -79,9 +79,12 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<Member> memberSelectPage(PageOption option) {
-		return dao.memberSelectPaging(option);
-
+	public TotalAndListPayload memberSelectPage(PageOption option) {
+		TotalAndListPayload payload = new TotalAndListPayload(
+				dao.memberSelectCount(option),
+				dao.memberSelectPaging(option)
+			);
+			return payload;
 	}
 
 	// 회원 삭제
@@ -158,6 +161,48 @@ public class AdminServiceImpl implements AdminService {
 		payload.setList(dao.selectBatchJobExecution(option));
 		
 		return payload;
+	}
+
+	@Override
+	public Map<String, Object> getDailyReportAll(String startDate, String endDate) {
+		Map<String, String> option = new HashMap<String, String>();
+		option.put("startDate", startDate);
+		option.put("endDate", endDate);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("newMember", dao.selectMemberDailyReport(option));
+		result.put("newRecord", dao.selectRecordDailyReport(option));
+		result.put("newReply", dao.selectReplyDailyReport(option));
+		
+		return result;
+	}
+
+	@Override
+	public List<Map<String, Integer>> getDailyReport(String startDate, String endDate, String reportSubject) {
+		Map<String, String> option = new HashMap<String, String>();
+		option.put("startDate", startDate);
+		option.put("endDate", endDate);
+		
+		List<Map<String, Integer>> result = null;
+		
+		switch (reportSubject) {
+		case "member":
+			result = dao.selectMemberDailyReport(option);
+			break;
+
+		case "record":
+			result = dao.selectRecordDailyReport(option);
+			break;
+			
+		case "reply":
+			result = dao.selectReplyDailyReport(option);
+			break;
+		default:
+			result = null;
+			break;
+		}
+		
+		return result;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.ggukgguk.api.admin.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +107,11 @@ public class AdminDaoImpl implements AdminDao {
 		return session.selectOne("com.ggukgguk.api.Admin.selectContentTotal",option);
 	}
 	
-	
+	@Override
+	public int memberSelectCount(PageOption option) {
+		return session.selectOne("com.ggukgguk.api.Admin.totalMemberSelect",option);
+	}
+
 //	@Override // 전체 컨텐츠 리스트 
 //	public List<?> selectMemberList(PageOption option) {
 //		return session.selectList("com.ggukgguk.api.Member.totalMemberList",option);
@@ -131,6 +136,21 @@ public class AdminDaoImpl implements AdminDao {
 	@Override
 	public int selectBatchJobExecutionCount(BatchPageOption option) {
 		return session.selectOne("com.ggukgguk.api.Admin.selectBatchJobExecutionCount", option);
+	}
+
+	@Override
+	public List<Map<String, Integer>> selectMemberDailyReport(Map<String, String> option) {
+		return session.selectList("com.ggukgguk.api.Admin.selectMemberIncreaseDaily", option);
+	}
+
+	@Override
+	public List<Map<String, Integer>> selectRecordDailyReport(Map<String, String> option) {
+		return session.selectList("com.ggukgguk.api.Admin.selectRecordIncreaseDaily", option);
+	}
+
+	@Override
+	public List<Map<String, Integer>> selectReplyDailyReport(Map<String, String> option) {
+		return session.selectList("com.ggukgguk.api.Admin.selectReplyIncreaseDaily", option);
 	}
 }
 

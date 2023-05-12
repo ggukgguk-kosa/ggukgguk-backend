@@ -87,6 +87,12 @@
 			LEFT JOIN reply ON record.record_id = reply.record_id
 			WHERE record.record_id=#{recordId}
    </select>
+   
+  	<select id="selectMedia" parameterType="String" resultType="MediaFile">  
+			SELECT media_file_id, media_type_id, media_file_blocked, media_file_checked
+			FROM media_file
+			WHERE media_file_id = #{mediaFileId};
+   </select>
 
 
    <update id="update" parameterType="Record">  

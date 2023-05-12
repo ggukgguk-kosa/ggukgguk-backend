@@ -242,7 +242,7 @@ public class AuthController {
 	// 메모리의 캐시 형태로 하여 이메일 인증코드와 사용자(받는 사람이메일)랑 같이 저장.
 	private ConcurrentHashMap<String, String> authCodeCache = new ConcurrentHashMap<>();
 	
-	// 회원 가입 및 비밀번호 찾기 시 인증번호 메일 전송
+	// 회원 가입  시 인증번호 메일 전송
 	@GetMapping(value = "/mailCertification", produces = "application/json; charset=UTF-8")
 	public ResponseEntity<?> cetificationPostMail(@RequestParam String sendTo, @ModelAttribute Verify verify) throws Exception {
 		
@@ -260,7 +260,7 @@ public class AuthController {
 				"<div>아래의 인증 번호를 입력하여 가입하시면 가입이 완료됩니다..<br> 인증 번호는 : "+authenticationCode+" 입니다 확인 후 페이지 입력해 주세요.</div>");
 		
 		// 회원 가입 or 비밀전호 찾기 시 메일 주소 확인 및 인증번호 db 테이블에 저장.
-		boolean verifyInsert = memberSerivce.postAuthenticationCode(verify,authenticationCode,sendTo);
+		boolean verifyInsert = memberSerivce.postMemberAuthenticationCode(verify,authenticationCode,sendTo);
 		
 		
 		if (verifyInsert) {
@@ -271,6 +271,43 @@ public class AuthController {
 			return ResponseEntity.badRequest().body(resp);
 		}
 	}
+	
+	// 비밀번호 찾기 시 인증번호 메일 전송
+	@GetMapping(value = "/mailCertificationPw", produces = "application/json; charset=UTF-8")
+	public ResponseEntity<?> cetificationPostPwMail(@RequestParam String sendTo, @ModelAttribute Verify verify) throws Exception {
+		
+		String authenticationCode = generateCertCharacter.excuteGenerate();
+		authCodeCache.put(sendTo, authenticationCode); // 회원 이메일과 인증 코드를 key,value쌍으로 저장.
+		
+		BasicResp<Object> resp = null;
+		if (sendTo == null || sendTo.equals("")) {
+			resp = new BasicResp<Object>("success", "수신자 메일이 잘못되었습니다.", null);
+			return ResponseEntity.badRequest().body(resp);
+		}
+		
+		boolean result = emailService.sendEmail(sendTo,
+				"꾹꾹  비밀번호 찾기 인증 메일입니다.",
+				"<div>아래의 인증 번호를 입력하여 비밀번호를 찾으시기 바랍니다..<br> 인증 번호는 : "+authenticationCode+" 입니다 확인 후 페이지 입력해 주세요.</div>");
+		
+		// 회원 가입 or 비밀전호 찾기 시 메일 주소 확인 및 인증번호 db 테이블에 저장.
+		boolean verifyInsert = memberSerivce.postPasswordAuthenticationCode(verify,authenticationCode,sendTo);
+		
+		
+		if (verifyInsert) {
+			resp = new BasicResp<Object>("success", null, verifyInsert);
+			return ResponseEntity.ok(resp);
+		} else {
+			resp = new BasicResp<Object>("success", "메일 전송에 실패했습니다.", null);
+			return ResponseEntity.badRequest().body(resp);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	//비밀번호 찾기 및 회원가입시 이메일 인증 코드 확인
 	@GetMapping(value = "/mailCertificationNumberCheck", produces = "application/json; charset=UTF-8")

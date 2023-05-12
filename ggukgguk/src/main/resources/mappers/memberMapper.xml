@@ -127,7 +127,7 @@
 		 <![CDATA[   
          SELECT member_id, member_pw, member_name, member_nickname, member_email,
          		member_phone, member_birth, member_created_at, member_activated,
-         		member_authority, member_social, memberAllowEmail
+         		member_authority, member_social, member_allow_email
          FROM member
  		 WHERE member_id LIKE CONCAT ('%',#{memberId},'%') 
      ]]>

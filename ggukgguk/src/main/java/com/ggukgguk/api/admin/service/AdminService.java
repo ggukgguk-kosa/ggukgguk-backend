@@ -33,7 +33,7 @@ public interface AdminService {
 	// 컨텐츠 리스트 출력
 	public TotalAndListPayload contentSelectPage(PageOption option);
 
-	public List<Member> memberSelectPage(PageOption option);
+	public TotalAndListPayload memberSelectPage(PageOption option);
 
 	// 회원삭제
 	public boolean memberDelete(String memberId);
@@ -47,5 +47,9 @@ public interface AdminService {
 	public Map<String, List<BatchJobExecution>> fetchBatchStatus();
 
 	public TotalAndListPayload fetchBatchStatusByJobName(BatchPageOption option);
+
+	public Map<String, Object> getDailyReportAll(String startDate, String endDate);
+
+	public List<Map<String, Integer>> getDailyReport(String startDate, String endDate, String reportSubject);
 	
 }

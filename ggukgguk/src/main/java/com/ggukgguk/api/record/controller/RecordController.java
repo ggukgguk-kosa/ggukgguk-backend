@@ -36,6 +36,7 @@ import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.member.service.MemberService;
 import com.ggukgguk.api.record.service.RecordService;
 import com.ggukgguk.api.record.service.ReplyService;
+import com.ggukgguk.api.record.vo.MediaFile;
 import com.ggukgguk.api.record.vo.Record;
 import com.ggukgguk.api.record.vo.RecordSearch;
 import com.ggukgguk.api.record.vo.Reply;
@@ -155,11 +156,7 @@ public class RecordController {
 	
 	@GetMapping(value="/media/{fileId}")
 	public ResponseEntity<FileSystemResource> getMedia(@PathVariable("fileId") String fileId,
-			@RequestParam("mediaType") String mediaType) throws IOException {	
-		log.debug("미디어 파일 요청");
-		log.debug("  파일 아이디: " + fileId);
-		log.debug("  파일 타입: " + mediaType);
-		
+			@RequestParam("mediaType") String mediaType) throws IOException {
 		MediaType contentsType;
 		String subDir;
 		switch (mediaType) {
@@ -183,13 +180,21 @@ public class RecordController {
 		
 		File mediaFile = new File(baseDir + "/" + subDir + "/" + fileId);
 		File defaultFile = new File(baseDir + "/" + subDir + "/default");
+		
+		MediaFile metadata = service.getMediaMetadata(fileId);
+		if (metadata.isMediaFileBlocked()) {
+			log.info("차단된 미디어를 디폴트 파일로 대신하여 제공하였습니다.");
+		    return ResponseEntity.ok()
+		    	      .contentType(contentsType)
+		    	      .body(new FileSystemResource(defaultFile));
+		}
 
 		if (mediaFile.exists()) {
 		    return ResponseEntity.ok()
 		    	      .contentType(contentsType)
 		    	      .body(new FileSystemResource(mediaFile));
 		} else {
-			log.debug("미디어 파일을 찾을 수 없어 디폴트 파일을 제공하였습니다.");
+			log.info("미디어 파일을 찾을 수 없어 디폴트 파일을 제공하였습니다.");
 		    return ResponseEntity.ok()
 		    	      .contentType(contentsType)
 		    	      .body(new FileSystemResource(defaultFile));

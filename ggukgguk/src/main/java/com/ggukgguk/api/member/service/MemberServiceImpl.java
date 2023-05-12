@@ -244,12 +244,10 @@ public class MemberServiceImpl implements MemberService {
 		return false;
 	}
 
-	// 메일 인증코드 전송
+	// 비밀번호 찾기 시 메일 인증코드 전송
 	@Override
-	public boolean postAuthenticationCode(Verify verify, String authenticationCode, String sendTo) {
+	public boolean postPasswordAuthenticationCode(Verify verify, String authenticationCode, String sendTo) {
 
-		Member result = dao.selectMemberByEmail(sendTo);
-		if (result == null) {
 			verify.setVerifyCode(authenticationCode);
 			verify.setVerifyEmail(sendTo);
 			try {
@@ -261,11 +259,30 @@ public class MemberServiceImpl implements MemberService {
 				e.printStackTrace();
 				return false;
 			}
-		}else {
-			return false;
+
 		}
-	}
 	
+	// 회웝 가입시  메일 인증코드 전송
+	@Override
+	public boolean postMemberAuthenticationCode(Verify verify, String authenticationCode, String sendTo) {
+			Member result = dao.selectMemberByEmail(sendTo);
+			if (result == null) {
+				verify.setVerifyCode(authenticationCode);
+				verify.setVerifyEmail(sendTo);
+				try {
+					dao.insertEmailAuthenticationCode(verify);
+	
+					return true;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+			}else {
+				return false;
+			}
+		}
+
 	// 캐시를 이용한 인증코드 확인.
 	@Override
 	public boolean getCheckAuthenticationCode(String certificationNumber, String storedAuthCode) {

@@ -1,6 +1,7 @@
 package com.ggukgguk.api.admin.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ggukgguk.api.admin.vo.BatchJobExecution;
 import com.ggukgguk.api.admin.vo.BatchPageOption;
@@ -37,6 +38,8 @@ public interface AdminDao {
 	public List<ContentDetail> recordSelectList(int recordId);
 
 	public int contentSelectCount(PageOption option);
+	
+	public int memberSelectCount(PageOption option);
 
 //	public List<?> selectMemberList(PageOption option);
 
@@ -47,5 +50,12 @@ public interface AdminDao {
 	public List<BatchJobExecution> selectBatchJobExecution(BatchPageOption option);
 
 	public int selectBatchJobExecutionCount(BatchPageOption option);
+
+	public List<Map<String, Integer>> selectMemberDailyReport(Map<String, String> option);
+
+	public List<Map<String, Integer>> selectRecordDailyReport(Map<String, String> option);
+
+	public List<Map<String, Integer>> selectReplyDailyReport(Map<String, String> option);
+
 }
 

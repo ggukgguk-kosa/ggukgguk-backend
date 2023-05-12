@@ -24,10 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ggukgguk.api.admin.service.AdminService;
 import com.ggukgguk.api.admin.vo.BatchJobExecution;
 import com.ggukgguk.api.admin.vo.BatchPageOption;
-import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
-import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -187,30 +185,51 @@ public class AdminController {
 		return new ResponseEntity<Object>(respBody, null, respCode);
 	}	
 	
-	// 회원관리 리스트 조회
+	// 컨텐츠관리 리스트 조회
 	@GetMapping("/member")
-	public ResponseEntity<?> membertListHandler(@RequestParam("page") int page, @RequestParam("size") int size) {
+	public ResponseEntity<?> memberListHandler(@RequestParam("page") int page, @RequestParam("size") int size) {
 		PageOption option = new PageOption();
 		option.setPage(page);
 		option.setSize(size);
-		List<Member> result = adminService.memberSelectPage(option);
+		TotalAndListPayload result = adminService.memberSelectPage(option);
 		
 		BasicResp<Object> respBody = null;
 		int respCode = 0;
 
 		if (result != null) {
-			Map<String, Object> payload = new HashMap<String, Object>();
-			payload.put("list", result);
-
-			respBody = new BasicResp<Object>("true", "멤버관리 조회 성공", payload);
+			respBody = new BasicResp<Object>("true", "멤버 조회 성공", result);
 			respCode = HttpServletResponse.SC_OK;
 		} else {
-			respBody = new BasicResp<Object>("false", "멤버관리 조회 실패", null);
+			respBody = new BasicResp<Object>("false", "멤버 조회 실패", null);
 			respCode = HttpServletResponse.SC_BAD_REQUEST;
 		}
 
 		return new ResponseEntity<Object>(respBody, null, respCode);
 	}	
+//	// 회원관리 리스트 조회
+//	@GetMapping("/member")
+//	public ResponseEntity<?> membertListHandler(@RequestParam("page") int page, @RequestParam("size") int size) {
+//		PageOption option = new PageOption();
+//		option.setPage(page);
+//		option.setSize(size);
+//		List<Member> result = adminService.memberSelectPage(option);
+//		
+//		BasicResp<Object> respBody = null;
+//		int respCode = 0;
+//
+//		if (result != null) {
+//			Map<String, Object> payload = new HashMap<String, Object>();
+//			payload.put("list", result);
+//
+//			respBody = new BasicResp<Object>("true", "멤버관리 조회 성공", payload);
+//			respCode = HttpServletResponse.SC_OK;
+//		} else {
+//			respBody = new BasicResp<Object>("false", "멤버관리 조회 실패", null);
+//			respCode = HttpServletResponse.SC_BAD_REQUEST;
+//		}
+//
+//		return new ResponseEntity<Object>(respBody, null, respCode);
+//	}	
 	
 	// 회원 삭제 
 	@PutMapping("/member/delete/{memberId}")
@@ -304,7 +323,7 @@ public class AdminController {
 	}
 	
 	/**
-	 * 
+	 * 잡별 실행 이력을 조회한다.
 	 * @return
 	 */
 	@GetMapping("/batch/{jobName}")
@@ -319,6 +338,51 @@ public class AdminController {
 		} else {
 			log.debug("배치 세부 현황 조회 실패");
 			respBody = new BasicResp<Object>("error", "배치 세부 현황 조회 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	@GetMapping("/report/daily")
+	public ResponseEntity<?> getDailyAllHandler(@RequestParam(value="startDate", required = false) String startDate,
+			@RequestParam(value="endDate", required = false) String endDate) {
+		BasicResp<Object> respBody;
+
+		Map<String, Object> result = adminService.getDailyReportAll(startDate, endDate);
+
+		if (result != null) {
+			log.debug("일자별 데이터 조회 성공");
+			respBody = new BasicResp<Object>("success", null, result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("일자별 데이터 조회 실패");
+			respBody = new BasicResp<Object>("error", "일자별 데이터 조회 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	@GetMapping("/report/daily/{reportSubject}")
+	public ResponseEntity<?> getDailyHandler(@RequestParam(value="startDate", required = false) String startDate,
+			@RequestParam(value="endDate", required = false) String endDate,
+			@PathVariable String reportSubject) {
+		BasicResp<Object> respBody;
+		
+		if (!reportSubject.equals("member")
+				&& !reportSubject.equals("record")
+				&& !reportSubject.equals("reply")) {
+			log.debug("일자별 데이터 조회 실패");
+			respBody = new BasicResp<Object>("error", "일자별 데이터 조회 실패 (NO_SUCH_ITEM)", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+
+		List<Map<String, Integer>> result = adminService.getDailyReport(startDate, endDate, reportSubject);
+
+		if (result != null) {
+			log.debug("일자별 데이터 조회 성공 " + reportSubject);
+			respBody = new BasicResp<Object>("success", null, result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("일자별 데이터 조회 실패 " + reportSubject);
+			respBody = new BasicResp<Object>("error", "일자별 데이터 조회 실패", null);
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}
