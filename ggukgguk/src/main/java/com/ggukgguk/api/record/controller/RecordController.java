@@ -197,9 +197,19 @@ public class RecordController {
 	}
 
 	@PutMapping(value="/{recordId}")
-	public ResponseEntity<?> updateRecord(@PathVariable int recordId, @RequestBody Record record){
+	public ResponseEntity<?> updateRecord(@PathVariable int recordId, @RequestBody Record record, Authentication authentication){
 		log.debug(record);
 		BasicResp<Object> respBody;
+		
+		String memberIdFromReq = record.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("게시글 수정 실패1");
+			respBody = new BasicResp<Object>("error", "게시글 수정에 실패했습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+		
 		boolean result = service.updateRecord(record);
 		
 		if(result) {
@@ -215,12 +225,21 @@ public class RecordController {
 	}
 	
 	@DeleteMapping(value="/{recordId}")
-	public ResponseEntity<?> removeRecord(@PathVariable int recordId){
+	public ResponseEntity<?> removeRecord(@RequestBody Record record, Authentication authentication){
 		
 		log.debug("삭제");
 		
 		BasicResp<Object> respBody;
-		boolean result = service.removeRecord(recordId);
+		
+		String memberIdFromReq = record.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("게시글 삭제 실패 1");
+			respBody = new BasicResp<Object>("error", "게시글 삭제에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+		boolean result = service.removeRecord(record.getRecordId());
 		
 		if (result) {
 			log.debug("게시글 삭제 성공");
@@ -235,9 +254,17 @@ public class RecordController {
 	}
 	
 	@PostMapping("/reply")
-	public ResponseEntity<?> addReply(@RequestBody Reply reply){
+	public ResponseEntity<?> addReply(@RequestBody Reply reply, Authentication authentication){
 		
 		BasicResp<Object> respBody;
+		
+		String memberIdFromReq = reply.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("댓글 등록 실패");
+			respBody = new BasicResp<Object>("error", "댓글 등록에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
 		
 		log.debug(reply);
 		
@@ -257,13 +284,18 @@ public class RecordController {
 	}
 	
 	@PutMapping("/reply/{replyId}")
-	public ResponseEntity<?> editReply(@PathVariable int replyId, @RequestBody Reply reply){
+	public ResponseEntity<?> editReply(@PathVariable int replyId, @RequestBody Reply reply, Authentication authentication){
 		
-		log.debug("여기로 연결되니?");
-		log.debug(reply);
-		reply.setReplyId(replyId);
-		log.debug(reply);
 		BasicResp<Object> respBody;
+		
+		String memberIdFromReq = reply.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("댓글 수정 실패");
+			respBody = new BasicResp<Object>("error", "댓글 수정에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
 		List<ReplyNickname> replyList = rservice.editReply(reply);
 		
 		if (replyList != null) {
@@ -279,10 +311,18 @@ public class RecordController {
 	}
 	
 	@DeleteMapping("/reply/{replyId}")
-	public ResponseEntity<?> removeReply(@PathVariable int replyId, @RequestBody Reply reply){
+	public ResponseEntity<?> removeReply(@PathVariable int replyId, @RequestBody Reply reply, Authentication authentication){
 	
-		reply.setReplyId(replyId);
 		BasicResp<Object> respBody;
+		
+		String memberIdFromReq = reply.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("댓글 삭제 실패");
+			respBody = new BasicResp<Object>("error", "댓글 삭제에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
 		List<ReplyNickname> replyList = rservice.removeReply(reply);
 		log.debug("삭제컨트롤러");
 		
@@ -319,10 +359,18 @@ public class RecordController {
 	}
 	
 	@PutMapping("/unaccepted/{recordId}")
-	public ResponseEntity<?> updateUnaccepted(@PathVariable(value = "recordId") int recordId){
+	public ResponseEntity<?> updateUnaccepted(@PathVariable(value = "recordId") int recordId, @RequestBody Record record, Authentication authentication){
 		
 		log.debug(recordId);
 		BasicResp<Object> respBody;
+		
+		String memberIdFromReq = record.getRecordShareTo();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("교환일기 수락 실패");
+			respBody = new BasicResp<Object>("error", "교환일기 수락에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
 		
 		boolean result = service.updateUnaccepted(recordId);
 		
