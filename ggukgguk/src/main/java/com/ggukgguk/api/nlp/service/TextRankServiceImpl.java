@@ -59,6 +59,8 @@ public class TextRankServiceImpl implements TextRankService {
 	// co-occurrence (동시출현수)를 산출하게 되는데,
 	// 그 기준으로 활용되는 윈도우의 사이즈
 	private final int CO_OCCURRENCE_WINDOWS = 3;
+	
+	private final String[] STOPWORDS = {"테스트", "업로드", "조각", "이미지", "마스트", "동영상"};
 
 	/**
 	 * 텍스트에서 키워드를 추출
@@ -69,6 +71,8 @@ public class TextRankServiceImpl implements TextRankService {
 	 */
 	@Override
 	public List<Keyword> extractKeywords(String text, int numOfKeywords) {
+		List<Keyword> keywordList = new ArrayList<Keyword>();
+		if ("".equals(text)) return keywordList;
 
 		Map<String, Float> score = getWordScore(text);
 
@@ -80,8 +84,6 @@ public class TextRankServiceImpl implements TextRankService {
 				return (o1.getValue() - o2.getValue() > 0 ? -1 : 1);
 			}
 		});
-
-		List<Keyword> keywordList = new ArrayList<Keyword>();
 
 		for (int i = 0; i < numOfKeywords; ++i) {
 			try {
@@ -113,9 +115,19 @@ public class TextRankServiceImpl implements TextRankService {
     	log.debug("형태소 분석 결과: ");
         for (Token token : tokenList) {
             log.debug(String.format("(%2d, %2d) %s/%s\n", token.getBeginIndex(), token.getEndIndex(), token.getMorph(), token.getPos()));
-            if (token.getPos().equals("NNP")
-            		|| token.getPos().equals("NNG")
-            		|| token.getPos().equals("XR")) wordList.add(token.getMorph());
+            if ((token.getPos().equals("NNP")
+            		|| token.getPos().equals("NNG"))
+            		&& token.getMorph().length() > 1) {
+            	
+            	boolean verified = true;
+            	for (String stopword : STOPWORDS) {
+            		if (token.getMorph().equals(stopword)) {
+            			verified = false;
+            			break;
+            		}
+            	}
+            	if (verified) wordList.add(token.getMorph());
+            }
         }
 		
 		// 동시 출현수에 바탕하여 그래프를 만든다
