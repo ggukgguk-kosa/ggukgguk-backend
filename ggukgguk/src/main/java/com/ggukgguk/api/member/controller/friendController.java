@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.ggukgguk.api.auth.vo.AuthTokenPayload;
+import com.ggukgguk.api.common.service.EmailService;
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.member.service.MemberService;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
+import com.ggukgguk.api.member.vo.Verify;
 
 @RestController
 @RequestMapping("/friend")
@@ -32,7 +34,10 @@ public class friendController {
 	private Logger log = LogManager.getLogger("base");
 
 	AuthTokenPayload Payload;
-
+	
+	@Autowired
+	private EmailService emailService;
+	
 	@Autowired
 	private MemberService memberservice;
 
@@ -141,5 +146,34 @@ public class friendController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}
+	
+	
+	// 친구 추가시 상대방의 친구 요청 안내 메일 전송
+	@GetMapping(value = "/mailCertification", produces = "application/json; charset=UTF-8")
+	public ResponseEntity<?> cetificationPostPwMail(@RequestParam String sendTo) throws Exception {
+		
+		
+		BasicResp<Object> resp = null;
+		if (sendTo == null || sendTo.equals("")) {
+			resp = new BasicResp<Object>("success", "수신자 메일이 잘못되었습니다.", null);
+			return ResponseEntity.badRequest().body(resp);
+		}
+		
+		boolean result = emailService.sendEmail(sendTo,
+				"꾹꾹  알림  메일입니다.",
+				"<div>당신과 친구 맺기를 희망하는 회원이있습니다 <br>"+
+				"꾹꾹 서비스에 접속하시여 친구 요청 알림 메시지를 확인 바랍니다.<br>"+
+				"<a href='https://app.ggukgguk.online/login'><button style='background-color: #50A73A; border: none; "
+				+ "color: white; padding: 10px 20px; text-align: center; display: inline-block; "
+				+ "margin: 4px 2px; cursor: pointer;'>꾹꾹 접속하기 </button> </a></div>");
+		if (result) {
+			resp = new BasicResp<Object>("success", null,result);
+			return ResponseEntity.ok(resp);
+		} else {
+			resp = new BasicResp<Object>("success", "메일 전송에 실패했습니다.", null);
+			return ResponseEntity.badRequest().body(resp);
+		}
+	}
+	
 	
 }
