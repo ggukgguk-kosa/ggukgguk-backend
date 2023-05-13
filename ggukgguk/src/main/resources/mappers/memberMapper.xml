@@ -63,13 +63,14 @@
 	</select>
 	<!-- 회원 정보 수정 -->
 	<update id="updateMemberInfo" parameterType="Member">
-         UPDATE member 
-         SET member_nickname= #{memberNickname}, member_email= #{memberEmail}, 
-         member_phone= #{memberPhone}, member_birth= #{memberBirth}, member_allow_email = #{memberAllowEmail}
-         <if test="memberPw != null">
-         	, member_pw= #{memberPw}
-         </if>
- 		 WHERE member_id = #{memberId}
+		UPDATE member
+		SET member_nickname= #{memberNickname}, member_email= #{memberEmail},
+		member_phone= #{memberPhone}, member_birth= #{memberBirth},
+		member_allow_email = #{memberAllowEmail}
+		<if test="memberPw != null">
+			, member_pw= #{memberPw}
+		</if>
+		WHERE member_id = #{memberId}
 	</update>
 	<!-- 전체 회원 리스트 조회 (관리자용) -->
 	<select id="totalMemberList" parameterType="PageOption"
@@ -95,9 +96,10 @@
         INSERT INTO friend_request(friend_request_id,from_member_id,to_member_id,friend_request_time) 
         VALUES(default,#{fromMemberId},#{toMemberId},default);
     ]]>
-      <selectKey resultType="int" keyProperty="friendRequestId" order="AFTER">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
+		<selectKey resultType="int" keyProperty="friendRequestId"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 	</insert>
 
 	<!-- 친구 요청 테이블 조회 -->
@@ -147,14 +149,22 @@
 		 DELETE FROM friend where member1_id = #{member1Id} and member2_id =#{member2Id}
 		]]>
 	</delete>
-	
+
 	<select id="selectFriendship" parameterType="RecordSearch"
-	resultType="Integer">
+		resultType="Integer">
 	 <![CDATA[   
        SELECT count(*) 
        FROM friend
        WHERE member1_id=#{memberId} AND member2_id=#{friendId}
      ]]>
+	</select>
+
+	<!-- 나의 친구 요청 테이블 조회 -->
+	<select id="selectMyRequestFriendList"
+		parameterType="FriendRequest" resultType="FriendRequest">
+   <![CDATA[
+   	SELECT * FROM friend_request WHERE to_member_id = #{toMemberId} and friend_request_id = #{friendRequestId}
+   ]]>
 	</select>
 
 </mapper>

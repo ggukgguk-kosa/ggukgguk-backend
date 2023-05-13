@@ -14,19 +14,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ggukgguk.api.auth.service.AuthService;
+
 import com.ggukgguk.api.auth.vo.AuthTokenPayload;
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.member.service.MemberService;
 import com.ggukgguk.api.member.vo.Friend;
 import com.ggukgguk.api.member.vo.FriendRequest;
 import com.ggukgguk.api.member.vo.Member;
-import com.nimbusds.jose.Payload;
 
 @RestController
 @RequestMapping("/friend")
@@ -78,7 +76,7 @@ public class friendController {
 	// 친구 찾기
 	@GetMapping(value = "")
 	public ResponseEntity<?> findFriend(@RequestParam String memberId, Authentication authentication) {
-		BasicResp<Object> respBody;
+		BasicResp<Object> respBody;	
 
 		List<Member> result = memberservice.findmyFriend(memberId);
 		if (!result.equals(null)) {
@@ -126,4 +124,22 @@ public class friendController {
 		}
 	}
 
+	// 친구 요청 테이블  조회
+	@GetMapping(value = "/requestFriendlist")
+	public ResponseEntity<?> requestFriendList(Authentication authentication,
+			@ModelAttribute FriendRequest friendRequest, @RequestParam int friendRequestId) {
+		BasicResp<Object> respBody;
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String myMemberId = userDetails.getUsername();
+
+		List<FriendRequest> result = memberservice.findRequestFriendList(friendRequest, myMemberId ,friendRequestId);
+		if (result != null) {
+			respBody = new BasicResp<Object>("success", " 요청 친구 목록을 조회 성공하였습니다.", result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			respBody = new BasicResp<Object>("error", "요청 친구 목록을 조회 실패하였습니다.", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
 }
