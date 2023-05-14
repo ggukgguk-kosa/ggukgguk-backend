@@ -44,4 +44,6 @@ public interface MemberDao {
 	public void insertEmailAuthenticationCode(Verify verify)throws Exception;
 
 	public Verify authenticationMatch(Verify verify);
+
+	public List<FriendRequest> selectRequestFriendList(FriendRequest friendRequestId);
 }

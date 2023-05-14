@@ -48,4 +48,6 @@ public interface MemberService {
 
 	public boolean postPasswordAuthenticationCode(Verify verify, String authenticationCode, String sendTo);
 
+	public List<FriendRequest> findRequestFriendList(FriendRequest friendRequest, String myMemberId,int friendRequestId);
+
 }

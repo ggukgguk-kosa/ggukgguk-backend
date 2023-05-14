@@ -253,7 +253,7 @@ public class MemberServiceImpl implements MemberService {
 			try {
 				dao.insertEmailAuthenticationCode(verify);
 
-				return true;
+				return true; 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -305,5 +305,17 @@ public class MemberServiceImpl implements MemberService {
 		} catch (NullPointerException e) {
 			return false;
 		}
+	}
+
+	// 나의 요청한 친구 목록 조회
+	@Override
+	public List<FriendRequest> findRequestFriendList(FriendRequest friendRequest, String myMemberId , int friendRequestId) {
+			friendRequest.setFriendRequestId(friendRequestId);
+			friendRequest.setToMemberId(myMemberId);
+			log.debug(friendRequest);
+			List<FriendRequest> result = dao.selectRequestFriendList(friendRequest);
+			log.debug(result);
+			return result;
+	
 	}
 }
