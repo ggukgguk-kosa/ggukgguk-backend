@@ -16,7 +16,7 @@ CREATE TABLE `member` (
     `member_pw`    VARCHAR(128)    NOT NULL,
     `member_name`    VARCHAR(16)    NOT NULL,
     `member_nickname`    VARCHAR(16)    NOT NULL,
-    `member_email`    VARCHAR(128)    NOT NULL    UNIQUE,
+    `member_email`    VARCHAR(128)    NULL    UNIQUE,
     `member_phone`    VARCHAR(12)    NOT NULL,
     `member_birth`    DATE    NOT NULL,
     `member_created_at`    DATETIME    NOT NULL    DEFAULT NOW(),
@@ -108,7 +108,7 @@ CREATE TABLE `diary` (
     `member_id`    VARCHAR(16)    NOT NULL,
     `diary_year`    CHAR(4)    NOT NULL,
     `diary_month`    CHAR(2)    NOT NULL,
-    `main_color`    CHAR(8)    NOT NULL,
+    `main_color`    CHAR(10)    NOT NULL,
     `main_keyword`    VARCHAR(16)    NOT NULL,
     FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`)
 );
@@ -121,6 +121,7 @@ CREATE TABLE `record_keyword` (
     `record_keyword`    VARCHAR(16)    NOT NULL,
     FOREIGN KEY (`record_id`) REFERENCES `record` (`record_id`)
 );
+ALTER TABLE record_keyword ADD CONSTRAINT record_keyword_UN UNIQUE KEY (record_id,record_keyword);
 
 CREATE TABLE `diary_keyword` (
     `diary_keyword_id`    INT    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
@@ -167,3 +168,6 @@ CREATE TABLE `notice` (
     `notice_created_at`    DATETIME    NOT NULL    DEFAULT NOW(),
     `notice_is_emergency`    BOOLEAN    NOT NULL    DEFAULT FALSE
 );
+
+
+

@@ -16,4 +16,24 @@ public interface RecordDao {
 
 	void insertRecord(Record record) throws Exception;
 
+	List<Record> selectFriendRecordList(RecordSearch recordSearch);
+
+	void updateRecord(Record record) throws Exception;
+
+	Record selectRecord(int recordId);
+
+	void deleteReplyList(int recordId) throws Exception;
+
+	void deleteMediaFile(String mediaFileId) throws Exception;
+
+	void deleteKeyword(int recordId) throws Exception;
+
+	int selectKeyword(int recordId);
+
+	List<Record> selectUnaccepted(String memberId);
+
+	void updateUnaccepted(int recordId) throws Exception;
+
+	MediaFile selectMedia(String mediaFileId);
+
 }

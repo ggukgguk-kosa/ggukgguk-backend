@@ -4,17 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,14 +26,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ggukgguk.api.common.vo.BasicResp;
+import com.ggukgguk.api.member.service.MemberService;
 import com.ggukgguk.api.record.service.RecordService;
 import com.ggukgguk.api.record.service.ReplyService;
+import com.ggukgguk.api.record.vo.MediaFile;
 import com.ggukgguk.api.record.vo.Record;
 import com.ggukgguk.api.record.vo.RecordSearch;
 import com.ggukgguk.api.record.vo.Reply;
@@ -49,6 +52,8 @@ public class RecordController {
 	RecordService service;
 	@Autowired
 	ReplyService rservice;
+	@Autowired
+	MemberService mservice;
 	
 	@Value("${file.baseDir}")
 	String baseDir;
@@ -59,23 +64,21 @@ public class RecordController {
 			// date=2023-04-17 로 넣어줘야 한다. 날짜를 따옴표로 감싸면 안된다.
 		
 		log.debug(recordSearch);
-		BasicResp<Object> respBody;		
+		BasicResp<Object> respBody;
 		
-		 Date startDate = null;
-		    if (startDateStr != null && !startDateStr.isEmpty()) {
-		        try {
-		            startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startDateStr);
-		            recordSearch.setStartDate(startDate);
-		        } catch (Exception e) {
-		            // startDate 파라미터가 유효하지 않을 경우 처리
-		        	e.printStackTrace();
-		        	log.debug("게시글 리스트 조회 실패");
-					respBody = new BasicResp<Object>("error", "날짜 형식이 잘 못되었습니다.", null);		
-					return ResponseEntity.badRequest().body(respBody);
-		        }
-		    }
-		    
-		log.debug(recordSearch);
+		Date startDate = null;
+	    if (startDateStr != null && !startDateStr.isEmpty()) {
+	        try {
+	            startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startDateStr);
+	            recordSearch.setStartDate(startDate);
+	        } catch (Exception e) {
+	            // startDate 파라미터가 유효하지 않을 경우 처리
+	        	e.printStackTrace();
+	        	log.debug("게시글 리스트 조회 실패");
+				respBody = new BasicResp<Object>("error", "날짜 형식이 잘 못되었습니다.", null);		
+				return ResponseEntity.badRequest().body(respBody);
+	        }
+	    }
 		
 		if(recordSearch.getMemberId() == null) {
 			log.debug("게시글 리스트 조회 실패");
@@ -86,8 +89,21 @@ public class RecordController {
 			respBody = new BasicResp<Object>("error", "날짜와 키워드를 동시에 넣을 수 없습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
+	    
+		List<Record> recordList = null;
 		
-		List<Record> recordList = service.getRecordList(recordSearch);
+		if(recordSearch.getFriendId() != null ) {
+			if(mservice.getFriendship(recordSearch)) {
+				recordList = service.getFreindRecordList(recordSearch);
+				log.debug(recordSearch);
+			} else {
+				log.debug("게시글 리스트 조회 실패");
+				respBody = new BasicResp<Object>("error", "친구 관계가 아닙니다.", null);		
+				return ResponseEntity.badRequest().body(respBody);
+			}
+		} else {
+			recordList = service.getRecordList(recordSearch);
+		}
 		
 		if (recordList != null) {
 			log.debug("게시글 리스트 조회 성공");
@@ -99,7 +115,6 @@ public class RecordController {
 			respBody = new BasicResp<Object>("error", "게시글 조회에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
-		
 	}
 	
 	@PostMapping
@@ -117,6 +132,15 @@ public class RecordController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 		
+
+		// recordShareTo가 지정되어 있고, 친구 관계인 경우인지 확인
+		// recordShareTo가 null이면 검증 패스
+		if(record.getRecordShareTo() != null && !mservice.getFriendship(record.getMemberId(), record.getRecordShareTo())) {
+			log.debug("조각 INSERT 실패 2");
+			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다. (SHARED_TO_SOMEONE_NOT_FRIEND)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
 		boolean result = service.saveMediaAndRecord(media, record);
 		
 		if (result) {
@@ -124,14 +148,15 @@ public class RecordController {
 			respBody = new BasicResp<Object>("success", null, null);
 			return ResponseEntity.ok(respBody);
 		} else {
-			log.debug("조각 INSERT 실패 2");
+			log.debug("조각 INSERT 실패 3");
 			respBody = new BasicResp<Object>("error", "새로운 조각 업로드에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}
 	
 	@GetMapping(value="/media/{fileId}")
-	public ResponseEntity<InputStreamResource> getImageMedia(@PathVariable("fileId") String fileId, @RequestParam("mediaType") String mediaType) throws IOException {	
+	public ResponseEntity<FileSystemResource> getMedia(@PathVariable("fileId") String fileId,
+			@RequestParam("mediaType") String mediaType) throws IOException {
 		MediaType contentsType;
 		String subDir;
 		switch (mediaType) {
@@ -155,27 +180,71 @@ public class RecordController {
 		
 		File mediaFile = new File(baseDir + "/" + subDir + "/" + fileId);
 		File defaultFile = new File(baseDir + "/" + subDir + "/default");
-		InputStream in;
-		try {
-			in = new FileInputStream(mediaFile);
+		
+		MediaFile metadata = service.getMediaMetadata(fileId);
+		if (metadata.isMediaFileBlocked()) {
+			log.info("차단된 미디어를 디폴트 파일로 대신하여 제공하였습니다.");
 		    return ResponseEntity.ok()
 		    	      .contentType(contentsType)
-		    	      .body(new InputStreamResource(in));
-		} catch (FileNotFoundException e) {
-			log.debug("미디어 파일을 찾을 수 없습니다.");
-			e.printStackTrace();
-			in = new FileInputStream(defaultFile);
+		    	      .body(new FileSystemResource(defaultFile));
+		}
+
+		if (mediaFile.exists()) {
 		    return ResponseEntity.ok()
 		    	      .contentType(contentsType)
-		    	      .body(new InputStreamResource(in));
+		    	      .body(new FileSystemResource(mediaFile));
+		} else {
+			log.info("미디어 파일을 찾을 수 없어 디폴트 파일을 제공하였습니다.");
+		    return ResponseEntity.ok()
+		    	      .contentType(contentsType)
+		    	      .body(new FileSystemResource(defaultFile));
 		}
 	}
 
+	@PutMapping(value="/{recordId}")
+	public ResponseEntity<?> updateRecord(@PathVariable int recordId, @RequestBody Record record, Authentication authentication){
+		log.debug(record);
+		BasicResp<Object> respBody;
+		
+		String memberIdFromReq = record.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("게시글 수정 실패1");
+			respBody = new BasicResp<Object>("error", "게시글 수정에 실패했습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+		
+		boolean result = service.updateRecord(record);
+		
+		if(result) {
+			log.debug("게시글 수정 성공");
+			respBody = new BasicResp<Object>("success", null, null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("게시글 수정 실패");
+			respBody = new BasicResp<Object>("error", "게시글 수정에 실패했습니다.", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+	}
+	
 	@DeleteMapping(value="/{recordId}")
-	public ResponseEntity<?> removeRecord(@PathVariable int recordId){
+	public ResponseEntity<?> removeRecord(@RequestBody Record record, Authentication authentication){
+		
+		log.debug("삭제");
 		
 		BasicResp<Object> respBody;
-		boolean result = service.removeRecord(recordId);
+		
+		String memberIdFromReq = record.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("게시글 삭제 실패 1");
+			respBody = new BasicResp<Object>("error", "게시글 삭제에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+		boolean result = service.removeRecord(record.getRecordId());
 		
 		if (result) {
 			log.debug("게시글 삭제 성공");
@@ -190,10 +259,22 @@ public class RecordController {
 	}
 	
 	@PostMapping("/reply")
-	public ResponseEntity<?> addReply(@RequestBody Reply reply){
+	public ResponseEntity<?> addReply(@RequestBody Reply reply, Authentication authentication){
 		
 		BasicResp<Object> respBody;
-		List<ReplyNickname> replyList = rservice.addReply(reply);
+		
+		String memberIdFromReq = reply.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("댓글 등록 실패");
+			respBody = new BasicResp<Object>("error", "댓글 등록에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+		log.debug(reply);
+		
+		List<ReplyNickname> replyList = rservice.addReply(reply);	
+		
 		
 		if (replyList != null) {
 			log.debug("댓글 등록 성공");
@@ -208,10 +289,18 @@ public class RecordController {
 	}
 	
 	@PutMapping("/reply/{replyId}")
-	public ResponseEntity<?> editReply(@PathVariable int replyId, @RequestBody Reply reply){
+	public ResponseEntity<?> editReply(@PathVariable int replyId, @RequestBody Reply reply, Authentication authentication){
 		
-		reply.setReplyId(replyId);
 		BasicResp<Object> respBody;
+		
+		String memberIdFromReq = reply.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("댓글 수정 실패");
+			respBody = new BasicResp<Object>("error", "댓글 수정에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
 		List<ReplyNickname> replyList = rservice.editReply(reply);
 		
 		if (replyList != null) {
@@ -227,11 +316,20 @@ public class RecordController {
 	}
 	
 	@DeleteMapping("/reply/{replyId}")
-	public ResponseEntity<?> removeReply(@PathVariable int replyId, @RequestBody Reply reply){
+	public ResponseEntity<?> removeReply(@PathVariable int replyId, @RequestBody Reply reply, Authentication authentication){
 	
-		reply.setReplyId(replyId);
 		BasicResp<Object> respBody;
+		
+		String memberIdFromReq = reply.getMemberId();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("댓글 삭제 실패");
+			respBody = new BasicResp<Object>("error", "댓글 삭제에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
 		List<ReplyNickname> replyList = rservice.removeReply(reply);
+		log.debug("삭제컨트롤러");
 		
 		if (replyList != null) {
 			log.debug("댓글 삭제 성공");
@@ -244,4 +342,52 @@ public class RecordController {
 		}
 	}
 	
+	@GetMapping("/unaccepted")
+	public ResponseEntity<?> getUnaccepted(@RequestParam(value = "memberId") String memberId){
+		
+		BasicResp<Object> respBody;
+		
+		List<Record> recordList = null;
+		
+		recordList = service.getUnaccepted(memberId);
+		
+		if (recordList != null) {
+			log.debug("미수락 교환일기 리스트 조회 성공");
+			
+			respBody = new BasicResp<Object>("success", null, recordList);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("미수락 교환일기 리스트 없음");
+			respBody = new BasicResp<Object>("success", null, recordList);
+			return ResponseEntity.ok(respBody);
+		}
+	}
+	
+	@PutMapping("/unaccepted/{recordId}")
+	public ResponseEntity<?> updateUnaccepted(@PathVariable(value = "recordId") int recordId, @RequestBody Record record, Authentication authentication){
+		
+		log.debug(recordId);
+		BasicResp<Object> respBody;
+		
+		String memberIdFromReq = record.getRecordShareTo();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		if (!userDetails.getUsername().equals(memberIdFromReq)) {
+			log.debug("교환일기 수락 실패");
+			respBody = new BasicResp<Object>("error", "교환일기 수락에 실패하였습니다. (ID_NOT_VERIFIED)", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		
+		boolean result = service.updateUnaccepted(recordId);
+		
+		if (result) {
+			log.debug("교환일기 수락 성공");
+			
+			respBody = new BasicResp<Object>("success", null, null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("교환일기 수락 실패");
+			respBody = new BasicResp<Object>("error", "교환일기 수락에 실패하였습니다.", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
 }

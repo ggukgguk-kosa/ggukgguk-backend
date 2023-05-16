@@ -9,7 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DiaryColor {
 
-	private int diaryColorId;
-	private int diaryId;
 	private String diaryColor;
 }

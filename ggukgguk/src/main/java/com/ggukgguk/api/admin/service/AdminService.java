@@ -1,26 +1,55 @@
 package com.ggukgguk.api.admin.service;
 
 import java.util.List;
+import java.util.Map;
 
+import com.ggukgguk.api.admin.vo.BatchJobExecution;
+import com.ggukgguk.api.admin.vo.BatchPageOption;
+import com.ggukgguk.api.admin.vo.Content;
+import com.ggukgguk.api.admin.vo.ContentDetail;
+import com.ggukgguk.api.admin.vo.Main;
+import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
+import com.ggukgguk.api.common.vo.TotalAndListPayload;
 
 public interface AdminService {
 
-    public boolean addNotice(Notice notice);
+	// 공지사항 리스트 출력
+	public List<Notice> noticeSelectPage(PageOption option);
 
-	public boolean readNotice(int noticeId);
+	// 게시글 작성
+    public boolean noticeWrite(Notice notice);
 
-	public boolean updateNotice(int noticeId);
+    // 게시글 조회
+	public boolean noticeRead(int noticeId);
 
-	public boolean deleteNotice(int noticeId);
+	// 게시글 수정
+	public boolean noticeUpdate(int noticeId);
 
-	
-	public List<Notice> getListPaging(PageOption option);
+	// 게시글 삭제
+	public boolean noticeDelete(int noticeId);
 
-	public int getNoticeCount();
+	// 컨텐츠 리스트 출력
+	public TotalAndListPayload contentSelectPage(PageOption option);
 
-	public List<Notice> getMediaList(PageOption option);
-	
+	public TotalAndListPayload memberSelectPage(PageOption option);
+
+	// 회원삭제
+	public boolean memberDelete(String memberId);
+
+	Main mainAdmin();
+
+	public List<ContentDetail> recordRead(int recordId);
+
+//	public TotalAndListPayload getMemberList(PageOption option);
+	// 최근 배치 현황 조회
+	public Map<String, List<BatchJobExecution>> fetchBatchStatus();
+
+	public TotalAndListPayload fetchBatchStatusByJobName(BatchPageOption option);
+
+	public Map<String, Object> getDailyReportAll(String startDate, String endDate);
+
+	public List<Map<String, Integer>> getDailyReport(String startDate, String endDate, String reportSubject);
 	
 }

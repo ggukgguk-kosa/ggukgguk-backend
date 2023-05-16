@@ -16,8 +16,10 @@ public class Record {
 
 	private int recordId;
 	private String memberId;
+	private String memberNickname;
+	private String friendNickname;
 	private String recordComment;
-	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Asia/Seoul")
 	private Date recordCreatedAt;
 	private String mediaFileId;
 	private String mediaTypeId;
@@ -26,5 +28,6 @@ public class Record {
 	private boolean recordIsOpen;
 	private String recordShareTo;
 	private boolean recordShareAccepted;
+	private String mainColor;
 	private List<ReplyNickname> replyList;
 }
