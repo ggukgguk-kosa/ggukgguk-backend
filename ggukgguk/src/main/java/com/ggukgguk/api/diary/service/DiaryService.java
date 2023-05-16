@@ -17,5 +17,7 @@ public interface DiaryService {
 	
 	public boolean editDiary(Diary diary);
 
+	public List<Diary> getnotifyMonthDiaries(int referenceId);
+
 
 }
