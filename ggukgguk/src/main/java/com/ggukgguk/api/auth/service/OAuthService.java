@@ -156,6 +156,7 @@ public class OAuthService {
 		member.setMemberPhone("");
 		member.setMemberBirth(new Date(19700101)); // 카카오에 생일을 받아오나, 월 일 정도 만 불러와서. 임의로 우선 설정.
 		member.setMemberAuthority("NORMAL"); // 우선 NORMAL 설정함. => 향후 GUEST
+		member.setMemberAllowEmail(true);
 		log.debug(member);
 		try {
 			memberDao.insertMember(member);
@@ -223,7 +224,7 @@ public class OAuthService {
 		//log.debug(token);
 		JsonNode userInfo = getGoogleUserInfo(token);
 		Member memberCheck = socialEnrollconfirmation(userInfo);
-		if (memberCheck.getMemberId()!=null) {
+		if (memberCheck != null) {
 			return memberCheck;
 		} else {
 			
@@ -239,12 +240,12 @@ public class OAuthService {
 		member.setMemberName(userInfo.get("name").asText().toString());
 		member.setMemberSocial("GOOGLE");
 
-		member.setMemberPw("");
+		member.setMemberPw(passwordEncorder.encode("google"));
 		member.setMemberBirth(new Date(19700101));
-		member.setMemberNickname("구글 가입자");
+		member.setMemberNickname(userInfo.get("name").asText().toString());
 		member.setMemberPhone("");
 		member.setMemberAuthority("NORMAL");
-
+		member.setMemberAllowEmail(true);
 		log.debug(member);
 		try {
 			memberDao.insertMember(member);
