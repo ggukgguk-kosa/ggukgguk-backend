@@ -11,6 +11,8 @@ import com.ggukgguk.api.admin.vo.BatchJobExecution;
 import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
+import com.ggukgguk.api.admin.vo.MediaClaimPageOption;
+import com.ggukgguk.api.admin.vo.MediaFileRecheckRequest;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -151,6 +153,16 @@ public class AdminDaoImpl implements AdminDao {
 	@Override
 	public List<Map<String, Integer>> selectReplyDailyReport(Map<String, String> option) {
 		return session.selectList("com.ggukgguk.api.Admin.selectReplyIncreaseDaily", option);
+	}
+
+	@Override
+	public List<MediaFileRecheckRequest> selectMediaClaim(MediaClaimPageOption option) {
+		return session.selectList("com.ggukgguk.api.Admin.selectMediaClaim", option);
+	}
+
+	@Override
+	public int selectMediaClaimCount(MediaClaimPageOption option) {
+		return session.selectOne("com.ggukgguk.api.Admin.selectMediaClaimTotal", option);
 	}
 }
 

@@ -26,6 +26,7 @@ import com.ggukgguk.api.admin.vo.BatchJobExecution;
 import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
+import com.ggukgguk.api.admin.vo.MediaClaimPageOption;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -383,6 +384,23 @@ public class AdminController {
 		} else {
 			log.debug("일자별 데이터 조회 실패 " + reportSubject);
 			respBody = new BasicResp<Object>("error", "일자별 데이터 조회 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	@GetMapping("/content/claim")
+	public ResponseEntity<?> getMediaClaimHandler(@ModelAttribute MediaClaimPageOption option) {
+		BasicResp<Object> respBody;
+
+		TotalAndListPayload result = adminService.getMediaClaim(option);
+
+		if (result != null) {
+			log.debug("재심사 요청 데이터 조회 성공");
+			respBody = new BasicResp<Object>("success", null, result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("재심사 요청 데이터 조회 실패");
+			respBody = new BasicResp<Object>("error", "재심사 요청 조회 실패", null);
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}

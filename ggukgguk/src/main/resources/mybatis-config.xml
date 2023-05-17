@@ -17,6 +17,8 @@
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.ContentDetail" alias="ContentDetail"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.BatchJobExecution" alias="BatchJobExecution"/>
 	 	<typeAlias type="com.ggukgguk.api.admin.vo.BatchPageOption" alias="BatchPageOption"/>
+	 	<typeAlias type="com.ggukgguk.api.admin.vo.MediaClaimPageOption" alias="MediaClaimPageOption"/>
+	 	<typeAlias type="com.ggukgguk.api.admin.vo.MediaFileRecheckRequest" alias="MediaFileRecheckRequest"/>
 	 	<typeAlias type="com.ggukgguk.api.common.vo.PageOption" alias="PageOption"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.Record" alias="Record"/>
 	 	<typeAlias type="com.ggukgguk.api.record.vo.MediaFile" alias="MediaFile"/>

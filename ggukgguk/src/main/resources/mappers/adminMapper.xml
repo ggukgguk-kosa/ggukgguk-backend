@@ -60,7 +60,7 @@
 	<select id="contentSelectList" parameterType="PageOption"
 		resultType="Content">
 		SELECT record_id, member_id, record_created_at,
-		media_file_blocked, media_file_checked
+		r.media_file_id, media_type_id, media_file_blocked, media_file_checked
 		FROM record r
 		LEFT JOIN
 		media_file m
@@ -75,6 +75,31 @@
 		<![CDATA[   
 			SELECT COUNT(*) FROM record
 		]]>
+	</select>
+
+	<!-- 차단 미디어 재심사 요청 조회 -->
+	<select id="selectMediaClaim" parameterType="MediaClaimPageOption"
+		resultType="MediaFileRecheckRequest">
+		SELECT *
+		FROM media_file_recheck_request
+		<where>
+			<if test="mediaFileRecheckRequestStatus != null">
+				WHERE media_file_recheck_request_status = #{mediaFileRecheckRequestStatus}
+			</if>
+		</where>
+		ORDER BY media_file_recheck_request_id DESC
+		LIMIT #{skip}, #{size};
+	</select>
+	<!-- 페이징 처리를 하기 위한 전체 게시글 수 -->
+	<select id="selectMediaClaimTotal" parameterType="MediaClaimPageOption"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM media_file_recheck_request
+		<where>
+			<if test="mediaFileRecheckRequestStatus != null">
+				WHERE media_file_recheck_request_status = #{mediaFileRecheckRequestStatus}
+			</if>
+		</where>
 	</select>
 
 	<!-- 회원관리 관련 mapper -->

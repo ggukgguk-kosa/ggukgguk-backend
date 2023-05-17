@@ -13,6 +13,7 @@ import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
+import com.ggukgguk.api.admin.vo.MediaClaimPageOption;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -203,6 +204,16 @@ public class AdminServiceImpl implements AdminService {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public TotalAndListPayload getMediaClaim(MediaClaimPageOption option) {
+		TotalAndListPayload payload = new TotalAndListPayload(
+			dao.selectMediaClaimCount(option),
+			dao.selectMediaClaim(option)
+		);
+		
+		return payload;
 	}
 
 }

@@ -8,6 +8,7 @@ import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
+import com.ggukgguk.api.admin.vo.MediaClaimPageOption;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -51,5 +52,7 @@ public interface AdminService {
 	public Map<String, Object> getDailyReportAll(String startDate, String endDate);
 
 	public List<Map<String, Integer>> getDailyReport(String startDate, String endDate, String reportSubject);
+
+	public TotalAndListPayload getMediaClaim(MediaClaimPageOption option);
 	
 }
