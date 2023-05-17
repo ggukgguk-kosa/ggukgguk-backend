@@ -162,12 +162,17 @@ public class MediaFileServiceImpl implements MediaFileService {
 		}
 	    
 	    // 기존 메타데이터 쓰기
+	    if (metadata == null) {
+	    	// 메타데이터가 없으면 스킵
+	    	return true;
+	    }
+	    
 	    FileOutputStream fos = new FileOutputStream(imgFile);
 	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	    try {
 		    ImageIO.write(newImage, "jpg", baos);
 		    byte[] resizedImgData = baos.toByteArray();
-	    	new ExifRewriter().updateExifMetadataLossless(resizedImgData, fos, metadata.getOutputSet());
+		    new ExifRewriter().updateExifMetadataLossless(resizedImgData, fos, metadata.getOutputSet());
 	    	result = true;
 		} catch (Exception e) {
 			e.printStackTrace();
