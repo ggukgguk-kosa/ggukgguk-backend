@@ -50,4 +50,9 @@ public class DiaryDaoImpl implements DiaryDao {
 		}
 		
 	}
+
+	@Override
+	public List<Diary> selectNotifyDiary(int referenceId) {
+		return session.selectList("com.ggukgguk.api.Diary.selectdiaryNotify", referenceId);
+	}
 }

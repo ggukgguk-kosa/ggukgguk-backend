@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ggukgguk.api.common.vo.BasicResp;
@@ -109,6 +110,23 @@ public class DiaryController {
 			return ResponseEntity.badRequest().body(respBody);
 		}
 		
+	}
+	
+	//월말 결산 다이어리 조회 (알림)
+	@GetMapping("/monthNotify")
+	public ResponseEntity<?> getMonthDiaries(@RequestParam int referenceId){
+
+		BasicResp<Object> respBody;	
+		List<Diary> diary = service.getnotifyMonthDiaries(referenceId);
+		if (diary != null) {
+			log.debug("다이어리 리스트 조회 성공");
+			respBody = new BasicResp<Object>("success", "다이어리 리스트 조회 성공하였습니다.", diary);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("다이어리 리스트 조회 실패");
+			respBody = new BasicResp<Object>("error", "다이어리 리스트 조회 실패하였습니다.", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
 	}
 	
 }

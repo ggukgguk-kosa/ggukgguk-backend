@@ -60,5 +60,11 @@
          WHERE diary_id=#{diaryId}
       ]]>
    </update>
-  
+  	<select id="selectdiaryNotify" parameterType="Integer" resultType="Diary">
+       <![CDATA[   
+        SELECT *
+		FROM diary
+		WHERE diary_id=#{referenceId}
+      ]]>
+   </select>
 </mapper>

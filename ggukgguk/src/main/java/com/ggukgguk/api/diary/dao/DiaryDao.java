@@ -17,4 +17,6 @@ public interface DiaryDao {
 	
 	public void updateDiary(Diary diary) throws Exception;
 
+	public List<Diary> selectNotifyDiary(int referenceId);
+
 }
