@@ -82,9 +82,15 @@
    </select>
 
 	<select id="selectOne" parameterType="Integer" resultMap="RecordResultSet">  
-			SELECT record.*, reply.*
+			SELECT record.*, reply.reply_id, reply.reply_content, reply.reply_date, m1.member_nickname as member1_nickname, 
+			m2.member_nickname as member2_nickname, m3.member_nickname as member3_nickname, 
+			media_file.media_type_id
 			FROM record
+			LEFT JOIN media_file ON record.media_file_id = media_file.media_file_id
+			LEFT JOIN member m1 ON record.member_id=m1.member_id AND record.member_id!=#{friendId}
+            LEFT JOIN member m2 ON record.record_share_to = m2.member_id AND record.record_share_to IS NOT NULL
 			LEFT JOIN reply ON record.record_id = reply.record_id
+			LEFT JOIN member m3 ON reply.member_id = m3.member_id
 			WHERE record.record_id=#{recordId}
    </select>
    

@@ -27,4 +27,6 @@ public interface RecordService {
 
 	public MediaFile getMediaMetadata(String fileId);
 
+	public Record getRecord(int recordId);
+
 }

@@ -366,7 +366,7 @@ public class RecordController {
 	@PutMapping("/unaccepted/{recordId}")
 	public ResponseEntity<?> updateUnaccepted(@PathVariable(value = "recordId") int recordId, @RequestBody Record record, Authentication authentication){
 		
-		log.debug(recordId);
+		log.debug(record);
 		BasicResp<Object> respBody;
 		
 		String memberIdFromReq = record.getRecordShareTo();
@@ -387,6 +387,25 @@ public class RecordController {
 		} else {
 			log.debug("교환일기 수락 실패");
 			respBody = new BasicResp<Object>("error", "교환일기 수락에 실패하였습니다.", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	@GetMapping("/{recordId")
+	public ResponseEntity<?> getRecord(@PathVariable int recordId){
+		
+		BasicResp<Object> respBody;
+		
+		Record record = service.getRecord(recordId);
+		
+		if (record != null) {
+			log.debug("조각 조회 성공");
+			
+			respBody = new BasicResp<Object>("success", null, null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("조각 조회 실패");
+			respBody = new BasicResp<Object>("error", "조각 조회에 실패하였습니다.", null);		
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}
