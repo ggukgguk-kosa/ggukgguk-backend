@@ -143,4 +143,12 @@ public class MemberDaoImpl implements MemberDao {
 	public Verify authenticationMatch(Verify verify) {
 		return session.selectOne("com.ggukgguk.api.Verify.selectAuthenticationCode", verify);
 	}
+
+	
+	// 친구 요청테이블 조회 [나한테만 온것들]
+	@Override
+	public List<FriendRequest> selectRequestFriendList(FriendRequest friendRequest) {
+		return session.selectList("com.ggukgguk.api.Member.selectMyRequestFriendList", friendRequest);
+	
+	}
 }

@@ -144,6 +144,9 @@ public class MediaFileServiceImpl implements MediaFileService {
 		int newHeight = originalHeight * mediaWidth / originalWidth; // 새 높이 = 기존 높이 * 새 너비(고정) / 기존 너비
 
 		// 리사이징 및 저장
+		int imageType = originalImage.getType();
+		if(imageType == 0) imageType = 5;
+		
 		BufferedImage newImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
 	    Graphics2D g = newImage.createGraphics();  
 	    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
