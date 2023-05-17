@@ -19,4 +19,8 @@ public class MediaFileRecheckRequest {
 	private String mediaFileRecheckRequestStatus;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Asia/Seoul")
 	private Date mediaFileRecheckRequestCreatedAt;
+    private String memberId;
+    private String memberName;
+    private String memberEmail;
+    private String memberPhone;
 }

@@ -9,6 +9,8 @@ import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
 import com.ggukgguk.api.admin.vo.MediaClaimPageOption;
+import com.ggukgguk.api.admin.vo.MediaFile;
+import com.ggukgguk.api.admin.vo.MediaFileRecheckRequest;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -54,5 +56,13 @@ public interface AdminService {
 	public List<Map<String, Integer>> getDailyReport(String startDate, String endDate, String reportSubject);
 
 	public TotalAndListPayload getMediaClaim(MediaClaimPageOption option);
+
+	public MediaFile getMediaDetail(MediaFile option);
+
+	public boolean addMediaClaim(MediaFileRecheckRequest payload);
+
+	public boolean editMediaClaim(MediaFileRecheckRequest payload);
+
+	public boolean patchMediaDetail(MediaFile option);
 	
 }

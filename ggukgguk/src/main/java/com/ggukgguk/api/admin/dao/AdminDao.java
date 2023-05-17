@@ -8,6 +8,7 @@ import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.MediaClaimPageOption;
+import com.ggukgguk.api.admin.vo.MediaFile;
 import com.ggukgguk.api.admin.vo.MediaFileRecheckRequest;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
@@ -62,6 +63,14 @@ public interface AdminDao {
 	public List<MediaFileRecheckRequest> selectMediaClaim(MediaClaimPageOption option);
 
 	public int selectMediaClaimCount(MediaClaimPageOption option);
+
+	public MediaFile selectMediaExtended(MediaFile option);
+
+	public void insertMediaClaim(MediaFileRecheckRequest payload) throws Exception;
+
+	public void updateMediaClaim(MediaFileRecheckRequest payload) throws Exception;
+
+	public void updateShouldMediaBlocked(MediaFile payload) throws Exception;
 
 }
 

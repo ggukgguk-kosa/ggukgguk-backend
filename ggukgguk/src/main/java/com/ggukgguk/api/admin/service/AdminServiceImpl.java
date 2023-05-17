@@ -14,6 +14,8 @@ import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
 import com.ggukgguk.api.admin.vo.MediaClaimPageOption;
+import com.ggukgguk.api.admin.vo.MediaFile;
+import com.ggukgguk.api.admin.vo.MediaFileRecheckRequest;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -214,6 +216,44 @@ public class AdminServiceImpl implements AdminService {
 		);
 		
 		return payload;
+	}
+
+	@Override
+	public MediaFile getMediaDetail(MediaFile option) {
+		return dao.selectMediaExtended(option);
+	}
+
+	@Override
+	public boolean addMediaClaim(MediaFileRecheckRequest payload) {
+		try {
+			dao.insertMediaClaim(payload);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean editMediaClaim(MediaFileRecheckRequest payload) {
+		try {
+			dao.updateMediaClaim(payload);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean patchMediaDetail(MediaFile payload) {
+		try {
+			dao.updateShouldMediaBlocked(payload);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 }

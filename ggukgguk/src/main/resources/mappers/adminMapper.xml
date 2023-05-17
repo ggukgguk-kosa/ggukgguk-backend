@@ -5,7 +5,19 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ggukgguk.api.Admin">
-
+	<resultMap id="mediaFileExtended" type="MediaFileForAdmin">
+		<id property="mediaFileId" column="media_file_id"></id>
+		<result property="mediaTypeId" column="media_type_id"></result>
+		<result property="mediaFileBlocked" column="media_file_blocked"></result>
+		<result property="mediaFileChecked" column="media_file_checked"></result>
+		<collection property="mediaFileBlockedHistory" ofType="mediaFileBlockedHistory">
+			<id property="mediaFileBlockedHistoryId" column="media_file_blocked_history_id"></id>
+			<result property="mediaFileId" column="media_file_id"/>
+			<result property="mediaFileDetectedLabel" column="media_file_detected_label"/>
+			<result property="mediaFileDetectedWeights" column="media_file_detected_weights"/>
+			<result property="mediaFileCheckedAt" column="media_file_checked_at"/>
+		</collection>
+	</resultMap>
 
 	<!-- 공지사항 관련 mapper -->
 	<select id="noticeSelect" parameterType="int" resultType="int">
@@ -80,11 +92,21 @@
 	<!-- 차단 미디어 재심사 요청 조회 -->
 	<select id="selectMediaClaim" parameterType="MediaClaimPageOption"
 		resultType="MediaFileRecheckRequest">
-		SELECT *
-		FROM media_file_recheck_request
+		SELECT mfr.media_file_recheck_request_id, mfr.media_file_id, mfr.media_file_recheck_request_claim,
+			mfr.media_file_recheck_request_reply, mfr.media_file_recheck_request_status,
+			mfr.media_file_recheck_request_created_at,
+			mr.member_id, mr.member_name, mr.member_email, mr.member_phone
+		FROM media_file_recheck_request mfr
+		LEFT JOIN (
+			SELECT m.member_id, m.member_name, m.member_email, m.member_phone, r.media_file_id 
+			FROM record r  
+			LEFT JOIN `member` m 
+			ON r.member_id = m.member_id
+		) mr
+		ON mfr.media_file_id = mr.media_file_id
 		<where>
 			<if test="mediaFileRecheckRequestStatus != null">
-				WHERE media_file_recheck_request_status = #{mediaFileRecheckRequestStatus}
+				mfr.media_file_recheck_request_status = #{mediaFileRecheckRequestStatus}
 			</if>
 		</where>
 		ORDER BY media_file_recheck_request_id DESC
@@ -97,10 +119,53 @@
 		FROM media_file_recheck_request
 		<where>
 			<if test="mediaFileRecheckRequestStatus != null">
-				WHERE media_file_recheck_request_status = #{mediaFileRecheckRequestStatus}
+				media_file_recheck_request_status = #{mediaFileRecheckRequestStatus}
 			</if>
 		</where>
 	</select>
+	
+	<!-- 차단 미디어 재심사 요청 작성 -->
+	<insert id="insertMediaClaim" parameterType="MediaFileRecheckRequest">
+		INSERT INTO media_file_recheck_request 
+		(media_file_id, media_file_recheck_request_claim, media_file_recheck_request_status)
+		VALUES (#{mediaFileId}, #{mediaFileRecheckRequestClaim}, #{mediaFileRecheckRequestStatus})
+	</insert>
+	
+	<!-- 차단 미디어 재심사 요청 수정 -->
+	<update id="updateMediaClaim" parameterType="MediaFileRecheckRequest">
+		UPDATE media_file_recheck_request
+		<set>
+			<if test="mediaFileRecheckRequestClaim != null">
+			    media_file_recheck_request_claim = #{mediaFileRecheckRequestClaim},
+			</if>
+			<if test="mediaFileRecheckRequestReply != null">
+			    media_file_recheck_request_reply = #{mediaFileRecheckRequestReply},
+			</if>
+			<if test="mediaFileRecheckRequestStatus != null">
+			    media_file_recheck_request_status = #{mediaFileRecheckRequestStatus},
+			</if>
+		</set>
+	  		WHERE
+	        media_file_recheck_request_id = #{mediaFileRecheckRequestId}
+	</update>
+	
+	<!-- 미디어 메타데이터 + 미디어 차단 이력 조회 -->
+	<select id="selectMediaExtended" parameterType="MediaFileForAdmin"
+		resultMap="mediaFileExtended">
+		SELECT *
+		FROM media_file mf
+		LEFT JOIN media_file_blocked_history mfh
+		ON mf.media_file_id = mfh.media_file_id
+		WHERE mf.media_file_id = #{mediaFileId}
+	</select>
+	
+	<!-- 미디어 차단 여부 수정 -->
+	<update id="updateMediaFile" parameterType="MediaFileForAdmin">
+		UPDATE media_file
+		SET media_file_blocked = #{mediaFileBlocked}
+  		WHERE
+        media_file_id = #{mediaFileId}
+	</update>
 
 	<!-- 회원관리 관련 mapper -->
 	<select id="memberSelectList" parameterType="PageOption"
