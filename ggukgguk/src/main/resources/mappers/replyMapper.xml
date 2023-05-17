@@ -19,7 +19,7 @@
   
   <select id="selectList" parameterType="Integer" resultType="replyNickname">
        <![CDATA[   
-        SELECT reply.*, member.member_nickname, member.member_id
+        SELECT reply.*, member.member_nickname, member.member_id as replyMemberId
 		FROM reply
 		JOIN member
 		ON reply.member_id=member.member_id
