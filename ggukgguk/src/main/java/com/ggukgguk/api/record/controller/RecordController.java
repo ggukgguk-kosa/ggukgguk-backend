@@ -391,7 +391,7 @@ public class RecordController {
 		}
 	}
 	
-	@GetMapping("/{recordId")
+	@GetMapping("/{recordId}")
 	public ResponseEntity<?> getRecord(@PathVariable int recordId){
 		
 		BasicResp<Object> respBody;
@@ -401,7 +401,7 @@ public class RecordController {
 		if (record != null) {
 			log.debug("조각 조회 성공");
 			
-			respBody = new BasicResp<Object>("success", null, null);
+			respBody = new BasicResp<Object>("success", null, record);
 			return ResponseEntity.ok(respBody);
 		} else {
 			log.debug("조각 조회 실패");
