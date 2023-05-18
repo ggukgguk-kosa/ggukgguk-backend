@@ -9,6 +9,7 @@ public class MediaClaimPageOption {
 	private int size;
 	private int skip;
 	private String mediaFileRecheckRequestStatus;
+	private String mediaFileId;
 	
 	public MediaClaimPageOption() {
 		this(1,  10);

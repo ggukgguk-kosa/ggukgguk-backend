@@ -45,6 +45,7 @@ public class ReplyServiceImpl implements ReplyService {
 			
 //			// 방금 생성한 댓글 테이블의 아이디 값을 가져오기
 //			int replyId = (int)reply.getReplyId();	
+			
 			// 이후 새로운 댓글 알림 생성 
 			
 			if(record.getMemberId().equals(reply.getMemberId()) || record.getRecordShareTo().equals(reply.getMemberId())) {
