@@ -95,7 +95,8 @@
 		SELECT mfr.media_file_recheck_request_id, mfr.media_file_id, mfr.media_file_recheck_request_claim,
 			mfr.media_file_recheck_request_reply, mfr.media_file_recheck_request_status,
 			mfr.media_file_recheck_request_created_at,
-			mr.member_id, mr.member_name, mr.member_email, mr.member_phone
+			mr.member_id, mr.member_name, mr.member_email, mr.member_phone,
+			(SELECT media_type_id FROM media_file mf WHERE mf.media_file_id = mfr.media_file_id) as media_type_id
 		FROM media_file_recheck_request mfr
 		LEFT JOIN (
 			SELECT m.member_id, m.member_name, m.member_email, m.member_phone, r.media_file_id 
@@ -106,7 +107,10 @@
 		ON mfr.media_file_id = mr.media_file_id
 		<where>
 			<if test="mediaFileRecheckRequestStatus != null">
-				mfr.media_file_recheck_request_status = #{mediaFileRecheckRequestStatus}
+				AND mfr.media_file_recheck_request_status = #{mediaFileRecheckRequestStatus}
+			</if>
+			<if test="mediaFileId != null">
+				AND mfr.media_file_id = #{mediaFileId}
 			</if>
 		</where>
 		ORDER BY media_file_recheck_request_id DESC
@@ -116,10 +120,13 @@
 	<select id="selectMediaClaimTotal" parameterType="MediaClaimPageOption"
 		resultType="int">
 		SELECT COUNT(*)
-		FROM media_file_recheck_request
+		FROM media_file_recheck_request mfr
 		<where>
 			<if test="mediaFileRecheckRequestStatus != null">
-				media_file_recheck_request_status = #{mediaFileRecheckRequestStatus}
+				AND mfr.media_file_recheck_request_status = #{mediaFileRecheckRequestStatus}
+			</if>
+			<if test="mediaFileId != null">
+				AND mfr.media_file_id = #{mediaFileId}
 			</if>
 		</where>
 	</select>
@@ -275,10 +282,11 @@
 		SELECT COUNT(*)
 		FROM
 		BATCH_JOB_EXECUTION bje
-		LEFT JOIN BATCH_JOB_INSTANCE bji
-		ON
-		bje.JOB_EXECUTION_ID = bji.JOB_INSTANCE_ID
-		WHERE bji.JOB_NAME = #{jobName};
+		LEFT JOIN
+		BATCH_JOB_INSTANCE bji
+		ON bje.JOB_INSTANCE_ID = bji.JOB_INSTANCE_ID
+		WHERE bji.JOB_NAME =
+		#{jobName};
 	</select>
 	
 	<select id="selectMemberIncreaseDaily"

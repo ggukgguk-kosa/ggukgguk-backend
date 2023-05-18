@@ -1,8 +1,6 @@
 package com.ggukgguk.api.record.controller;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,11 +11,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +23,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -156,7 +152,19 @@ public class RecordController {
 	
 	@GetMapping(value="/media/{fileId}")
 	public ResponseEntity<FileSystemResource> getMedia(@PathVariable("fileId") String fileId,
-			@RequestParam("mediaType") String mediaType) throws IOException {
+			@RequestParam("mediaType") String mediaType,
+			Authentication authentication) throws IOException {
+
+		boolean hasAutority = false;
+		if (authentication != null) {
+			UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+			
+			// 관리자면 true
+			hasAutority = userDetails.getAuthorities().contains(new SimpleGrantedAuthority("SYSTEM_ADMIN"));
+			if (!hasAutority)
+				hasAutority = userDetails.getAuthorities().contains(new SimpleGrantedAuthority("SERVICE_ADMIN"));
+		}
+		
 		MediaType contentsType;
 		String subDir;
 		switch (mediaType) {
@@ -182,12 +190,14 @@ public class RecordController {
 		File defaultFile = new File(baseDir + "/" + subDir + "/default");
 		
 		MediaFile metadata = service.getMediaMetadata(fileId);
-		if (metadata.isMediaFileBlocked()) {
+		if (metadata.isMediaFileBlocked() && !hasAutority) { // 미디어가 차단되었고, 관리자도 아닌 경우
 			log.info("차단된 미디어를 디폴트 파일로 대신하여 제공하였습니다.");
 		    return ResponseEntity.ok()
 		    	      .contentType(contentsType)
 		    	      .body(new FileSystemResource(defaultFile));
 		}
+		
+		// 차단된 미디어더라도 관리자라면 제공함
 
 		if (mediaFile.exists()) {
 		    return ResponseEntity.ok()

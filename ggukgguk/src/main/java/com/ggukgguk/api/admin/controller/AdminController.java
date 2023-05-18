@@ -333,6 +333,7 @@ public class AdminController {
 	@GetMapping("/batch/{jobName}")
 	public ResponseEntity<?> getBatchStatusByJobNameHandler(@ModelAttribute BatchPageOption option) {
 		BasicResp<Object> respBody;
+		log.debug(option);
 		TotalAndListPayload payload = adminService.fetchBatchStatusByJobName(option);
 
 		if (payload != null) {

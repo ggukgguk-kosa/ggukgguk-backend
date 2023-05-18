@@ -4,8 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.ggukgguk.api.admin.dao.AdminDao;
 import com.ggukgguk.api.admin.vo.BatchJobExecution;
@@ -18,13 +23,24 @@ import com.ggukgguk.api.admin.vo.MediaFile;
 import com.ggukgguk.api.admin.vo.MediaFileRecheckRequest;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
+import com.ggukgguk.api.common.service.EmailService;
 import com.ggukgguk.api.common.vo.PageOption;
 import com.ggukgguk.api.common.vo.TotalAndListPayload;
+import com.ggukgguk.api.notification.vo.Notification;
 
 @Service
 public class AdminServiceImpl implements AdminService {
+	
+	private Logger log = LogManager.getLogger("base");
+	
 	@Autowired
-	AdminDao dao;
+	private AdminDao dao;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private PlatformTransactionManager transactionManager;
 
 	@Override
 	public List<Notice> noticeSelectPage(PageOption option) {
@@ -236,13 +252,50 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public boolean editMediaClaim(MediaFileRecheckRequest payload) {
-		try {
+		
+		// DB 업무 (트랜잭션 시작)
+        TransactionStatus txStatus =
+                transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+    	try {
+			if ("PASSED".equals(payload.getMediaFileRecheckRequestStatus())) {
+				// 통과됨 상태로 변경된 경우 블록을 해제해준다
+				
+				MediaFile mediaFile = new MediaFile();
+				mediaFile.setMediaFileId(payload.getMediaFileId());
+				mediaFile.setMediaFileBlocked(false);
+				
+				dao.updateShouldMediaBlocked(mediaFile);
+			}
 			dao.updateMediaClaim(payload);
-			return true;
 		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
 			e.printStackTrace();
+			log.debug("[ADMIN SERVICE] DB 업무 실패");
 			return false;
 		}
+    	transactionManager.commit(txStatus);
+    	
+    	try {
+			emailService.sendEmail(payload.getMemberEmail(), 
+					"차단 미디어 이의제기 처리 현황이 변경되었습니다",
+					"<div>고객님 안녕하세요, 꾹꾹입니다. <br> 고객님께서 작성하신 미디어 차단 이의제기의 처리 현황이 변경되었습니다.<br>"
+					+ "                    <li>이의제기 ID: " + payload.getMediaFileRecheckRequestId() + "</li>\r\n" + 
+					"                    <li>미디어 파일 ID: " + payload.getMediaFileId() + "</li>\r\n" + 
+					"                    <li>미디어 타입: " + payload.getMediaTypeId() + "</li>\r\n" + 
+					"                    <li>요청 본문: " + payload.getMediaFileRecheckRequestClaim() + "</li>\r\n" + 
+					"                    <li>처리 현황: " + payload.getMediaFileRecheckRequestStatus() + "</li>\r\n" + 
+					"                    <li>처리 결과: " + payload.getMediaFileRecheckRequestReply() + "</li>"
+					+ "<a href='https://app.ggukgguk.online/login'><button style='background-color: #50A73A; border: none; "
+					+ "color: white; padding: 10px 20px; text-align: center; display: inline-block; "
+					+ "margin: 4px 2px; cursor: pointer;'>꾹꾹 접속하기 </button> </a></div>");
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.debug("[ADMIN SERVICE] 메일 전송 실패");
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
