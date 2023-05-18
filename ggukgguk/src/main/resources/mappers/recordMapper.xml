@@ -22,6 +22,7 @@
 	    <result property="recordShareTo" column="record_share_to" />
 	    <result property="recordShareAccepted" column="record_share_accepted" />
 	    <result property="mainColor" column="main_color" />
+	    <result property="mediaFileBlocked" column="media_file_blocked" />
 	    <collection property="replyList" ofType="ReplyNickname">
 	        <id property="replyId" column="reply_id" />
 	        <result property="replyMemberId" column="reply_member_id" />
@@ -34,7 +35,11 @@
    <select id="selectList" parameterType="RecordSearch" resultMap="RecordResultSet">  
 			SELECT record.*, reply.reply_id, reply.member_id as reply_member_id, reply.reply_content, reply.reply_date, m1.member_nickname as member1_nickname, 
 			m2.member_nickname as member2_nickname, m3.member_nickname as member3_nickname, 
-			media_file.media_type_id, diary.main_color
+			media_file.media_type_id, diary.main_color,
+			(SELECT media_file_blocked
+				FROM media_file
+				WHERE media_file_id=record.media_file_id
+			) AS media_file_blocked
 			FROM record
 			LEFT JOIN media_file ON record.media_file_id = media_file.media_file_id
 			LEFT JOIN member m1 ON record.member_id=m1.member_id AND record.member_id!=#{memberId}
