@@ -1,6 +1,7 @@
 package com.ggukgguk.api.admin.vo;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -25,6 +26,8 @@ public class Content {
 	private String memberId;	
 	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")
 	private Date recordCreatedAt;
+	private String mediaFileId;
+	private String mediaTypeId;
 	private int mediaFileBlocked; // block된 파일 확인 (0=non-blocked, 1=blocked)
 	private int mediaFileChecked; // 미디어 업로드 유무 
 }

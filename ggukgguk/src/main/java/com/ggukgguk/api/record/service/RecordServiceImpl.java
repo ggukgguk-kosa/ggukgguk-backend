@@ -103,6 +103,8 @@ public class RecordServiceImpl implements RecordService{
 			return false;
 		}
 		
+		// mediaFileId 참조하는 테이블 두개 생김 그것도 삭제해줄것
+		
 		if(record.getMediaFileId()!=null) {
 			try {
 				dao.deleteMediaFile(record.getMediaFileId());
@@ -195,5 +197,11 @@ public class RecordServiceImpl implements RecordService{
 	@Override
 	public MediaFile getMediaMetadata(String mediaFileId) {
 		return dao.selectMedia(mediaFileId);
+	}
+	
+	@Override
+	public Record getRecord(int recordId) {
+		
+		return dao.selectRecord(recordId);
 	}
 }

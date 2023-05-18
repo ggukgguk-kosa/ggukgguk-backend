@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,6 +27,9 @@ import com.ggukgguk.api.admin.vo.BatchJobExecution;
 import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.ContentDetail;
 import com.ggukgguk.api.admin.vo.Main;
+import com.ggukgguk.api.admin.vo.MediaClaimPageOption;
+import com.ggukgguk.api.admin.vo.MediaFile;
+import com.ggukgguk.api.admin.vo.MediaFileRecheckRequest;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -383,6 +387,141 @@ public class AdminController {
 		} else {
 			log.debug("일자별 데이터 조회 실패 " + reportSubject);
 			respBody = new BasicResp<Object>("error", "일자별 데이터 조회 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	/**
+	 * 미디어 파일 재심사 요청 조회
+	 * @param option
+	 * @return
+	 */
+	@GetMapping("/content/claim")
+	public ResponseEntity<?> getMediaClaimHandler(@ModelAttribute MediaClaimPageOption option) {
+		BasicResp<Object> respBody;
+
+		TotalAndListPayload result = adminService.getMediaClaim(option);
+
+		if (result != null) {
+			log.debug("재심사 요청 데이터 조회 성공");
+			respBody = new BasicResp<Object>("success", null, result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("재심사 요청 데이터 조회 실패");
+			respBody = new BasicResp<Object>("error", "재심사 요청 조회 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	/**
+	 * 재심사 요청 작성
+	 * 일반 사용자 접근 가능하도록 풀어줘야 함
+	 * @param payload
+	 * @return
+	 */
+	@PostMapping("/content/claim")
+	public ResponseEntity<?> addMediaClaimHandler(@RequestBody MediaFileRecheckRequest payload) {
+		BasicResp<Object> respBody;
+		
+		if (payload.getMediaFileId() == null || "".equals(payload.getMediaFileId())) {
+			log.debug("재심사 요청 작성 실패 - 미디어 파일 아이디가 없습니다");
+			respBody = new BasicResp<Object>("error", "재심사 요청 작성에 실패하였습니다 (EMPTY_MEDIA_ID)", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		if (payload.getMediaFileRecheckRequestClaim() == null || "".equals(payload.getMediaFileRecheckRequestClaim())) {
+			log.debug("재심사 요청 작성 실패 - 요청 본문이 없습니다");
+			respBody = new BasicResp<Object>("error", "재심사 요청 작성에 실패하였습니다 (EMPTY_REQUEST_CONTENT)", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		payload.setMediaFileRecheckRequestStatus("BEFORE");
+		
+		boolean result = adminService.addMediaClaim(payload);
+		
+		if (result) {
+			log.debug("재심사 요청 작성 성공");
+			respBody = new BasicResp<Object>("success", "재심사 요청 작성에 성공하였습니다", null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("재심사 요청 작성 실패");
+			respBody = new BasicResp<Object>("error", "재심사 요청 작성에 실패하였습니다", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	@PutMapping("/content/claim/{claimId}")
+	public ResponseEntity<?> editMediaClaimHandler(@PathVariable String claimId,
+			@RequestBody MediaFileRecheckRequest payload) {
+		BasicResp<Object> respBody;
+		
+		int claimIdParsed = -1;
+		try {
+			claimIdParsed = Integer.parseInt(claimId);
+		} catch (NumberFormatException e) {
+			log.debug("재심사 요청 수정 실패 - 재심사 아이디가 잘못되었습니다");
+			respBody = new BasicResp<Object>("error", "재심사 요청 수정에 실패하였습니다 (REUQEST_ID_NOT_NUMBER)", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+		payload.setMediaFileRecheckRequestId(claimIdParsed);
+		
+		boolean result = adminService.editMediaClaim(payload);
+		
+		if (result) {
+			log.debug("재심사 요청 수정 성공");
+			respBody = new BasicResp<Object>("success", "재심사 요청 작성에 성공하였습니다", null);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("재심사 요청 수정 실패");
+			respBody = new BasicResp<Object>("error", "재심사 요청 작성에 실패하였습니다", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	/**
+	 * 미디어 파일 세부정보(차단 이력 포함)
+	 * @param mediaFileId
+	 * @return
+	 */
+	@GetMapping("/content/media/{mediaFileId}")
+	public ResponseEntity<?> getMediaDetailHandler(@PathVariable("mediaFileId") String mediaFileId) {
+		BasicResp<Object> respBody;
+
+		MediaFile option = new MediaFile();
+		option.setMediaFileId(mediaFileId);
+		
+		MediaFile result = adminService.getMediaDetail(option);
+
+		if (result != null) {
+			log.debug("미디어 파일 세부정보 데이터 조회 성공");
+			respBody = new BasicResp<Object>("success", null, result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("미디어 파일 세부정보 데이터 조회 실패");
+			respBody = new BasicResp<Object>("error", "미디어 파일 세부정보 요청 조회 실패", null);
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+
+	/**
+	 * 미디어 파일 차단 여부 수정 
+	 * @param mediaFileId
+	 * @return
+	 */
+	@PatchMapping("/content/media/{mediaFileId}")
+	public ResponseEntity<?> patchMediaDetailHandler(@PathVariable("mediaFileId") String mediaFileId,
+			@RequestBody MediaFile mediaFile) {
+		BasicResp<Object> respBody;
+		
+		mediaFile.setMediaFileId(mediaFileId);
+		
+		boolean result = adminService.patchMediaDetail(mediaFile);
+
+		if (result) {
+			log.debug("미디어 파일 차단 여부 수정 성공");
+			respBody = new BasicResp<Object>("success", null, result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			log.debug("미디어 파일 차단 여부 수정 실패");
+			respBody = new BasicResp<Object>("error", "미디어 파일 차단 여부 수정 실패", null);
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}

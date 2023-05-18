@@ -29,5 +29,6 @@ public class Record {
 	private String recordShareTo;
 	private boolean recordShareAccepted;
 	private String mainColor;
+	private boolean mediaFileBlocked;
 	private List<ReplyNickname> replyList;
 }

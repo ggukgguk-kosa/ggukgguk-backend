@@ -46,4 +46,9 @@ public class DiaryServiceImpl implements DiaryService {
 			return false;
 		}
 	}
+
+	@Override
+	public List<Diary> getnotifyMonthDiaries(int referenceId) {
+		return dao.selectNotifyDiary(referenceId);
+	}
 }

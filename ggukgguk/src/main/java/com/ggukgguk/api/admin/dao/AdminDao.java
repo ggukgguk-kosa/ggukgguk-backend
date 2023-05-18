@@ -7,6 +7,9 @@ import com.ggukgguk.api.admin.vo.BatchJobExecution;
 import com.ggukgguk.api.admin.vo.BatchPageOption;
 import com.ggukgguk.api.admin.vo.Content;
 import com.ggukgguk.api.admin.vo.ContentDetail;
+import com.ggukgguk.api.admin.vo.MediaClaimPageOption;
+import com.ggukgguk.api.admin.vo.MediaFile;
+import com.ggukgguk.api.admin.vo.MediaFileRecheckRequest;
 import com.ggukgguk.api.admin.vo.Member;
 import com.ggukgguk.api.admin.vo.Notice;
 import com.ggukgguk.api.common.vo.PageOption;
@@ -56,6 +59,18 @@ public interface AdminDao {
 	public List<Map<String, Integer>> selectRecordDailyReport(Map<String, String> option);
 
 	public List<Map<String, Integer>> selectReplyDailyReport(Map<String, String> option);
+
+	public List<MediaFileRecheckRequest> selectMediaClaim(MediaClaimPageOption option);
+
+	public int selectMediaClaimCount(MediaClaimPageOption option);
+
+	public MediaFile selectMediaExtended(MediaFile option);
+
+	public void insertMediaClaim(MediaFileRecheckRequest payload) throws Exception;
+
+	public void updateMediaClaim(MediaFileRecheckRequest payload) throws Exception;
+
+	public void updateShouldMediaBlocked(MediaFile payload) throws Exception;
 
 }
 

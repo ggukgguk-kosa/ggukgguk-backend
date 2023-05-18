@@ -170,6 +170,23 @@ CREATE TABLE `notice` (
     `notice_is_emergency`    BOOLEAN    NOT NULL    DEFAULT FALSE
 );
 
+CREATE TABLE `media_file_blocked_history` (
+	`media_file_blocked_history_id`    INT    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
+	`media_file_id`    CHAR(36)    NOT NULL,
+	`media_file_detected_label`    VARCHAR(256)    NOT NULL,
+	`media_file_detected_weights`    FLOAT    NOT NULL,
+	`media_file_checked_at`    DATETIME    NOT NULL    DEFAULT NOW(),
+	FOREIGN KEY (`media_file_id`) REFERENCES `media_file` (`media_file_id`)
+);
 
-show variables like 'lower%';
+CREATE TABLE `media_file_recheck_request` (
+	`media_file_recheck_request_id`    INT    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
+	`media_file_id`    CHAR(36)    NOT NULL,
+	`media_file_recheck_request_claim`    VARCHAR(1024)    NOT NULL,
+	`media_file_recheck_request_reply`    VARCHAR(1024)    NULL,
+	`media_file_recheck_request_status`    ENUM('BEFORE', 'PROCEEDING', 'REJECTED', 'PASSED')    NOT NULL,
+	`media_file_recheck_request_created_at`    DATETIME    NOT NULL    DEFAULT NOW(),
+	FOREIGN KEY (`media_file_id`) REFERENCES `media_file` (`media_file_id`)
+);
+
 
