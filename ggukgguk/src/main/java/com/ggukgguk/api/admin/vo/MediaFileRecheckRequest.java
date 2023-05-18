@@ -23,4 +23,5 @@ public class MediaFileRecheckRequest {
     private String memberName;
     private String memberEmail;
     private String memberPhone;
+    private String mediaTypeId;
 }
