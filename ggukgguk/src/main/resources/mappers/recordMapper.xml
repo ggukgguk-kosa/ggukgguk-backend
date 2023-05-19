@@ -110,26 +110,6 @@
       ]]>
    </update>
 
-   <delete id="deleteReplyList" parameterType="Integer">
-      <![CDATA[   
-        DELETE FROM reply
-        WHERE record_id=#{recordId}
-     ]]>
-   </delete>
-
-	<select id="selectKeywordCount" parameterType="Integer" resultType="Integer">  
-		SELECT count(*)
-		FROM record_keyword
-		WHERE record_id=#{recordId}
-   </select>
-
-   <delete id="deleteKeyword" parameterType="Integer">
-      <![CDATA[   
-        DELETE FROM record_keyword
-        WHERE record_id=#{recordId}
-     ]]>
-   </delete>
-
    <delete id="deleteMediaFile" parameterType="String">
       <![CDATA[   
         DELETE FROM media_file
