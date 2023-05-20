@@ -35,7 +35,7 @@
 		(#{noticeTitle}, #{noticeContent})
 	</insert>
 
-	<update id="noticeUpdate" parameterType="int">
+	<update id="noticeUpdate" parameterType="Notice">
 		UPDATE notice
 		SET
 		notice_title= #{noticeTitle},
