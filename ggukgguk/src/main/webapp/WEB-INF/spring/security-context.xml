@@ -39,6 +39,11 @@
 		<intercept-url pattern="/record/media/**" method="GET" access="permitAll" />
 		<intercept-url pattern="/admin/notice" method="GET" access="isAuthenticated()" />
 		<intercept-url pattern="/admin/notice/**" method="GET" access="isAuthenticated()" />
+		<intercept-url pattern="/admin/content/claim" access="isAuthenticated()" />
+		<intercept-url pattern="/admin/content/claim/**" access="isAuthenticated()" />
+		<intercept-url pattern="/admin/content/media/**" access="isAuthenticated()" />
+		<intercept-url pattern="/admin/content/media/**" method="PATCH" access="hasAnyAuthority('SYSTEM_ADMIN', 'SERVICE_ADMIN')" />
+		<intercept-url pattern="/admin/content/" access="isAuthenticated()" />
 		<intercept-url pattern="/admin/**" access="hasAnyAuthority('SYSTEM_ADMIN', 'SERVICE_ADMIN')" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
 		<custom-filter position="FORM_LOGIN_FILTER"

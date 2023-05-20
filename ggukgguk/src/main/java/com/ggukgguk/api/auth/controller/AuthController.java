@@ -155,8 +155,12 @@ public class AuthController {
 	    BasicResp<Object> respBody;
 	    log.debug(token);
 	    Member result = oauth.googleLogin(token);
+	    result.setMemberPw("google");
+	    AuthTokenPayload tknPayload = service.login(result);
+	    log.debug(tknPayload);
+	    
 	    if (result != null) {
-	        respBody = new BasicResp<Object>("success", "구글 사용자로 로그인합니다.", result);
+	        respBody = new BasicResp<Object>("success", "구글 사용자로 로그인합니다.", tknPayload);
 	        return ResponseEntity.ok(respBody);
 	    } else {
 	        respBody = new BasicResp<Object>("error", "로그인 되지 않습니다.", null);
