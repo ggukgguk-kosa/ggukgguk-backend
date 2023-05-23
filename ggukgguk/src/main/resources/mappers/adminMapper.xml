@@ -193,8 +193,7 @@
 		NULL,
 		member_phone = '',
 		member_activated = 0
-		WHERE member_id =
-		#{memberId};
+		WHERE member_id = #{memberId};
 	</update>
 
 	<!-- 관리자 메인 페이지 통계 -->
