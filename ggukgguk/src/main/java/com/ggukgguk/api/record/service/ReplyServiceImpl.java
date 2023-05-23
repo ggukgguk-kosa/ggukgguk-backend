@@ -45,10 +45,11 @@ public class ReplyServiceImpl implements ReplyService {
 			
 //			// 방금 생성한 댓글 테이블의 아이디 값을 가져오기
 //			int replyId = (int)reply.getReplyId();	
+			
 			// 이후 새로운 댓글 알림 생성 
 			
-			if(record.getMemberId().equals(reply.getMemberId()) || record.getRecordShareTo().equals(reply.getMemberId())) {
-				
+			if(record.getMemberId().equals(record.getMemberId()) || reply.getMemberId().equals(record.getRecordShareTo())) {
+				// 알림을 발송하지 않는다.
 			} else {
 				Notification noti = new Notification(0, "NEW_REPLY", new Date(), record.getRecordId(), record.getMemberId(),0, reply.getMemberId() + "님이 댓글을 남겼습니다.");
 				//알림 순번, 알림 타입 = "새로운 댓글". 알림 날짜 , 참조 아이디 = "방금 등록한 댓글의  조각 테이블 아이디", 수신자  = "해당 조각 작성자아이디 ", 수신 여부 = 0, 전달 메시지                

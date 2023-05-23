@@ -106,8 +106,8 @@ public class AuthController {
 	public ResponseEntity<?> kakaoCallback(@RequestParam String AccessToken) throws Exception {
 		BasicResp<Object> respBody;
 		Member result = oauth.kakaoLogin(AccessToken);
-		result.setMemberPw("kakao");
-		AuthTokenPayload tknPayload = service.login(result);
+		result.setMemberPw("kakao"); 
+		AuthTokenPayload tknPayload = service.login(result); // 기존의 꾹꾹 로그인 서비스 방식인 JWT방식과 연동? 접목하기 위해서 설정
 		
 		if (result != null) {
 			log.debug("카카오  성공");
@@ -155,8 +155,12 @@ public class AuthController {
 	    BasicResp<Object> respBody;
 	    log.debug(token);
 	    Member result = oauth.googleLogin(token);
+	    result.setMemberPw("google");
+	    AuthTokenPayload tknPayload = service.login(result);
+	    log.debug(tknPayload);
+	    
 	    if (result != null) {
-	        respBody = new BasicResp<Object>("success", "구글 사용자로 로그인합니다.", result);
+	        respBody = new BasicResp<Object>("success", "구글 사용자로 로그인합니다.", tknPayload);
 	        return ResponseEntity.ok(respBody);
 	    } else {
 	        respBody = new BasicResp<Object>("error", "로그인 되지 않습니다.", null);
