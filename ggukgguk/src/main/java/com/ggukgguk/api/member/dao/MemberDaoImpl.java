@@ -151,4 +151,15 @@ public class MemberDaoImpl implements MemberDao {
 		return session.selectList("com.ggukgguk.api.Member.selectMyRequestFriendList", friendRequest);
 	
 	}
+
+	// 비밀번호 수정
+	@Override
+	public void pwModify(Member member) throws Exception {
+		log.debug(member);
+		int updateMember = session.update("com.ggukgguk.api.Member.modifyPw",member);
+		if(updateMember != 1) {
+			throw new Exception();
+		}
+
+	}
 }

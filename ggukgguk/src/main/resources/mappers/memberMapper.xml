@@ -64,8 +64,10 @@
 	<!-- 회원 정보 수정 -->
 	<update id="updateMemberInfo" parameterType="Member">
 		UPDATE member
-		SET member_nickname= #{memberNickname}, member_email= #{memberEmail},
-		member_phone= #{memberPhone}, member_birth= #{memberBirth},
+		SET member_nickname= #{memberNickname}, member_email=
+		#{memberEmail},
+		member_phone= #{memberPhone}, member_birth=
+		#{memberBirth},
 		member_allow_email = #{memberAllowEmail}
 		<if test="memberPw != null">
 			, member_pw= #{memberPw}
@@ -166,5 +168,14 @@
    	SELECT * FROM friend_request WHERE to_member_id = #{toMemberId} and friend_request_id = #{friendRequestId}
    ]]>
 	</select>
+
+	<!-- 비밀번호 변경 -->
+	<update id="modifyPw" parameterType="Member">
+	 <![CDATA[
+		UPDATE member
+		SET member_pw= #{memberPw}
+		WHERE member_email= #{memberEmail}
+	]]>
+	</update>
 
 </mapper>
