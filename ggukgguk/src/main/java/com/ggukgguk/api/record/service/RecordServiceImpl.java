@@ -71,29 +71,6 @@ public class RecordServiceImpl implements RecordService{
         TransactionStatus txStatus =
                 transactionManager.getTransaction(new DefaultTransactionDefinition());
 		
-        
-		if(!record.getReplyList().isEmpty()) {
-			try {
-				dao.deleteReplyList(record.getRecordId());
-			} catch (Exception e) {
-				transactionManager.rollback(txStatus);
-				e.printStackTrace();
-				return false;
-			}
-		}
-		
-		int keywordCount = dao.selectKeyword(record.getRecordId());
-		
-		if(keywordCount > 0) {
-			try {
-				dao.deleteKeyword(recordId);		
-			} catch (Exception e) {
-				transactionManager.rollback(txStatus);
-				e.printStackTrace();
-				return false;
-			}		
-		}
-		
 		try {
 			dao.deleteRecord(recordId);
 			
