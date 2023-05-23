@@ -48,7 +48,7 @@ public class ReplyServiceImpl implements ReplyService {
 			
 			// 이후 새로운 댓글 알림 생성 
 			
-			if(record.getMemberId().equals(record.getMemberId()) || reply.getMemberId().equals(record.getRecordShareTo())) {
+			if(reply.getMemberId().equals(record.getMemberId()) || reply.getMemberId().equals(record.getRecordShareTo())) {
 				// 알림을 발송하지 않는다.
 			} else {
 				Notification noti = new Notification(0, "NEW_REPLY", new Date(), record.getRecordId(), record.getMemberId(),0, reply.getMemberId() + "님이 댓글을 남겼습니다.");
