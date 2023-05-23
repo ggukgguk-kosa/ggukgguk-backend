@@ -177,11 +177,10 @@
 	<!-- 회원관리 관련 mapper -->
 	<select id="memberSelectList" parameterType="PageOption"
 		resultType="MemberAdmin">
-		SELECT member_id, member_name, member_email, member_phone,
-		member_birth
-		FROM
-		member
-
+		SELECT member_id, member_name, member_email, member_phone, member_birth, member_authority
+		FROM member
+		ORDER BY member_id DESC
+		LIMIT #{skip}, #{size}
 	</select>
 	<update id="memberDelete" parameterType="java.lang.String">
 		UPDATE member

@@ -66,52 +66,54 @@ public class OAuthService {
 	
 	// 참고) https://2bmw3.tistory.com/15
 
-	// 카카오의 권한 토크를 받는 메소드
-	public String getKakaoAccessToken(String code) { 
-		log.debug("@Value 테스트: " + googleSecretClientId);
-		log.debug("@Value 테스트2: " + kakaoSecretClientId);
-		
-		String accessToken = "";
+//	// 카카오의 권한 토크를 받는 메소드
+//	public String getKakaoAccessToken(String code) { 
+//		log.debug("@Value 테스트: " + googleSecretClientId);
+//		log.debug("@Value 테스트2: " + kakaoSecretClientId);
+//		
+//		String accessToken = "";
+//
+//		// restTemplate을 사용하여 API 호출
+//		String reqUrl = "https://kauth.kakao.com/oauth/token"; // 해당 URL에 요청하여 Access token을 받는다.
+//		URI uri = URI.create(reqUrl);
+//
+//		HttpHeaders headers = new HttpHeaders();
+//
+//		MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
+//		parameters.set("grant_type", "authorization_code");
+//		parameters.set("client_id",kakaoSecretClientId); // 카카오 REST API 주소
+//		parameters.set("redirect_uri",kakaoRedirectUrl); // 리다이렉트 주소
+//		// 리다이렉트 주소 의미: 로그인에 성공하면 다시 로그인한 사용자가 만든 페이지로 돌아가야 하는데 그 돌아갈 페이지의 주소가
+//		// redirect_uri
+//		parameters.set("code", code); // 카카오에서 전달 받은 인가 코드
+//		
+//		HttpEntity<MultiValueMap<String, Object>> restRequest = new HttpEntity<>(parameters, headers); // 카카오에서 전달 받은
+//																										// 파라미터 값을 인자로
+//																										// 전달하여 전달.
+//		ResponseEntity<JSONObject> apiResponse = restTemplate.postForEntity(uri, restRequest, JSONObject.class);
+//		JSONObject responseBody = apiResponse.getBody();
+//
+//		accessToken = (String) responseBody.get("access_token");
+//
+//		return accessToken; // 카카오의 권한 토큰 발급.
+//	}
 
-		// restTemplate을 사용하여 API 호출
-		String reqUrl = "https://kauth.kakao.com/oauth/token"; // 해당 URL에 요청하여 Access token을 받는다.
-		URI uri = URI.create(reqUrl);
-
-		HttpHeaders headers = new HttpHeaders();
-
-		MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
-		parameters.set("grant_type", "authorization_code");
-		parameters.set("client_id",kakaoSecretClientId); // 카카오 REST API 주소
-		parameters.set("redirect_uri",kakaoRedirectUrl); // 리다이렉트 주소
-		// 리다이렉트 주소 의미: 로그인에 성공하면 다시 로그인한 사용자가 만든 페이지로 돌아가야 하는데 그 돌아갈 페이지의 주소가
-		// redirect_uri
-		parameters.set("code", code); // 카카오에서 전달 받은 인가 코드
-		
-		HttpEntity<MultiValueMap<String, Object>> restRequest = new HttpEntity<>(parameters, headers); // 카카오에서 전달 받은
-																										// 파라미터 값을 인자로
-																										// 전달하여 전달.
-		ResponseEntity<JSONObject> apiResponse = restTemplate.postForEntity(uri, restRequest, JSONObject.class);
-		JSONObject responseBody = apiResponse.getBody();
-
-		accessToken = (String) responseBody.get("access_token");
-
-		return accessToken; // 카카오의 권한 토큰 발급.
-	}
-
-	// 카카오 토큰을 통해 사용자 정보 가져오기. // 카카오 공식문서에 있는 이메일과 프로필에 있는 닉네임, 사용자의 생일(월,일) 정보 전달.
+	// 카카오 토큰을 통해 사용자 정보 가져오기. 
 	public JsonNode getkakaoUserInfo(String accessToken) {
-
-		String reqUrl = "https://kapi.kakao.com/v2/user/me";
+		String reqUrl = "https://kapi.kakao.com/v2/user/me"; // 요청을 받는 카카오 API 서버의 도메인에서  사용자 정보를 받아오기 위해서.
 		URI uri = URI.create(reqUrl);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "bearer " + accessToken);
+		HttpHeaders headers = new HttpHeaders(); // http 헤더에  아까 받은 토큰을 헤더에 넣고
+		headers.set("Authorization", "bearer " + accessToken); 
+		// Java의 Spring Framework에서 제공하는 인터페이스로, 하나의 키에 대해 여러 값을 저장할 수 있는 Map 타입
 		MultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
+		//는 "property_keys"이고, 값은 JSON 배열의 문자열 표현입니다.
 		parameters.add("property_keys",
 				"[\"kakao_account.profile\",\"kakao_account.name\",\"kakao_account.email\",\"kakao_account.birthday\"]");
 
-		HttpEntity<MultiValueMap<String, Object>> restRequest = new HttpEntity<>(parameters, headers);
+		HttpEntity<MultiValueMap<String, Object>> restRequest = new HttpEntity<>(parameters, headers); // 위 헤더와 파라미터 값을 가지고 http requset 요청 수행
 		return restTemplate.postForEntity(uri, restRequest, JsonNode.class).getBody();
+		// 실제 http post 방식으로 요청 (위의 작성한 카카오 서버 uri, http request 정보, 응답 형태를 json으로 받으라는 의미)
 	}
 
 	// 카카오 로그인 및 회원가입
