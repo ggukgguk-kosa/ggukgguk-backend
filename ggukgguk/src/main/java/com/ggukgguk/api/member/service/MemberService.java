@@ -50,4 +50,6 @@ public interface MemberService {
 
 	public List<FriendRequest> findRequestFriendList(FriendRequest friendRequest, String myMemberId,int friendRequestId);
 
+	public boolean redefinePw(Member member);
+
 }

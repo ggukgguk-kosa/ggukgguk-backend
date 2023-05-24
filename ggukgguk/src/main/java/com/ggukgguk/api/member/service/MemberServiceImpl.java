@@ -318,4 +318,17 @@ public class MemberServiceImpl implements MemberService {
 			return result;
 	
 	}
+
+	@Override
+	public boolean redefinePw(Member member) {
+		
+		try {
+			member.setMemberPw(passwordEncorder.encode(member.getMemberPw()));
+			dao.pwModify(member);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

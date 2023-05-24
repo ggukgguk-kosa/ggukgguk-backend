@@ -46,4 +46,6 @@ public interface MemberDao {
 	public Verify authenticationMatch(Verify verify);
 
 	public List<FriendRequest> selectRequestFriendList(FriendRequest friendRequestId);
+
+	public void pwModify(Member member) throws Exception;
 }
