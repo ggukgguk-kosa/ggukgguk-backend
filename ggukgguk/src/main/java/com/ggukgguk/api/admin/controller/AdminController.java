@@ -135,9 +135,10 @@ public class AdminController {
 
 	// 공지사항 게시글 수정
 	@PutMapping("/notice/update/{noticeId}")
-	public ResponseEntity<?> noticeUpdateHandler(@PathVariable int noticeId) {
+	public ResponseEntity<?> noticeUpdateHandler(@PathVariable int noticeId, @RequestBody Notice notice) {
 		BasicResp<Object> respBody;
-		boolean result = adminService.noticeUpdate(noticeId);
+		notice.setNoticeId(noticeId);
+		boolean result = adminService.noticeUpdate(notice);
 
 		if (result) {
 			log.debug("게시글 수정 성공");
@@ -234,6 +235,9 @@ public class AdminController {
 //
 //		return new ResponseEntity<Object>(respBody, null, respCode);
 //	}	
+	
+	
+	
 	
 	// 회원 삭제 
 	@PutMapping("/member/delete/{memberId}")

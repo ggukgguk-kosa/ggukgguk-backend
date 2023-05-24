@@ -42,8 +42,8 @@ public class AdminDaoImpl implements AdminDao {
     }
     
     @Override
-    public void updateNotice(int noticeId) throws Exception {
-        int affectedRow = session.update("com.ggukgguk.api.Admin.noticeUpdate", noticeId);
+    public void updateNotice(Notice notice) throws Exception {
+        int affectedRow = session.update("com.ggukgguk.api.Admin.noticeUpdate", notice);
         
         if (affectedRow != 1) {
             throw new Exception();

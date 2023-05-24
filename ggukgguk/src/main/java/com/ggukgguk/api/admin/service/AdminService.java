@@ -28,7 +28,7 @@ public interface AdminService {
 	public boolean noticeRead(int noticeId);
 
 	// 게시글 수정
-	public boolean noticeUpdate(int noticeId);
+	public boolean noticeUpdate(Notice notice);
 
 	// 게시글 삭제
 	public boolean noticeDelete(int noticeId);
