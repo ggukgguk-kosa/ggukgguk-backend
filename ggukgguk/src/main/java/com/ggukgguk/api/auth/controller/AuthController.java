@@ -244,9 +244,8 @@ public class AuthController {
 	}
 
 	// 임의의 문자와 숫자 8자리로 생성하도록 클래스를 따로 만듬.
-	@Autowired
-	private GenerateCertCharacter generateCertCharacter;
-
+//	private GenerateCertCharacter generateCertCharacter;
+//	private GenerateCertCharacter generateCertCharacter;
 	// 메모리의 캐시 형태로 하여 이메일 인증코드와 사용자(받는 사람이메일)랑 같이 저장.
 	private ConcurrentHashMap<String, String> authCodeCache = new ConcurrentHashMap<>();
 
@@ -254,8 +253,9 @@ public class AuthController {
 	@GetMapping(value = "/mailCertification", produces = "application/json; charset=UTF-8")
 	public ResponseEntity<?> cetificationPostMail(@RequestParam String sendTo, @ModelAttribute Verify verify)
 			throws Exception {
-
+		GenerateCertCharacter generateCertCharacter = new GenerateCertCharacter();
 		String authenticationCode = generateCertCharacter.excuteGenerate();
+		log.debug(authenticationCode);
 		authCodeCache.put(sendTo, authenticationCode); // 회원 이메일과 인증 코드를 key,value쌍으로 저장.
 
 		BasicResp<Object> resp = null;
@@ -284,8 +284,10 @@ public class AuthController {
 	@GetMapping(value = "/mailCertificationPw", produces = "application/json; charset=UTF-8")
 	public ResponseEntity<?> cetificationPostPwMail(@RequestParam String sendTo, @ModelAttribute Verify verify)
 			throws Exception {
-
+		GenerateCertCharacter generateCertCharacter = new GenerateCertCharacter();
 		String authenticationCode = generateCertCharacter.excuteGenerate();
+		log.debug(authenticationCode);
+		
 		authCodeCache.put(sendTo, authenticationCode); // 회원 이메일과 인증 코드를 key,value쌍으로 저장.
 
 		BasicResp<Object> resp = null;
@@ -317,7 +319,7 @@ public class AuthController {
 		BasicResp<Object> resp = null;
 
 		String storedAuthCode = authCodeCache.get(sendTo); // 이메일 인증코드로 보낸 코드를 가져오기
-
+	
 		// 1안. 메모리의 캐시 형태로 하여 이메일 인증코드와 사용자(받는 사람이메일)랑 같이 저장.
 		// boolean result =
 		// memberSerivce.getCheckAuthenticationCode(certificationNumber,storedAuthCode);
