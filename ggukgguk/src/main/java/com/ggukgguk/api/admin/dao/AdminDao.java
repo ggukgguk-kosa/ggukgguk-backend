@@ -19,7 +19,7 @@ public interface AdminDao {
 
 	public void noticeSelect(int noticeId)throws Exception;
 
-	public void updateNotice(int noticeId) throws Exception;
+	public void updateNotice(Notice notice) throws Exception;
 
 	public void deleteNotice(int noticeId) throws Exception;
 

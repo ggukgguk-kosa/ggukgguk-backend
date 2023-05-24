@@ -67,9 +67,9 @@ public class AdminServiceImpl implements AdminService {
 		}
 	}
 
-	public boolean noticeUpdate(int noticeId) {
+	public boolean noticeUpdate(Notice notice) {
 		try {
-			dao.updateNotice(noticeId);
+			dao.updateNotice(notice);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
