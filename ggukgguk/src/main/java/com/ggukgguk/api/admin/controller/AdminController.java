@@ -236,6 +236,9 @@ public class AdminController {
 //		return new ResponseEntity<Object>(respBody, null, respCode);
 //	}	
 	
+	
+	
+	
 	// 회원 삭제 
 	@PutMapping("/member/delete/{memberId}")
 	public ResponseEntity<?> memberDeleteHandler(@PathVariable String memberId) {
