@@ -12,4 +12,5 @@ public class DiaryKeyword {
 	private int diaryKeywordId;
 	private int diaryId;
 	private String diaryKeyword;
+	private int diaryFreq;
 }
