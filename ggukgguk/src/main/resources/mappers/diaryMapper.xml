@@ -17,6 +17,7 @@
 	        <id property="diaryKeywordId" column="diary_keyword_id" />
 	        <result property="diaryId" column="diary_id" />
 	        <result property="diaryKeyword" column="diary_keyword" />
+	        <result property="diaryFreq" column="diary_freq" />
 	    </collection>
 	    <collection property="diaryRecordList" ofType="DiaryRecord">
 	        <result property="recordDay" column="record_day" />
