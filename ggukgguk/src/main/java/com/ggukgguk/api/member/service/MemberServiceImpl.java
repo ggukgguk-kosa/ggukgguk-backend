@@ -85,17 +85,31 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	// 회원정보 수정
+//	@Override
+//	public boolean modifyMember(Member member) {
+//		try {
+//			if (member.getMemberPw() != null) {
+//				member.setMemberPw(passwordEncorder.encode(member.getMemberPw()));
+//			}
+//			dao.updateMemberInfo(member);
+//			return true;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//	}
+	
 	@Override
-	public boolean modifyMember(Member member) {
+	public Member modifyMember(Member member) {
 		try {
 			if (member.getMemberPw() != null) {
 				member.setMemberPw(passwordEncorder.encode(member.getMemberPw()));
 			}
-			dao.updateMemberInfo(member);
-			return true;
+			
+			return dao.updateMemberInfo(member);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			return null;
 		}
 	}
 

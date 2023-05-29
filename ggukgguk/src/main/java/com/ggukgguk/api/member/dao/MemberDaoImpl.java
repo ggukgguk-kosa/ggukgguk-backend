@@ -49,16 +49,28 @@ public class MemberDaoImpl implements MemberDao {
 	}
 
 	
+//	@Override // 회원정보 수정
+//	public void updateMemberInfo(Member member) throws Exception {
+//		log.debug(member);
+//		int updateMember = session.update("com.ggukgguk.api.Member.updateMemberInfo", member);
+//	//		session.selectOne("com.ggukgguk.api.Member.selectByEmail",member.getMemberEmail());
+//		if(updateMember != 1) {
+//			throw new Exception();
+//		}
+//	}
+//
+//	
 	@Override // 회원정보 수정
-	public void updateMemberInfo(Member member) throws Exception {
+	public Member updateMemberInfo(Member member) throws Exception {
 		log.debug(member);
 		int updateMember = session.update("com.ggukgguk.api.Member.updateMemberInfo", member);
-		
+
 		if(updateMember != 1) {
 			throw new Exception();
 		}
+		return session.selectOne("com.ggukgguk.api.Member.selectByEmail",member.getMemberEmail());
 	}
-
+	
 	@Override // 전체 회원 리스트 
 	public List<?> selectMemberList(PageOption option) {
 		return session.selectList("com.ggukgguk.api.Member.totalMemberList",option);
