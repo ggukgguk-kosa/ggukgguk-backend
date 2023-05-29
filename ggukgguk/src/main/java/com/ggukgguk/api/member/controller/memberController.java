@@ -44,13 +44,15 @@ public class memberController {
 
 	}
 	// 회원 정보 수정
-	@PutMapping(value= "/{memberId}")
-	public ResponseEntity<?> updateMemberInfo(@RequestBody Member member,@PathVariable String memberId){
-		log.debug("asdf");
+	@PutMapping(value= "/{memberEmail}")
+	public ResponseEntity<?> updateMemberInfo(@RequestBody Member member,@PathVariable String memberEmail){
+		log.debug(memberEmail);
 		BasicResp<Object> respBody;
-		member.setMemberId(memberId);
-		boolean result = Memberservice.modifyMember(member);
-		if (result) {
+		member.setMemberEmail(memberEmail);
+		// boolean에서 Member vo로 반환값을 받는 이유, 만약  회원 아이디 값을 변경시 프런트에서  store에 setMemberInfo 값에도 바뀐 아이디 정보롤 저장학기 위해서
+//		boolean result = Memberservice.modifyMember(member); 
+		Member result = Memberservice.modifyMember(member); 
+		if (!result.equals(null)) {
 			respBody = new BasicResp<Object>("success", "회원 정보를 수정하였습니다.", result);
 			return ResponseEntity.ok(respBody);
 		} else {

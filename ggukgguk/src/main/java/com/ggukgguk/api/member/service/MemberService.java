@@ -20,7 +20,7 @@ public interface MemberService {
 
 	public boolean getMemberByEmailandId(Member member);
 
-	public boolean modifyMember(Member member);
+	public Member modifyMember(Member member);
 
 	public TotalAndListPayload getMemberList(PageOption option);
 
