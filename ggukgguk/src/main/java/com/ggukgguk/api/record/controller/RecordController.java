@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ggukgguk.api.common.vo.BasicResp;
 import com.ggukgguk.api.member.service.MemberService;
+import com.ggukgguk.api.member.vo.Member;
 import com.ggukgguk.api.record.service.RecordService;
 import com.ggukgguk.api.record.service.ReplyService;
 import com.ggukgguk.api.record.vo.MediaFile;
@@ -416,6 +417,23 @@ public class RecordController {
 		} else {
 			log.debug("조각 조회 실패");
 			respBody = new BasicResp<Object>("error", "조각 조회에 실패하였습니다.", null);		
+			return ResponseEntity.badRequest().body(respBody);
+		}
+	}
+	
+	// 친구 목록 조회
+	@GetMapping(value = "/friend")
+	public ResponseEntity<?> friendList(Authentication authentication) {
+		BasicResp<Object> respBody;
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String memberId = userDetails.getUsername();
+
+		List<Member> result = service.findFriendListByRecord(memberId);
+		if (result != null) {
+			respBody = new BasicResp<Object>("success", "나의 친구 목록을 조회 성공하였습니다.", result);
+			return ResponseEntity.ok(respBody);
+		} else {
+			respBody = new BasicResp<Object>("error", "나의 친구 목록을 조회 실패하였습니다.", null);
 			return ResponseEntity.badRequest().body(respBody);
 		}
 	}

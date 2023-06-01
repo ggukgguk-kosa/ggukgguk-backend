@@ -2,6 +2,7 @@ package com.ggukgguk.api.record.dao;
 
 import java.util.List;
 
+import com.ggukgguk.api.member.vo.Member;
 import com.ggukgguk.api.record.vo.MediaFile;
 import com.ggukgguk.api.record.vo.Record;
 import com.ggukgguk.api.record.vo.RecordSearch;
@@ -35,5 +36,7 @@ public interface RecordDao {
 	void updateUnaccepted(int recordId) throws Exception;
 
 	MediaFile selectMedia(String mediaFileId);
+
+	List<Member> selectFriendListByRecord(String memberId);
 
 }

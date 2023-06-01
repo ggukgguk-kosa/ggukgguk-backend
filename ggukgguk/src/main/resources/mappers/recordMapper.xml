@@ -46,7 +46,7 @@
             LEFT JOIN member m2 ON record.record_share_to = m2.member_id AND record.record_share_to IS NOT NULL
 			LEFT JOIN reply ON record.record_id = reply.record_id
 			LEFT JOIN member m3 ON reply.member_id = m3.member_id
-			LEFT JOIN diary ON YEAR(record.record_created_at) = diary.diary_year AND MONTH(record.record_created_at) = diary.diary_month
+			LEFT JOIN diary ON record.member_id=diary.member_id AND YEAR(record.record_created_at) = diary.diary_year AND MONTH(record.record_created_at) = diary.diary_month
  			<where>
  				((record.member_id=#{memberId} and record.record_share_to IS NULL) OR 
 	  			(record.member_id=#{memberId} and record.record_share_to IS NOT NULL AND record.record_share_accepted = 1) OR
@@ -71,7 +71,7 @@
             LEFT JOIN member m2 ON record.record_share_to = m2.member_id AND record.record_share_to IS NOT NULL
 			LEFT JOIN reply ON record.record_id = reply.record_id
 			LEFT JOIN member m3 ON reply.member_id = m3.member_id
-			LEFT JOIN diary ON YEAR(record.record_created_at) = diary.diary_year AND MONTH(record.record_created_at) = diary.diary_month
+			LEFT JOIN diary ON record.member_id=diary.member_id AND YEAR(record.record_created_at) = diary.diary_year AND MONTH(record.record_created_at) = diary.diary_month
  			<where>
  				((record.member_id=#{friendId} and record.record_is_open=1 and record.record_share_to is null) OR 
 	  			(record.member_id=#{friendId} and record.record_is_open=1 and record.record_share_to IS NOT NULL AND record.record_share_accepted = 1) OR
@@ -168,5 +168,22 @@
          WHERE record_id=#{recordId}
       ]]>
    </update>
+   
+   <!-- 조각 기준 친구 목록 조회 -->
+	<select id="selectFriendListByRecord" parameterType="java.lang.String"
+		resultType="Member">
+	 <![CDATA[   
+        SELECT m.* 
+		FROM friend f
+		JOIN member m ON f.member2_id = m.member_id
+		JOIN (
+		    SELECT r.member_id, MAX(r.record_created_at) AS latest_date
+		    FROM record r
+		    GROUP BY r.member_id
+		) sub ON f.member2_id = sub.member_id
+		WHERE f.member1_id = #{myMemberId}
+		ORDER BY sub.latest_date DESC;
+     ]]>
+	</select>
   
 </mapper>
