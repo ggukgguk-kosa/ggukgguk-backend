@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ggukgguk.api.member.vo.Member;
 import com.ggukgguk.api.record.vo.MediaFile;
 import com.ggukgguk.api.record.vo.Record;
 import com.ggukgguk.api.record.vo.RecordSearch;
@@ -28,5 +29,7 @@ public interface RecordService {
 	public MediaFile getMediaMetadata(String fileId);
 
 	public Record getRecord(int recordId);
+
+	public List<Member> findFriendListByRecord(String memberId);
 
 }

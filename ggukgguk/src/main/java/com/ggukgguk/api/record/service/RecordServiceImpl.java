@@ -13,6 +13,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ggukgguk.api.member.vo.Member;
 import com.ggukgguk.api.notification.dao.NotificationDao;
 import com.ggukgguk.api.notification.vo.Notification;
 import com.ggukgguk.api.record.dao.RecordDao;
@@ -180,5 +181,11 @@ public class RecordServiceImpl implements RecordService{
 	public Record getRecord(int recordId) {
 		
 		return dao.selectRecord(recordId);
+	}
+	
+	@Override
+	public List<Member> findFriendListByRecord(String memberId) {
+		
+		return dao.selectFriendListByRecord(memberId);
 	}
 }
