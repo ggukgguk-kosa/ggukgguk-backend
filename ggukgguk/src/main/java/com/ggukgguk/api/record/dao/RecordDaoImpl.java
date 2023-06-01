@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.ggukgguk.api.member.vo.Member;
 import com.ggukgguk.api.record.vo.MediaFile;
 import com.ggukgguk.api.record.vo.Record;
 import com.ggukgguk.api.record.vo.RecordSearch;
@@ -132,5 +133,11 @@ public class RecordDaoImpl implements RecordDao{
 	public MediaFile selectMedia(String mediaFileId) {
 
 		return session.selectOne("com.ggukgguk.api.Record.selectMedia", mediaFileId);
+	}
+	
+	@Override
+	public List<Member> selectFriendListByRecord(String memberId) {
+		
+		return session.selectList("com.ggukgguk.api.Record.selectFriendListByRecord", memberId);
 	}
 }

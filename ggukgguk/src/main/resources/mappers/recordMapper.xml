@@ -168,5 +168,22 @@
          WHERE record_id=#{recordId}
       ]]>
    </update>
+   
+   <!-- 조각 기준 친구 목록 조회 -->
+	<select id="selectFriendListByRecord" parameterType="java.lang.String"
+		resultType="Member">
+	 <![CDATA[   
+        SELECT m.* 
+		FROM friend f
+		JOIN member m ON f.member2_id = m.member_id
+		JOIN (
+		    SELECT r.member_id, MAX(r.record_created_at) AS latest_date
+		    FROM record r
+		    GROUP BY r.member_id
+		) sub ON f.member2_id = sub.member_id
+		WHERE f.member1_id = #{myMemberId}
+		ORDER BY sub.latest_date DESC;
+     ]]>
+	</select>
   
 </mapper>
