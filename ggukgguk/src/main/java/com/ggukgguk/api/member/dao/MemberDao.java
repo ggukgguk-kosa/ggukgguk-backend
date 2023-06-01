@@ -19,7 +19,7 @@ public interface MemberDao {
 
 	public Member selectMemberByEmailandId(Member member);
 
-	public void updateMemberInfo(Member member) throws Exception;
+	public Member updateMemberInfo(Member member) throws Exception;
 
 	public List<?> selectMemberList(PageOption option);
 
