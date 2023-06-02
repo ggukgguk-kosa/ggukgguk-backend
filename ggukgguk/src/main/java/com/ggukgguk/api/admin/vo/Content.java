@@ -24,7 +24,7 @@ public class Content {
 	private int totalRecord;
 	private int recordId;
 	private String memberId;	
-	@JsonFormat(pattern = "yyyy-MM-dd'T'hh:mm:ss.SSSZ", timezone = "Asia/Seoul")
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
 	private Date recordCreatedAt;
 	private String mediaFileId;
 	private String mediaTypeId;
