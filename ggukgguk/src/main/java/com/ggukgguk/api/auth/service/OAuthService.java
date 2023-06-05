@@ -153,7 +153,7 @@ public class OAuthService {
 		member.setMemberEmail(userInfo.get("kakao_account").get("email").asText().toString()); // 카카오로 연동한 이메일
 
 		// sql구문이 not null로 지정되어 있기에... member VO 나마지 값들을 더미 값으로 삽입.
-		member.setMemberName("");
+		member.setMemberName(userInfo.get("kakao_account").get("profile").get("nickname").asText().toString());
 		member.setMemberPw(passwordEncorder.encode("kakao"));
 		member.setMemberPhone("");
 		member.setMemberBirth(new Date(19700101)); // 카카오에 생일을 받아오나, 월 일 정도 만 불러와서. 임의로 우선 설정.
