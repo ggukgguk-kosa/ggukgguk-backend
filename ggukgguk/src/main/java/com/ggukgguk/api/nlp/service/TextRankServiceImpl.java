@@ -60,7 +60,7 @@ public class TextRankServiceImpl implements TextRankService {
 	// 그 기준으로 활용되는 윈도우의 사이즈
 	private final int CO_OCCURRENCE_WINDOWS = 3;
 	
-	private final String[] STOPWORDS = {"테스트", "업로드", "조각", "이미지", "마스트", "동영상"};
+	private final String[] STOPWORDS = {"테스트", "업로드", "조각", "이미지", "마스트", "동영상", "!!", "!!!", "오늘"};
 
 	/**
 	 * 텍스트에서 키워드를 추출
